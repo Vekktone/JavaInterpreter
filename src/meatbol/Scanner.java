@@ -95,7 +95,7 @@ class Scanner {
 
         //print the line number if we are at the beginning of a new line
         if(iColPos == 0){
-            System.out.println("\t" + (iSourceLineNr + 1) + " " + sourceLineM.get(iSourceLineNr));
+            System.out.println("  " + (iSourceLineNr + 1) + " " + sourceLineM.get(iSourceLineNr));
         }
 
         //skip blank lines and advance iSourceLineM
