@@ -102,7 +102,7 @@ class Scanner {
         while (textCharM.length == 0){
             iSourceLineNr++;
             textCharM = sourceLineM.get(iSourceLineNr).toCharArray();
-            System.out.println("\t" + (iSourceLineNr + 1) + " " + sourceLineM.get(iSourceLineNr));
+            System.out.println("  " + (iSourceLineNr + 1) + " " + sourceLineM.get(iSourceLineNr));
         }
 
         // Read char array and add to string builder until we get a delimiter

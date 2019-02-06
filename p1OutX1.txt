@@ -1,26 +1,26 @@
 primClassif subClassif   tokenStr
-	1 Int x;
+  1 Int x;
 OPERAND     IDENTIFIER   Int
 OPERAND     IDENTIFIER   x
 SEPARATOR   -            ;
-	2 Float pie;
+  2 Float pie;
 OPERAND     IDENTIFIER   Float
 OPERAND     IDENTIFIER   pie
 SEPARATOR   -            ;
-	3 String yStr;
+  3 String yStr;
 OPERAND     IDENTIFIER   String
 OPERAND     IDENTIFIER   yStr
 SEPARATOR   -            ;
-	4 
-	5 
-	6 x = x + 1;
+  4
+  5
+  6 x = x + 1;
 OPERAND     IDENTIFIER   x
 OPERATOR    -            =
 OPERAND     IDENTIFIER   x
 OPERATOR    -            +
 OPERAND     INTEGER      1
 SEPARATOR   -            ;
-	7 pie = 3.1.4;
+  7 pie = 3.1.4;
 OPERAND     IDENTIFIER   pie
 OPERATOR    -            =
 java.lang.Exception: Line 7 Invalid numeric constant: '3.1.4', File: p1InputX1.txt

@@ -1,31 +1,31 @@
 primClassif subClassif   tokenStr
-	1 Int x;
+  1 Int x;
 OPERAND     IDENTIFIER   Int
 OPERAND     IDENTIFIER   x
 SEPARATOR   -            ;
-	2 Float pi;
+  2 Float pi;
 OPERAND     IDENTIFIER   Float
 OPERAND     IDENTIFIER   pi
 SEPARATOR   -            ;
-	3 String yStr;
+  3 String yStr;
 OPERAND     IDENTIFIER   String
 OPERAND     IDENTIFIER   yStr
 SEPARATOR   -            ;
-	4 
-	5 
-	6 x = x + 1;
+  4
+  5
+  6 x = x + 1;
 OPERAND     IDENTIFIER   x
 OPERATOR    -            =
 OPERAND     IDENTIFIER   x
 OPERATOR    -            +
 OPERAND     INTEGER      1
 SEPARATOR   -            ;
-	7 pi = 3.14;
+  7 pi = 3.14;
 OPERAND     IDENTIFIER   pi
 OPERATOR    -            =
 OPERAND     FLOAT        3.14
 SEPARATOR   -            ;
-	8 print ("x=", x);
+  8 print ("x=", x);
 OPERAND     IDENTIFIER   print
 SEPARATOR   -            (
 OPERAND     STRING       x=
@@ -33,7 +33,7 @@ SEPARATOR   -            ,
 OPERAND     IDENTIFIER   x
 SEPARATOR   -            )
 SEPARATOR   -            ;
-	9 print ("pi=", pi);
+  9 print ("pi=", pi);
 OPERAND     IDENTIFIER   print
 SEPARATOR   -            (
 OPERAND     STRING       pi=
@@ -41,13 +41,13 @@ SEPARATOR   -            ,
 OPERAND     IDENTIFIER   pi
 SEPARATOR   -            )
 SEPARATOR   -            ;
-	10 
-	11 yStr = 'Hello';
+  10
+  11 yStr = 'Hello';
 OPERAND     IDENTIFIER   yStr
 OPERATOR    -            =
 OPERAND     STRING       Hello
 SEPARATOR   -            ;
-	12 print ("yStr=", yStr);
+  12 print ("yStr=", yStr);
 OPERAND     IDENTIFIER   print
 SEPARATOR   -            (
 OPERAND     STRING       yStr=
@@ -55,13 +55,13 @@ SEPARATOR   -            ,
 OPERAND     IDENTIFIER   yStr
 SEPARATOR   -            )
 SEPARATOR   -            ;
-	13 
-	14 yStr = "Can't\" not me";
+  13
+  14 yStr = "Can't\" not me";
 OPERAND     IDENTIFIER   yStr
 OPERATOR    -            =
 OPERAND     STRING       Can't" not me
 SEPARATOR   -            ;
-	15 print ("yStr=", yStr);
+  15 print ("yStr=", yStr);
 OPERAND     IDENTIFIER   print
 SEPARATOR   -            (
 OPERAND     STRING       yStr=
@@ -69,8 +69,8 @@ SEPARATOR   -            ,
 OPERAND     IDENTIFIER   yStr
 SEPARATOR   -            )
 SEPARATOR   -            ;
-	16 
-	17 x = 10*3 + 7;
+  16
+  17 x = 10*3 + 7;
 OPERAND     IDENTIFIER   x
 OPERATOR    -            =
 OPERAND     INTEGER      10
@@ -79,13 +79,13 @@ OPERAND     INTEGER      3
 OPERATOR    -            +
 OPERAND     INTEGER      7
 SEPARATOR   -            ;
-	18 if x > 20:
+  18 if x > 20:
 OPERAND     IDENTIFIER   if
 OPERAND     IDENTIFIER   x
 OPERATOR    -            >
 OPERAND     INTEGER      20
 SEPARATOR   -            :
-	19     print ("x=, x);
+  19     print ("x=, x);
 OPERAND     IDENTIFIER   print
 SEPARATOR   -            (
 java.lang.Exception: Line 19 String literal not terminated: 'x=, x)', File: p1InputX2.txt
