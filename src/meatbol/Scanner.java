@@ -243,8 +243,6 @@ class Scanner {
      * This method checks if a numeric value is a valid float and returns a boolean value
      * @param tokenStr the current token (possibly float) we are checking
      * @return true if valid float, false if not
-     * @param tokenStr the current token (possibly float) we are checking
-     * @return true if valid float, false if not
      */
     private boolean isFloat(String tokenStr) {
 
