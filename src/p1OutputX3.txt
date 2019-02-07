@@ -1,0 +1,31 @@
+primClassif subClassif   tokenStr
+  1 Int x;
+OPERAND     IDENTIFIER   Int
+OPERAND     IDENTIFIER   x
+SEPARATOR   -            ;
+  2 Float pike;
+OPERAND     IDENTIFIER   Float
+OPERAND     IDENTIFIER   pike
+SEPARATOR   -            ;
+  3 String yStr;
+OPERAND     IDENTIFIER   String
+OPERAND     IDENTIFIER   yStr
+SEPARATOR   -            ;
+  4 
+  5 x = 11;
+OPERAND     IDENTIFIER   x
+OPERATOR    -            =
+OPERAND     INTEGER      11
+SEPARATOR   -            ;
+  6 x = x + 1;
+OPERAND     IDENTIFIER   x
+OPERATOR    -            =
+OPERAND     IDENTIFIER   x
+OPERATOR    -            +
+OPERAND     INTEGER      1
+SEPARATOR   -            ;
+  7 pike = 3.14|;
+OPERAND     IDENTIFIER   pike
+java.lang.Exception: Line 7 invalid numeric constant 3.14|
+	at meatbol.Scanner.getNext(Scanner.java:264)
+	at meatbol.Meatbol.main(Meatbol.java:36)
