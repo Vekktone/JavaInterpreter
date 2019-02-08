@@ -1,0 +1,26 @@
+primClassif subClassif   tokenStr
+### Line 1: Int x;
+OPERAND     IDENTIFIER   Int
+OPERAND     IDENTIFIER   x
+SEPARATOR   -            ;
+### Line 2: Float pie;
+OPERAND     IDENTIFIER   Float
+OPERAND     IDENTIFIER   pie
+SEPARATOR   -            ;
+### Line 3: String yStr;
+OPERAND     IDENTIFIER   String
+OPERAND     IDENTIFIER   yStr
+SEPARATOR   -            ;
+### Line 4: 
+### Line 5: 
+### Line 6: x = x + 1;
+OPERAND     IDENTIFIER   x
+OPERATOR    -            =
+OPERAND     IDENTIFIER   x
+OPERATOR    -            +
+OPERAND     INTEGER      1
+SEPARATOR   -            ;
+### Line 7: pie = 3.1.4;
+OPERAND     IDENTIFIER   pie
+OPERATOR    -            =
+Invalid Numeric: Line 7 - 3.1.4
