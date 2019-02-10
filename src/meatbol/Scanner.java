@@ -35,6 +35,8 @@ public class Scanner {
      *
      * @throws Exception	IOException or other Exception for errors while attempting to read
      * 						or load file.
+     * @author	Gregory Pugh
+     * @author  Reviewed by Riley Marfin, Mason Pohler
      */
     public Scanner(String fileName, SymbolTable symbolTable) throws Exception {
         try
@@ -86,8 +88,22 @@ public class Scanner {
                 //skip white space
                 case '\t': case '\n': case ' ':
                     break;
+                //check for comment
+                case '/':
+                    System.out.println("This is a comment");
+                    //see if this is a comment or an error
+                    if(lineData[columnIndex+1] == '/')
+                    {
+                        //comment skip rest of line
+                        columnIndex = lineData.length;
+                        break;
+                    }
+                    else
+                    {
+                        throw new IllegalArgumentException("Syntax: Line " + (lineIndex + 1) + " - Invalid character; '/'");
+                    }
                 //create operator for valid operator not inside quotes
-                case '+': case '-': case '*': case '/': case '<': case '>': case '!': case '=': case '#': case '^':
+                case '+': case '-': case '*': case '<': case '>': case '!': case '=': case '#': case '^':
                     currentToken = setToken(String.valueOf(lineData[columnIndex])
                             , Classif.OPERATOR
                             , SubClassif.EMPTY
@@ -157,6 +173,7 @@ public class Scanner {
         SubClassif sub = SubClassif.IDENTIFIER;		//SubClassif type (default)
         char[] lineData = substring.toCharArray();	//converts string to char[]
 
+        //System.out.println("createOperand reached");
 
         //check each char in string
         for(i = 0; i < lineData.length;i++)
@@ -203,6 +220,7 @@ public class Scanner {
      *
      * @return boolean	true - String is a valid float
      * 					false - String is not a valid float
+     * @author
      */
     private boolean isValidFloat(String fValue) {
         int i = 0;									//loop counter
@@ -283,28 +301,65 @@ public class Scanner {
      * @return				column index of the end of the token's string (used to update position)
      *
      * @throws				IllegalArgumentException containing line and text being evaluated
+     *
+     * @author	Gregory Pugh
+     * @author  GregoryPugh (modified: 10-2-2019)
      */
     private int createStringToken(String substring, int lineNum, int index) {
         int trimEscapes = 0;							//counter for escape chars
         int i = 0;										//loop counter
         char[] lineData = substring.toCharArray();		//converts String to char[]
+        char tab = 0x09;
+        char newLine = 0x0a;
+
+        //System.out.println("createString reached");
 
         //search string one char at a time
         for(i = 1; i < lineData.length;i++)
         {
-            //if the character matches the first character (either " or '), this is a possible match
-            if(lineData[i] == lineData[0]){
-                //check if the char immediately before the quote is an escape
-                if(lineData[i-1] == '\\'){
-                    //if it is an escape, remove it
-                    //need to count how many are removed as we may have more than one
-                    substring = substring.substring(0,i-1) + substring.substring(i,lineData.length);
-                    trimEscapes++;
+            //System.out.println("At " + i + "esacpes "+trimEscapes);
+            //if the character is an escape, handle next char
+            if(lineData[i] == '\\')
+            {
+                //check next char
+                switch(lineData[i + 1])
+                {
+                    //if it is a tab
+                    case 't':
+                        //replace and increment lineData and trimEscape count
+                        substring = substring.substring(0,i-trimEscapes) + tab +substring.substring((i-trimEscapes) + 2,lineData.length-trimEscapes);
+                        i++;
+                        trimEscapes++;
+                        break;
+                    //this is a new line
+                    case 'n':
+                        //replace and increment lineData and trimEscape count
+                        substring = substring.substring(0,i-trimEscapes) + newLine +substring.substring((i-trimEscapes) + 2,lineData.length-trimEscapes);
+                        i++;
+                        trimEscapes++;
+                        break;
+                    //this is an escaped quote
+                    case '\'': case '"':
+                        //replace and increment lineData and trimEscape count
+                        substring = substring.substring(0,i-trimEscapes) + lineData[(i+1)] +substring.substring((i-trimEscapes)+2,lineData.length-trimEscapes);
+                        i++;
+                        trimEscapes++;
+                        break;
+                    //for other escapes, do nothing yet
+                    default:
+                        break;
                 }
-                //if it is not an escape, this is the matching quote
-                else
-                    break;
+
             }
+
+            //if it is not an escape, check if it is the matching quote
+            else if (lineData[i] == lineData[0])
+            {
+                //System.out.println("esacpes "+trimEscapes);
+                currentToken = setToken(substring.substring(1, i-trimEscapes), Classif.OPERAND, SubClassif.STRING, lineNum, index);
+                break;
+            }
+
         }
         //if we reached the end of the line without finding a match, throw exception and exit
         if(i == lineData.length)
