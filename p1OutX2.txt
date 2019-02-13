@@ -1,0 +1,91 @@
+primClassif subClassif   tokenStr
+### Line 1: Int x;
+OPERAND     IDENTIFIER   Int
+OPERAND     IDENTIFIER   x
+SEPARATOR   -            ;
+### Line 2: Float pi;
+OPERAND     IDENTIFIER   Float
+OPERAND     IDENTIFIER   pi
+SEPARATOR   -            ;
+### Line 3: String yStr;
+OPERAND     IDENTIFIER   String
+OPERAND     IDENTIFIER   yStr
+SEPARATOR   -            ;
+### Line 4: 
+### Line 5:  
+### Line 6: x = x + 1;
+OPERAND     IDENTIFIER   x
+OPERATOR    -            =
+OPERAND     IDENTIFIER   x
+OPERATOR    -            +
+OPERAND     INTEGER      1
+SEPARATOR   -            ;
+### Line 7: pi = 3.14;
+OPERAND     IDENTIFIER   pi
+OPERATOR    -            =
+OPERAND     FLOAT        3.14
+SEPARATOR   -            ;
+### Line 8: print ("x=", x);
+OPERAND     IDENTIFIER   print
+SEPARATOR   -            (
+OPERAND     STRING       x=
+SEPARATOR   -            ,
+OPERAND     IDENTIFIER   x
+SEPARATOR   -            )
+SEPARATOR   -            ;
+### Line 9: print ("pi=", pi);
+OPERAND     IDENTIFIER   print
+SEPARATOR   -            (
+OPERAND     STRING       pi=
+SEPARATOR   -            ,
+OPERAND     IDENTIFIER   pi
+SEPARATOR   -            )
+SEPARATOR   -            ;
+### Line 10: 
+### Line 11: yStr = 'Hello';
+OPERAND     IDENTIFIER   yStr
+OPERATOR    -            =
+OPERAND     STRING       Hello
+SEPARATOR   -            ;
+### Line 12: print ("yStr=", yStr);
+OPERAND     IDENTIFIER   print
+SEPARATOR   -            (
+OPERAND     STRING       yStr=
+SEPARATOR   -            ,
+OPERAND     IDENTIFIER   yStr
+SEPARATOR   -            )
+SEPARATOR   -            ;
+### Line 13: 
+### Line 14: yStr = "Can't\" not me";
+OPERAND     IDENTIFIER   yStr
+OPERATOR    -            =
+OPERAND     STRING       Can't" not me
+SEPARATOR   -            ;
+### Line 15: print ("yStr=", yStr);
+OPERAND     IDENTIFIER   print
+SEPARATOR   -            (
+OPERAND     STRING       yStr=
+SEPARATOR   -            ,
+OPERAND     IDENTIFIER   yStr
+SEPARATOR   -            )
+SEPARATOR   -            ;
+### Line 16: 
+### Line 17: x = 10*3 + 7;
+OPERAND     IDENTIFIER   x
+OPERATOR    -            =
+OPERAND     INTEGER      10
+OPERATOR    -            *
+OPERAND     INTEGER      3
+OPERATOR    -            +
+OPERAND     INTEGER      7
+SEPARATOR   -            ;
+### Line 18: if x > 20:
+OPERAND     IDENTIFIER   if
+OPERAND     IDENTIFIER   x
+OPERATOR    -            >
+OPERAND     INTEGER      20
+SEPARATOR   -            :
+### Line 19:     print ("x=, x);
+OPERAND     IDENTIFIER   print
+SEPARATOR   -            (
+Syntax Error: missing closing quote at Line 19 - "x=, x);
