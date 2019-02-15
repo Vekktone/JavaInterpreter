@@ -33,6 +33,18 @@ public class Token
     {
         this("");   // invoke the other constructor
     }
+
+    public void copyToken(Token other)
+    {
+        if(other != null)
+        {
+            this.tokenStr.equals(other.tokenStr);
+            this.primClassif = other.primClassif;
+            this.subClassif = other.subClassif;
+            this.iColPos = other.iColPos;
+            this.iSourceLineNr = other.iSourceLineNr;
+        }
+    }
     /**
      * Prints the primary classification, sub-classification, and token string
      * <p>

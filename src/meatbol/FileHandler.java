@@ -9,6 +9,18 @@ import java.io.InputStreamReader;
 import java.io.PrintStream;
 import java.util.ArrayList;
 
+/** FileHandler contains all file/disk operations for programmatic use at runtime (vs command line input).
+ * <p>
+ * Currently, this includes:
+ * 	readFile() 			- which loads a source text file from the path/filename of the file.
+ * 	printToFile 		- which prints the output to the specified filename. Provides user with
+ * 						indication that operation was performed. Note, on an error stack trace does not
+ * 						get redirected and prints directly to console. Using -f on command line will
+ * 						generate an output filename in which p#Input*.txt is replaced with p#Out*.txt.
+ * 	printToConsole()	- Returns output to console after file operation is completed.
+ *
+ * @author Gregory Pugh
+ */
 public class FileHandler {
 
     /** Stream for standard out (screen)*/
@@ -22,6 +34,8 @@ public class FileHandler {
      * @param fileName    	Name of the meatbol text file.
      *
      * @throws IOException  Created if any error occurs while accessing or reading from file.
+     *
+     * @author Gregory Pugh
      */
     public static ArrayList<String> readFile(String fileName) throws IOException
     {
@@ -50,7 +64,7 @@ public class FileHandler {
 
         //Catch exception if any.
         catch (Exception e){
-            throw new IOException("Error reading file: " + fileName + "; Line " + i);
+            throw new IllegalArgumentException("Error reading file: " + fileName + "; Line " + i);
         }
         return lineList;
     }
@@ -61,6 +75,8 @@ public class FileHandler {
      * TODO: add a confirmation message to avoid accidental overwriting.
      *
      * @param fileName		Output filename.
+     *
+     * @author Gregory Pugh
      */
     public static void printToFile(String fileName){
         try
@@ -82,6 +98,8 @@ public class FileHandler {
      * <p>
      * Redirects output to console. Call this after printing to file to restore
      * normal output to screen.
+     *
+     * @author Gregory Pugh
      */
     public static void printToScreen(){
         System.setOut(ps_Console);

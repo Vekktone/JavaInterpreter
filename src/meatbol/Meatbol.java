@@ -29,6 +29,7 @@ public class Meatbol
             SymbolTable symbolTable = new SymbolTable();
             // Create scanner (reads file on creation)
             Scanner scan = new Scanner(args[0], symbolTable);
+            Parser parse = new Parser();
 
             if((args.length == 2) && (args[1].equals("-f")))
             {
@@ -45,8 +46,10 @@ public class Meatbol
             // Print output
             while (! scan.getNext().isEmpty())
             {
-                scan.currentToken.printToken();
+                    scan.currentToken.printToken();
             }
+            //print EOF token so user knows we got there
+            scan.currentToken.printToken();
 
             // Example to restore output to console
             if((args.length == 2) && (args[1].equals("-f")))
@@ -81,7 +84,7 @@ public class Meatbol
         catch (Exception e)
         {
             System.out.println("\nUnknown Error: unexpected error occurred.\n");
-            e.printStackTrace(FileHandler.ps_File);
+            e.printStackTrace();
         }
     }
 }
