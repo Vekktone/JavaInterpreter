@@ -46,6 +46,7 @@ public class Scanner {
         {
             //loads each line into the line array list
             this.lineList = FileHandler.readFile(fileName);
+            getNext();
         }
         catch (Exception e)
         {
@@ -62,6 +63,9 @@ public class Scanner {
      * @return		String representation of token created
      *
      * @throws		IllegalArgumentException if it encounters an illegal char
+     * 
+     * @author  Gregory Pugh
+     * @author  Riley Marfin (modified 17-2-2019)
      */
     public String getNext() {
         //check if we are at end of file
@@ -114,6 +118,23 @@ public class Scanner {
                     break;
                 //create operator for valid operator not inside quotes
                 case '+': case '-': case '*': case '<': case '>': case '!': case '=': case '#': case '^':
+                	
+                	//check if we have a 2 character operator
+                	if (lineData[columnIndex] == '<' || lineData[columnIndex] == '>' || lineData[columnIndex] == '!'
+                			|| lineData[columnIndex] == '^' || lineData[columnIndex] == '=') {
+                		if (lineData[columnIndex + 1] == '=') {
+                			//combine 2 char operator
+                            this.currentToken = setToken(String.valueOf(lineData[columnIndex] + String.valueOf(lineData[columnIndex + 1]))
+                                    , Classif.OPERATOR
+                                    , SubClassif.EMPTY
+                                    , lineIndex
+                                    , columnIndex);
+                            columnIndex++;
+                            validToken = true;
+                            break;
+                		}
+                	}
+                	
                     this.currentToken = setToken(String.valueOf(lineData[columnIndex])
                             , Classif.OPERATOR
                             , SubClassif.EMPTY
@@ -198,7 +219,20 @@ public class Scanner {
 
         //trim the string to contain just the operand
         substring = substring.substring(0, i);
-
+        switch(substring) {
+        case "if": case "else": case "for": case "while":
+        	sub = SubClassif.FLOW;
+            currentToken = setToken(substring, Classif.CONTROL, sub, lineNum, index);
+            return index + i - 1;
+        case "endif": case "endwhile": case "endfor":
+        	sub = SubClassif.END;
+            currentToken = setToken(substring, Classif.CONTROL, sub, lineNum, index);
+            return index + i - 1;
+        case "Int": case "Float": case "String": case "Bool":
+        	sub = SubClassif.DECLARE;
+            currentToken = setToken(substring, Classif.CONTROL, sub, lineNum, index);
+            return index + i - 1;
+        }
         //if the first char is a 0-9, this is a numeric
         if(integers.contains(String.valueOf(lineData[0])))
         {
@@ -316,6 +350,7 @@ public class Scanner {
      *
      * @author	Gregory Pugh
      * @author  GregoryPugh (modified: 10-2-2019)
+     * @author  Riley Marfin (modified 17-2-2019)
      */
     private int createStringToken(String substring, int lineNum, int index) {
         int trimEscapes = 0;							//counter for escape chars
@@ -323,6 +358,7 @@ public class Scanner {
         char[] lineData = substring.toCharArray();		//converts String to char[]
         char tab = 0x09;
         char newLine = 0x0a;
+        char alarmBell = 0x07;
 
         //System.out.println("createString reached");
 
@@ -339,25 +375,38 @@ public class Scanner {
                     //if it is a tab
                     case 't':
                         //replace and increment lineData and trimEscape count
-                        substring = substring.substring(0,i-trimEscapes) + tab +substring.substring((i-trimEscapes) + 2,lineData.length-trimEscapes);
+                        substring = substring.substring(0,i-trimEscapes) + tab + substring.substring((i-trimEscapes) + 2,lineData.length-trimEscapes);
                         i++;
                         trimEscapes++;
                         break;
                     //this is a new line
                     case 'n':
                         //replace and increment lineData and trimEscape count
-                        substring = substring.substring(0,i-trimEscapes) + newLine +substring.substring((i-trimEscapes) + 2,lineData.length-trimEscapes);
+                        substring = substring.substring(0,i-trimEscapes) + newLine + substring.substring((i-trimEscapes) + 2,lineData.length-trimEscapes);
                         i++;
                         trimEscapes++;
                         break;
+                    //this is an alarm bell
+                    case 'a':
+                        //replace and increment lineData and trimEscape count
+                         substring = substring.substring(0,i-trimEscapes) + alarmBell + substring.substring((i-trimEscapes) + 2,lineData.length-trimEscapes);
+                         i++;
+                         trimEscapes++;
+                         break;  	
                     //this is an escaped quote
                     case '\'': case '"':
                         //replace and increment lineData and trimEscape count
-                        substring = substring.substring(0,i-trimEscapes) + lineData[(i+1)] +substring.substring((i-trimEscapes)+2,lineData.length-trimEscapes);
+                        substring = substring.substring(0,i-trimEscapes) + lineData[(i+1)] + substring.substring((i-trimEscapes)+2,lineData.length-trimEscapes);
                         i++;
                         trimEscapes++;
                         break;
-                    //for other escapes, do nothing yet
+                    //this is a backslash
+                    case '\\':
+                        //replace and increment lineData and trimEscape count
+                        substring = substring.substring(0,i-trimEscapes) + lineData[(i+1)] + substring.substring((i-trimEscapes)+2,lineData.length-trimEscapes);
+                        i++;
+                        trimEscapes++;
+                        break;
                     default:
                         break;
                 }

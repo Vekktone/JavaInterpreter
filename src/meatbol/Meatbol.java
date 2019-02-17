@@ -29,7 +29,7 @@ public class Meatbol
             SymbolTable symbolTable = new SymbolTable();
             // Create scanner (reads file on creation)
             Scanner scan = new Scanner(args[0], symbolTable);
-            Parser parse = new Parser();
+//            Parser parse = new Parser();
 
             if((args.length == 2) && (args[1].equals("-f")))
             {
