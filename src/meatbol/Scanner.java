@@ -46,12 +46,13 @@ public class Scanner {
         {
             //loads each line into the line array list
             this.lineList = FileHandler.readFile(fileName);
-            getNext();
         }
         catch (Exception e)
         {
             throw e;
         }
+        
+        
     }
 
     /** Gets the next token in the source file.
@@ -68,6 +69,7 @@ public class Scanner {
      * @author  Riley Marfin (modified 17-2-2019)
      */
     public String getNext() {
+    	
         //check if we are at end of file
         if(this.lineIndex >= lineList.size()){
             //create an EOF token and return empty
@@ -77,6 +79,7 @@ public class Scanner {
 
         char[] lineData = this.lineList.get(lineIndex).toCharArray();	//convert current line to char[]
         this.currentToken = new Token();								//create a new tokens
+        this.nextToken = new Token();
         boolean validToken = false;										//flag indicating that current token is
                                                                         //valid
 
@@ -200,6 +203,7 @@ public class Scanner {
      * @return				column index of the end of the token's string (used to update position)
      *
      * @throws				IllegalArgumentException for an invalid numeric
+     * @author Riley Marfin (modified 17-2-2019)
      */
     private int createOperand(String substring, int lineNum, int index) {
         int i = 0;									//loop counter
@@ -231,6 +235,14 @@ public class Scanner {
         case "Int": case "Float": case "String": case "Bool":
         	sub = SubClassif.DECLARE;
             currentToken = setToken(substring, Classif.CONTROL, sub, lineNum, index);
+            return index + i - 1;
+        case "and": case "or": case "not": case "in": case "notin":
+        	sub = SubClassif.EMPTY;
+            currentToken = setToken(substring, Classif.OPERATOR, sub, lineNum, index);
+            return index + i - 1;
+        case "T": case "F":
+        	sub = SubClassif.BOOLEAN;
+            currentToken = setToken(substring, Classif.OPERATOR, sub, lineNum, index);
             return index + i - 1;
         }
         //if the first char is a 0-9, this is a numeric
