@@ -2,32 +2,67 @@ package meatbol;
 
 import java.util.HashMap;
 
+/**
+ * A class that maps symbols represented as Strings to STEntries.
+ * @author Mason Pohler
+ * @author reviewed by Gregory Pugh
+ */
 public class SymbolTable
 {
+    /**
+     * The hashmap used internally by the SymbolTable.
+     */
     private HashMap<String, STEntry> table;
 
+    /**
+     * The constructor for the SymbolTable. It creates the hashmap and
+     * inserts the global symbols into the SymbolTable.
+     */
     public SymbolTable()
     {
         this.table = new HashMap<String, STEntry>();
+        initGlobal();
     }
 
-    public STEntry getSymbol(String symbol) throws Exception {
+    /**
+     * A get function used to retrieve an STEntry that is mapped to a symbol.
+     * The STEntry is only retrieved if the matching symbol is within the
+     * SymbolTable.
+     * @param symbol a string representing a symbol within the SymbolTable.
+     * @return an STEntry that is mapped to the symbol.
+     * @throws Exception if symbol is not within the SymbolTable's hashmap.
+     */
+    public STEntry getSymbol(String symbol) throws Exception
+    {
         if (table.containsKey(symbol))
         {
             return table.get(symbol);
         }
-
         else
         {
-            throw new Exception("Symbol " + symbol + " is not within this symbol table.");
+            throw new Exception("Symbol \"" + symbol + "\" is not within this symbol table.");
         }
     }
 
+    /**
+     * A put function used to map a symbol to an STEntry. The symbol - STEntry
+     * relationship is only added if the symbol is not already within the
+     * SymbolTable.
+     * @param symbol a string representing a symbol to be mapped to an STEntry.
+     * @param entry an STEntry to be mapped to the symbol.
+     */
     public void putSymbol(String symbol, STEntry entry)
     {
-        table.put(symbol, entry);
+        if (!table.containsKey(symbol))
+        {
+            table.put(symbol, entry);
+        }
     }
 
+    /**
+     * A function that inserts the global symbols and their matching STEntries into
+     * the SymbolTable.
+     */
     private void initGlobal()
     {
         // Control flow/end
@@ -42,8 +77,7 @@ public class SymbolTable
         table.put("endwhile", new STControl("endwhile", Classif.CONTROL, SubClassif.END));
 
         // Function void
-        table.put("print", new STFunction("print", Classif.FUNCTION, SubClassif.VOID, SubClassif.BUILTIN
-                , STFunction.VAR_ARGS));
+        table.put("print", new STFunction("print", Classif.FUNCTION, SubClassif.VOID, STFunction.VAR_ARGS));
 
         // Control declare
         table.put("Int", new STControl("Int", Classif.CONTROL, SubClassif.DECLARE));
@@ -53,12 +87,12 @@ public class SymbolTable
         table.put("Date", new STControl("Date", Classif.CONTROL, SubClassif.DECLARE));
 
         // Function int
-        // TODO: PUT CORRECT VALUE FOR ARGUMENTS
-        table.put("LENGTH", new STFunction("LENGTH", Classif.FUNCTION, SubClassif.INTEGER, SubClassif.BUILTIN, 0));
-        table.put("MAXLENGTH", new STFunction("MAXLENGTH", Classif.FUNCTION, SubClassif.INTEGER, SubClassif.BUILTIN, 0));
-        table.put("SPACES", new STFunction("SPACES", Classif.FUNCTION, SubClassif.INTEGER, SubClassif.BUILTIN, 0));
-        table.put("ELEM", new STFunction("ELEM", Classif.FUNCTION, SubClassif.INTEGER, SubClassif.BUILTIN, 0));
-        table.put("MAXELEM", new STFunction("MAXELEM", Classif.FUNCTION, SubClassif.INTEGER, SubClassif.BUILTIN, 0));
+        // TODO: Put correct values for numArgs in future project
+        table.put("LENGTH", new STFunction("LENGTH", Classif.FUNCTION, SubClassif.INTEGER, 0));
+        table.put("MAXLENGTH", new STFunction("MAXLENGTH", Classif.FUNCTION, SubClassif.INTEGER, 0));
+        table.put("SPACES", new STFunction("SPACES", Classif.FUNCTION, SubClassif.INTEGER, 0));
+        table.put("ELEM", new STFunction("ELEM", Classif.FUNCTION, SubClassif.INTEGER, 0));
+        table.put("MAXELEM", new STFunction("MAXELEM", Classif.FUNCTION, SubClassif.INTEGER, 0));
 
         // Operators
         table.put("and", new STEntry("and", Classif.OPERATOR));

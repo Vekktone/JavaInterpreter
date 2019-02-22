@@ -4,8 +4,11 @@ import java.util.ArrayList;
 
 public class Scanner {
 
-    /** last valid token created */
-    public Token currentToken;
+    /** Valid token being processed by the parser */
+    public Token currentToken = null;
+
+    /** next valid token for parser lookahead */
+    public Token nextToken = null;
 
     /** location in the array list of source code lines */
     public int lineIndex = 0;
@@ -69,16 +72,17 @@ public class Scanner {
         }
 
         char[] lineData = this.lineList.get(lineIndex).toCharArray();	//convert current line to char[]
-        this.currentToken = new Token();								//create a new token
+        this.currentToken = new Token();								//create a new tokens
         boolean validToken = false;										//flag indicating that current token is
                                                                         //valid
-        //print source line if this is new line
-        if(this.columnIndex == 0)
-        {
-            System.out.println("### Line " + (this.lineIndex + 1) + ": "
-                    + this.lineList.get(this.lineIndex));
 
+        //if this is first Token
+        if(columnIndex == 0){
+            //print source line if this is new line
+            System.out.println("### Line " + (this.lineIndex + 1) + ": "
+                        + this.lineList.get(this.lineIndex));
         }
+
         //iterate through line from last position
         for(;columnIndex < lineData.length; columnIndex++)
         {
@@ -90,7 +94,6 @@ public class Scanner {
                     break;
                 //check for comment
                 case '/':
-                    System.out.println("This is a comment");
                     //see if this is a comment or an error
                     if(lineData[columnIndex+1] == '/')
                     {
@@ -98,13 +101,20 @@ public class Scanner {
                         columnIndex = lineData.length;
                         break;
                     }
+                    //otherwise this must be a division operator
                     else
                     {
-                        throw new IllegalArgumentException("Syntax: Line " + (lineIndex + 1) + " - Invalid character; '/'");
+                        this.currentToken = setToken(String.valueOf(lineData[columnIndex])
+                                , Classif.OPERATOR
+                                , SubClassif.EMPTY
+                                , lineIndex
+                                , columnIndex);
                     }
+                    validToken = true;
+                    break;
                 //create operator for valid operator not inside quotes
                 case '+': case '-': case '*': case '<': case '>': case '!': case '=': case '#': case '^':
-                    currentToken = setToken(String.valueOf(lineData[columnIndex])
+                    this.currentToken = setToken(String.valueOf(lineData[columnIndex])
                             , Classif.OPERATOR
                             , SubClassif.EMPTY
                             , lineIndex
@@ -113,7 +123,7 @@ public class Scanner {
                     break;
                 //create separator for valid separator not inside quotes
                 case '(': case ')': case ':': case ';': case '[': case ']': case ',':
-                    currentToken = setToken(String.valueOf(lineData[columnIndex])
+                    this.currentToken = setToken(String.valueOf(lineData[columnIndex])
                             , Classif.SEPARATOR
                             , SubClassif.EMPTY
                             , lineIndex
@@ -140,6 +150,7 @@ public class Scanner {
                         throw e;
                     }
             }
+
             //verify that we created a new token
             if(validToken)
             {
@@ -147,6 +158,7 @@ public class Scanner {
                 columnIndex++;
                 return this.currentToken.tokenStr;
             }
+
         }
         //if we reach the end of a line, reset column index and increment line index
         this.columnIndex = 0;
@@ -384,12 +396,12 @@ public class Scanner {
      * @return				Token with values assigned.
      */
     public Token setToken(String value, Classif primary, SubClassif subclass, int lineNum, int columnNum){
-        Token nextToken = new Token(value);
-        nextToken.primClassif = primary;
-        nextToken.subClassif = subclass;
-        nextToken.iSourceLineNr = lineNum;
-        nextToken.iColPos = columnNum;
-        return nextToken;
+        Token currentToken = new Token(value);
+        currentToken.primClassif = primary;
+        currentToken.subClassif = subclass;
+        currentToken.iSourceLineNr = lineNum;
+        currentToken.iColPos = columnNum;
+        return currentToken;
     }
 
 }
