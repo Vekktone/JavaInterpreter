@@ -5,10 +5,10 @@ import java.util.ArrayList;
 public class Scanner {
 
     /** Valid token being processed by the parser */
-    public Token currentToken = null;
+    public Token currentToken = new Token();
 
     /** next valid token for parser lookahead */
-    public Token nextToken = null;
+    public Token nextToken = new Token();
 
     /** location in the array list of source code lines */
     public int lineIndex = 0;
@@ -129,20 +129,20 @@ public class Scanner {
                 case '+': case '-': case '*': case '<': case '>': case '!': case '=': case '#': case '^':
                 	
                 	//check if we have a 2 character operator
-                	if (lineData[columnIndex] == '<' || lineData[columnIndex] == '>' || lineData[columnIndex] == '!'
-                			|| lineData[columnIndex] == '^' || lineData[columnIndex] == '=') {
-                		if (lineData[columnIndex + 1] == '=') {
-                			//combine 2 char operator
-                            this.nextToken = setToken(String.valueOf(lineData[columnIndex] + String.valueOf(lineData[columnIndex + 1]))
-                                    , Classif.OPERATOR
-                                    , SubClassif.EMPTY
-                                    , lineIndex
-                                    , columnIndex);
-                            columnIndex++;
-                            validToken = true;
-                            break;
-                		}
-                	}
+//                	if (lineData[columnIndex] == '<' || lineData[columnIndex] == '>' || lineData[columnIndex] == '!'
+//                			|| lineData[columnIndex] == '^' || lineData[columnIndex] == '=') {
+//                		if (lineData[columnIndex + 1] == '=') {
+//                			//combine 2 char operator
+//                            this.nextToken = setToken(String.valueOf(lineData[columnIndex] + String.valueOf(lineData[columnIndex + 1]))
+//                                    , Classif.OPERATOR
+//                                    , SubClassif.EMPTY
+//                                    , lineIndex
+//                                    , columnIndex);
+//                            columnIndex++;
+//                            validToken = true;
+//                            break;
+//                		}
+//                	}
                 	
                     this.nextToken = setToken(String.valueOf(lineData[columnIndex])
                             , Classif.OPERATOR
@@ -184,9 +184,29 @@ public class Scanner {
             //verify that we created a new token
             if(validToken)
             {
+//            	if (currentToken.tokenStr == "<" || currentToken.tokenStr == ">" || currentToken.tokenStr == "!"
+//    			|| currentToken.tokenStr == "^" || currentToken.tokenStr == "=") {
+            	
+            	if (currentToken.tokenStr.equals("<") || currentToken.tokenStr.equals(">") || currentToken.tokenStr.equals("!")
+    			|| currentToken.tokenStr.equals("^") || currentToken.tokenStr.equals("=")) {
+            		
+            		if (nextToken.tokenStr.equals("=")) {
+                      this.currentToken = setToken((currentToken.tokenStr + nextToken.tokenStr)
+                      , Classif.OPERATOR
+                      , SubClassif.EMPTY
+                      , lineIndex
+                      , columnIndex);
+                      
+                      columnIndex++;
+                      newLineDetected = false;
+                      this.nextToken = this.currentToken;
+                      getNext();
+                      return this.currentToken.tokenStr;
+            		}
+            	}
                 //increment position and return the string representation of the token
-                columnIndex++;
-                newLineDetected = false;
+            	columnIndex++;
+            	newLineDetected = false;
                 return this.nextToken.tokenStr;
             }
 
