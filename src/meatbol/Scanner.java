@@ -126,24 +126,7 @@ public class Scanner {
                     validToken = true;
                     break;
                 //create operator for valid operator not inside quotes
-                case '+': case '-': case '*': case '<': case '>': case '!': case '=': case '#': case '^':
-                	
-                	//check if we have a 2 character operator
-//                	if (lineData[columnIndex] == '<' || lineData[columnIndex] == '>' || lineData[columnIndex] == '!'
-//                			|| lineData[columnIndex] == '^' || lineData[columnIndex] == '=') {
-//                		if (lineData[columnIndex + 1] == '=') {
-//                			//combine 2 char operator
-//                            this.nextToken = setToken(String.valueOf(lineData[columnIndex] + String.valueOf(lineData[columnIndex + 1]))
-//                                    , Classif.OPERATOR
-//                                    , SubClassif.EMPTY
-//                                    , lineIndex
-//                                    , columnIndex);
-//                            columnIndex++;
-//                            validToken = true;
-//                            break;
-//                		}
-//                	}
-                	
+                case '+': case '-': case '*': case '<': case '>': case '!': case '=': case '#': case '^':                	
                     this.nextToken = setToken(String.valueOf(lineData[columnIndex])
                             , Classif.OPERATOR
                             , SubClassif.EMPTY
@@ -183,12 +166,12 @@ public class Scanner {
 
             //verify that we created a new token
             if(validToken)
-            {
-//            	if (currentToken.tokenStr == "<" || currentToken.tokenStr == ">" || currentToken.tokenStr == "!"
-//    			|| currentToken.tokenStr == "^" || currentToken.tokenStr == "=") {
-            	
-            	if (currentToken.tokenStr.equals("<") || currentToken.tokenStr.equals(">") || currentToken.tokenStr.equals("!")
-    			|| currentToken.tokenStr.equals("^") || currentToken.tokenStr.equals("=")) {
+            {            	
+            	if (currentToken.tokenStr.equals("<") 
+            			|| currentToken.tokenStr.equals(">") 
+            			|| currentToken.tokenStr.equals("!")
+            			|| currentToken.tokenStr.equals("^") 
+            			|| currentToken.tokenStr.equals("=")) {
             		
             		if (nextToken.tokenStr.equals("=")) {
                       this.currentToken = setToken((currentToken.tokenStr + nextToken.tokenStr)
@@ -197,6 +180,7 @@ public class Scanner {
                       , lineIndex
                       , columnIndex);
                       
+                      //get next token after combining 2 operator, return current Token
                       columnIndex++;
                       newLineDetected = false;
                       this.nextToken = this.currentToken;
