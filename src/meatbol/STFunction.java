@@ -2,44 +2,47 @@ package meatbol;
 
 import java.util.ArrayList;
 
-/**Symbol table entry for functions
+/** Symbol table entry for functions
+ * <p>
+ * Subclass of STEntry for function entry types.
  *
  * @author Mason Pohler
- * @author Reviewed by Gregory Pugh
+ * @author Gregory (modified ?)
+ * @author Reviewed by Riley Marfin, Mason Pohler, and Gregory Pugh
  */
-public class STFunction extends STEntry {
-
+public class STFunction extends STEntry
+{
     /** Constant for variable number of arguments */
     public final static int VAR_ARGS = -1;
-
     /** Type of the return value */
     SubClassif retType;
-
     /** Identifies whether the function is built-in or user-defined.
      * <p>
      * 0 is built-in, 1 is user defined.
      */
     SubClassif definedBy;
-
     /** Number of formal parameters used by function.
      * <p>
-     * -1 denotes VAR_ARGS. (VAR_ARGS is declared)*/
-    int numArgs;
-
-    /** Array list of STIdentifiers used as formal parameters by this
-     * function.
+     * -1 denotes VAR_ARGS.
      */
+    int numArgs;
+    /** Array list of STIdentifiers used as formal parameters by this function. */
     ArrayList<STEntry> paramList;
-
     /** SymbolTable containing STEntries for the function.
      * <p>
      * Used for built-in functions load by initGlobal()).
      */
     SymbolTable symbolTable;
 
-    /** Basic Constructor, used in initGlobal */
-    public STFunction(String symbol, Classif primClassif, SubClassif returnType
-            , int numArgs)
+    /** Constructor for built-in functions in initGlobal()
+     * <p>
+     * Return types are IDENTIFIER, INTEGER, FLOAT, BOOLEAN, STRING, DATE, VOID
+     * User types are BUILTIN and USER
+     *
+     * @author Mason Pohler
+     * @author Gregory Pugh (modified ?)
+     */
+    public STFunction(String symbol, Classif primClassif, SubClassif returnType, int numArgs)
     {
         super(symbol, primClassif);
         this.retType = returnType;
@@ -47,9 +50,16 @@ public class STFunction extends STEntry {
         this.numArgs = numArgs;
     }
 
-    /** Constructor for user defined functions */
-    public STFunction(String symbol, Classif primClassif, SubClassif returnType
-            , int numArgs, ArrayList<STEntry> paramList, SymbolTable funcTable)
+    /** Constructor for user defined functions from source code
+     * * <p>
+     * Return types are INTEGER, FLOAT, BOOLEAN, STRING, DATE, VOID
+     * User types are BUILTIN and USER
+     *
+     * @author Mason Pohler
+     * @author Gregory Pugh (modified ?)
+     */
+    public STFunction(String symbol, Classif primClassif, SubClassif returnType, int numArgs,
+            ArrayList<STEntry> paramList, SymbolTable funcTable)
     {
         super(symbol, primClassif);
         this.retType = returnType;
@@ -59,13 +69,33 @@ public class STFunction extends STEntry {
         this.symbolTable = funcTable;
     }
 
-    public STFunction copy(STFunction other){
-        return new STFunction(other.symbol, other.primClassif, other.retType, other.numArgs
-                , other.paramList, other.symbolTable);
+    /** Creates a deep copy of a STFunction entry
+     * <p>
+     * Used to avoid unintentional changes when passing by reference.
+     *
+     * @param other
+     * 			The entry from which to make a copy
+     *
+     * @return copy of the original STFunction
+     *
+     * @author Gregory Pugh
+     */
+    public STFunction copy(STFunction other)
+    {
+        return new STFunction(other.symbol, other.primClassif, other.retType
+                , other.numArgs, other.paramList, other.symbolTable);
     }
 
-    public String toString(){
-        return (symbol + " " + primClassif.toString() + " " + retType.toString()+ " " + definedBy.toString()
-                + " " + numArgs);
+    /** Prints formated data of entry.
+     * <p>
+     * Convenience function for printing symbol tables and error checking
+     *
+     * @author Gregory Pugh
+     */
+    @Override
+    public void printEntry()
+    {
+        System.out.printf("%-12s %-12s %-12s %-12s %d", symbol, primClassif.toString()
+                , retType.toString(), definedBy.toString(), numArgs);
     }
 }
