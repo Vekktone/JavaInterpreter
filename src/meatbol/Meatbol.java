@@ -23,64 +23,66 @@ public class Meatbol
 {
     public static void main(String[] args)
     {
-        try
-        {
+        try {
             // Create the SymbolTable
             SymbolTable symbolTable = new SymbolTable();
             // Create scanner (reads file on creation)
             Scanner scan = new Scanner(args[0], symbolTable);
-            Parser parse = new Parser();
+            //Create parser (not for p2)
+            //Parser parse = new Parser();
 
-            if((args.length == 2) && (args[1].equals("-f")))
+            //check for flag to print to file instead of console
+            if ((args.length == 2) && (args[1].equals("-f")))
             {
                 System.out.println("Output placed in: './p1Out" + args[0].substring(7) + "'");
                 FileHandler.printToFile("./p1Out" + args[0].substring(7));
             }
 
             // Print a column heading
-            System.out.printf("%-11s %-12s %s\n"
-                    , "primClassif"
-                    , "subClassif"
-                    , "tokenStr");
+            System.out.printf("%-11s %-12s %s\n", "primClassif", "subClassif", "tokenStr");
 
             // Print output
-            while (! scan.getNext().isEmpty())
+            while (!scan.getNext().isEmpty())
             {
-                    scan.currentToken.printToken();
+                scan.currentToken.printToken();
             }
-            //print EOF token so user knows we got there
+            // print EOF token so user knows we got there
             scan.currentToken.printToken();
 
             // Example to restore output to console
-            if((args.length == 2) && (args[1].equals("-f")))
+            if ((args.length == 2) && (args[1].equals("-f")))
             {
                 FileHandler.printToScreen();
                 System.out.println("Output restored to console");
             }
         }
 
-        //expected if user fails to provide filename in command arguments
+        // expected if user fails to provide filename in command arguments
         catch (ArrayIndexOutOfBoundsException e)
         {
-            System.out.println("Invalid usage: input filename required.");
+            System.out.println("Invalid usage: input filename required./n"
+                    + "Usage: $ ./ [source filemane] <-f>"
+                    + "source filename is name of file containg source code"
+                    + "-f option redirects output to file, by default, 'p#Input*' becomes 'p#Out*"
+                    + "do not use if filename is not in 'p#Input*' form; use command line aurgument");
             e.printStackTrace();
         }
 
-        //expected on a syntax errors in meatbol code
-        catch(IllegalArgumentException e)
+        // expected on a syntax errors in meatbol code
+        catch (IllegalArgumentException e)
         {
             System.out.println(e.getMessage());
             e.printStackTrace();
         }
 
-        //expected if error occurs reading or writing files
-        catch(IOException e)
+        // expected if error occurs reading or writing files
+        catch (IOException e)
         {
             System.out.println(e.getMessage());
             e.printStackTrace();
         }
 
-        //this is for anything else that might happen
+        // this is for anything else that might happen
         catch (Exception e)
         {
             System.out.println("\nUnknown Error: unexpected error occurred.\n");
