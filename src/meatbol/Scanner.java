@@ -278,14 +278,17 @@ public class Scanner {
                 break;
         }
 
+        // trim the string to contain just the operand
+        substring = substring.substring(0, i);
+
         //if the first char is a 0-9, this is a numeric
         if(integers.contains(String.valueOf(lineData[0])))
         {
             // check if the numeric is an integer
-            if (isValidInteger(substring.substring(0, i-1)))
+            if (isValidInteger(substring))
                 sub = SubClassif.INTEGER;
                 // check if the numeric is a float
-            else if (isValidFloat(substring.substring(0, i-1)))
+            else if (isValidFloat(substring))
                 sub = SubClassif.FLOAT;
                 // if it is not an valid numeric, throw exception
             else
@@ -295,8 +298,6 @@ public class Scanner {
             return index + i - 1;
         }
 
-        // trim the string to contain just the operand
-        substring = substring.substring(0, i);
         switch(substring)
         {
             // boolean values
