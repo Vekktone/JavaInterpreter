@@ -82,8 +82,15 @@ public class STFunction extends STEntry
      */
     public STFunction copy()
     {
-        return new STFunction(this.symbol, this.primClassif, this.retType, this.numArgs,
-                this.paramList, this.symbolTable);
+        if (this.definedBy == SubClassif.USER)
+        {
+            return new STFunction(this.symbol, this.primClassif, this.retType, this.numArgs,
+                    this.paramList, this.symbolTable);
+        }
+        else
+        {
+            return new STFunction(this.symbol, this.primClassif, this.retType, this.numArgs);
+        }
     }
 
     /** Prints formated data of entry.

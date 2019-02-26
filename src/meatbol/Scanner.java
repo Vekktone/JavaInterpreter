@@ -308,12 +308,10 @@ public class Scanner {
 
             // either a variable, function, control, or operator. SymbolTable is needed.
             default:
-                STEntry entry;
+                STEntry entry = symbolTable.getSymbol(substring);
 
-                // Try catch is used to see if the entry already exists in the SymbolTable
-                try
+                if (entry != null)
                 {
-                    entry = symbolTable.getSymbol(substring);
                     nextToken = setToken(substring, entry.primClassif, SubClassif.EMPTY, lineNum, index);
 
                     // Entries need to be handled differently depending on their primary classification.
@@ -334,7 +332,7 @@ public class Scanner {
                     }
                 }
                 // not within symbol table
-                catch (IllegalAccessError e)
+                else
                 {
                     // if the symbol is not within the table, then it is either a variable
                     // or a user function and needs to be declared. If the previous token

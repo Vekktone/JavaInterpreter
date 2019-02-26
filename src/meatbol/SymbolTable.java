@@ -45,7 +45,7 @@ public class SymbolTable
             return table.get(string).copy();
         }
         else
-            throw new IllegalAccessError("Symbol \"" + string + "\" is not within this symbol table.");
+            return null;
     }
 
     /** A put function used to map a symbol to an STEntry. The symbol - STEntry
