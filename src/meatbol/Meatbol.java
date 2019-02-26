@@ -24,6 +24,9 @@ public class Meatbol
     public static void main(String[] args)
     {
         try {
+            // Print a column heading
+            System.out.printf("%-11s %-12s %s\n", "primClassif", "subClassif", "tokenStr");
+
             // Create the SymbolTable
             SymbolTable symbolTable = new SymbolTable();
             // Create scanner (reads file on creation)
@@ -37,9 +40,6 @@ public class Meatbol
                 System.out.println("Output placed in: './p1Out" + args[0].substring(7) + "'");
                 FileHandler.printToFile("./p1Out" + args[0].substring(7));
             }
-
-            // Print a column heading
-            System.out.printf("%-11s %-12s %s\n", "primClassif", "subClassif", "tokenStr");
 
             // Print output
             while (!scan.getNext().isEmpty())

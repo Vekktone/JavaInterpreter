@@ -91,16 +91,13 @@ public class Scanner {
      * @return String
      * 			   representation of token created
      *
-     * @throws IllegalArgumentException
-     *             if it encounters an illegal char
-     *
-     * @throws		IllegalArgumentException if it encounters an illegal char
+     * @throws		Exception if an STFunction is not a user or builtin
      * 
      * @author Gregory Pugh
      * @author Riley Marfin (modified: 24-2-2019)
      * @author GregoryPugh (modified: 10-2-2019)
      */
-    public String getNext()
+    public String getNext() throws Exception
     {
     	
     	if(!newLineDetected) {
@@ -124,8 +121,8 @@ public class Scanner {
         // if this is first Token in line
         if (columnIndex == 0)
             // print source line
-            System.out.println("### Line " + (this.lineIndex + 1) + ": "
-                        + this.lineList.get(this.lineIndex));
+            System.out.printf("%3d %s\n", (this.lineIndex + 1)
+                    , this.lineList.get(this.lineIndex));
         // iterate through line from last position
         for (; columnIndex < lineData.length; columnIndex++)
         {
@@ -265,7 +262,7 @@ public class Scanner {
      * @author Riley Marfin (modified 17-2-2019)
      * @author Mason Pohler (modified 25-2-2019)
      */
-    private int createOperand(String substring, int lineNum, int index) throws IllegalArgumentException {
+    private int createOperand(String substring, int lineNum, int index) throws Exception {
         int i = 0; // loop counter
         SubClassif sub = SubClassif.IDENTIFIER; // SubClassif type (default)
         char[] lineData = substring.toCharArray(); // converts string to char[]

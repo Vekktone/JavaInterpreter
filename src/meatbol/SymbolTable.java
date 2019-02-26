@@ -32,14 +32,13 @@ public class SymbolTable
      *
      * @return COPY OF STEntry mapped to the symbol.
      *
-     * @throws Exception if symbol is not within the SymbolTable's hashmap.
+     * @throws Exception for an invalid STFunction value
      *
      * @author Mason Pohler
      * @author Gregory Pugh (modified: 2-24-2019)
      * @author Mason Pohler (modified: 2-25-2019)
      */
-    public STEntry getSymbol(String string) throws IllegalAccessError
-    {
+    public STEntry getSymbol(String string) throws Exception {
         // if it exists, return it
         if (table.containsKey(string)){
             return table.get(string).copy();

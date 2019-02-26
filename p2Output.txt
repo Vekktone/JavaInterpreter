@@ -1,156 +1,156 @@
-### Line 1: Int i;
 primClassif subClassif   tokenStr
+  1 Int i;
 CONTROL     DECLARE      Int
 OPERAND     IDENTIFIER   i
-### Line 2: Float pi;
+  2 Float pi;
 SEPARATOR   EMPTY        ;
 CONTROL     DECLARE      Float
 OPERAND     IDENTIFIER   pi
-### Line 3: String day;
+  3 String day;
 SEPARATOR   EMPTY        ;
 CONTROL     DECLARE      String
 OPERAND     IDENTIFIER   day
-### Line 4:    day 
+  4    day 
 SEPARATOR   EMPTY        ;
-### Line 5:    = 
+  5    = 
 OPERAND     IDENTIFIER   day
-### Line 6:    "Sunday";
+  6    "Sunday";
 OPERATOR    EMPTY        =
 OPERAND     STRING       Sunday
                                
-### Line 7: String name;
+  7 String name;
 SEPARATOR   EMPTY        ;
 CONTROL     DECLARE      String
 OPERAND     IDENTIFIER   name
-### Line 8: name = "Anita Goodgrade";
+  8 name = "Anita Goodgrade";
 SEPARATOR   EMPTY        ;
 OPERAND     IDENTIFIER   name
 OPERATOR    EMPTY        =
 OPERAND     STRING       Anita Goodgrade
                                         
-### Line 9: String weird;
+  9 String weird;
 SEPARATOR   EMPTY        ;
 CONTROL     DECLARE      String
 OPERAND     IDENTIFIER   weird
-### Line 10: weird = "\tTX\tTexas\n";
+ 10 weird = "\tTX\tTexas\n";
 SEPARATOR   EMPTY        ;
 OPERAND     IDENTIFIER   weird
 OPERATOR    EMPTY        =
 OPERAND     STRING       . TX. Texas. 
                          09  09     0A
-### Line 11: String loc;
+ 11 String loc;
 SEPARATOR   EMPTY        ;
 CONTROL     DECLARE      String
 OPERAND     IDENTIFIER   loc
-### Line 12: loc = "TX";
+ 12 loc = "TX";
 SEPARATOR   EMPTY        ;
 OPERAND     IDENTIFIER   loc
 OPERATOR    EMPTY        =
 OPERAND     STRING       TX
                            
-### Line 13: 
-### Line 14: // numeric stuff
-### Line 15: print(">>> Checking datatype results based on left operand");
+ 13 
+ 14 // numeric stuff
+ 15 print(">>> Checking datatype results based on left operand");
 SEPARATOR   EMPTY        ;
 FUNCTION    BUILTIN      print
 SEPARATOR   EMPTY        (
 OPERAND     STRING       >>> Checking datatype results based on left operand
                                                                             
 SEPARATOR   EMPTY        )
-### Line 16: pi = 3.14;
+ 16 pi = 3.14;
 SEPARATOR   EMPTY        ;
 OPERAND     IDENTIFIER   pi
 problem: .
 OPERATOR    EMPTY        =
 OPERAND     FLOAT        3.14
-### Line 17: Float area;
+ 17 Float area;
 SEPARATOR   EMPTY        ;
 CONTROL     DECLARE      Float
 OPERAND     IDENTIFIER   area
-### Line 18: Float radius2;
+ 18 Float radius2;
 SEPARATOR   EMPTY        ;
 CONTROL     DECLARE      Float
 OPERAND     IDENTIFIER   radius2
-### Line 19: Int radius;
+ 19 Int radius;
 SEPARATOR   EMPTY        ;
 CONTROL     DECLARE      Int
 OPERAND     IDENTIFIER   radius
-### Line 20: radius = 8;
+ 20 radius = 8;
 SEPARATOR   EMPTY        ;
 OPERAND     IDENTIFIER   radius
 OPERATOR    EMPTY        =
 OPERAND     INTEGER      8
-### Line 21: radius2 = radius ^ 2;  // square the radius
+ 21 radius2 = radius ^ 2;  // square the radius
 SEPARATOR   EMPTY        ;
 OPERAND     IDENTIFIER   radius2
 OPERATOR    EMPTY        =
 OPERAND     IDENTIFIER   radius
 OPERATOR    EMPTY        ^
 OPERAND     INTEGER      2
-### Line 22: print("\t1. area all float");
+ 22 print("\t1. area all float");
 SEPARATOR   EMPTY        ;
 FUNCTION    BUILTIN      print
 SEPARATOR   EMPTY        (
 OPERAND     STRING       . 1. area all float
                          09                 
 SEPARATOR   EMPTY        )
-### Line 23: area = pi * radius2;
+ 23 area = pi * radius2;
 SEPARATOR   EMPTY        ;
 OPERAND     IDENTIFIER   area
 OPERATOR    EMPTY        =
 OPERAND     IDENTIFIER   pi
 OPERATOR    EMPTY        *
 OPERAND     IDENTIFIER   radius2
-### Line 24: print("\tradius="
+ 24 print("\tradius="
 SEPARATOR   EMPTY        ;
 FUNCTION    BUILTIN      print
 SEPARATOR   EMPTY        (
-### Line 25:       ,  radius
+ 25       ,  radius
 OPERAND     STRING       . radius=
                          09       
 SEPARATOR   EMPTY        ,
-### Line 26:       ,  "radius2="
+ 26       ,  "radius2="
 OPERAND     IDENTIFIER   radius
 SEPARATOR   EMPTY        ,
-### Line 27:       ,  radius2
+ 27       ,  radius2
 OPERAND     STRING       radius2=
                                  
 SEPARATOR   EMPTY        ,
-### Line 28:       ,  "area="
+ 28       ,  "area="
 OPERAND     IDENTIFIER   radius2
 SEPARATOR   EMPTY        ,
-### Line 29:       ,  area);
+ 29       ,  area);
 OPERAND     STRING       area=
                               
 SEPARATOR   EMPTY        ,
 OPERAND     IDENTIFIER   area
 SEPARATOR   EMPTY        )
-### Line 30: Int irad2;
+ 30 Int irad2;
 SEPARATOR   EMPTY        ;
 CONTROL     DECLARE      Int
 OPERAND     IDENTIFIER   irad2
-### Line 31: irad2 = radius ^ 2;
+ 31 irad2 = radius ^ 2;
 SEPARATOR   EMPTY        ;
 OPERAND     IDENTIFIER   irad2
 OPERATOR    EMPTY        =
 OPERAND     IDENTIFIER   radius
 OPERATOR    EMPTY        ^
 OPERAND     INTEGER      2
-### Line 32: print("\t2. area using int radius as left operand");
+ 32 print("\t2. area using int radius as left operand");
 SEPARATOR   EMPTY        ;
 FUNCTION    BUILTIN      print
 SEPARATOR   EMPTY        (
 OPERAND     STRING       . 2. area using int radius as left operand
                          09                                        
 SEPARATOR   EMPTY        )
-### Line 33: area = irad2 * pi;
+ 33 area = irad2 * pi;
 SEPARATOR   EMPTY        ;
 OPERAND     IDENTIFIER   area
 OPERATOR    EMPTY        =
 OPERAND     IDENTIFIER   irad2
 OPERATOR    EMPTY        *
 OPERAND     IDENTIFIER   pi
-### Line 34: print("\tradius=", radius, "irad2=", irad2, "area=", area);
+ 34 print("\tradius=", radius, "irad2=", irad2, "area=", area);
 SEPARATOR   EMPTY        ;
 FUNCTION    BUILTIN      print
 SEPARATOR   EMPTY        (
@@ -169,36 +169,36 @@ OPERAND     STRING       area=
 SEPARATOR   EMPTY        ,
 OPERAND     IDENTIFIER   area
 SEPARATOR   EMPTY        )
-### Line 35: Float circum;
+ 35 Float circum;
 SEPARATOR   EMPTY        ;
 CONTROL     DECLARE      Float
 OPERAND     IDENTIFIER   circum
-### Line 36: Float twoPi;
+ 36 Float twoPi;
 SEPARATOR   EMPTY        ;
 CONTROL     DECLARE      Float
 OPERAND     IDENTIFIER   twoPi
-### Line 37: print("\t3. circumference using twoPi as float * int");
+ 37 print("\t3. circumference using twoPi as float * int");
 SEPARATOR   EMPTY        ;
 FUNCTION    BUILTIN      print
 SEPARATOR   EMPTY        (
 OPERAND     STRING       . 3. circumference using twoPi as float * int
                          09                                           
 SEPARATOR   EMPTY        )
-### Line 38: twoPi = pi * 2;
+ 38 twoPi = pi * 2;
 SEPARATOR   EMPTY        ;
 OPERAND     IDENTIFIER   twoPi
 OPERATOR    EMPTY        =
 OPERAND     IDENTIFIER   pi
 OPERATOR    EMPTY        *
 OPERAND     INTEGER      2
-### Line 39: circum = twoPi * radius;
+ 39 circum = twoPi * radius;
 SEPARATOR   EMPTY        ;
 OPERAND     IDENTIFIER   circum
 OPERATOR    EMPTY        =
 OPERAND     IDENTIFIER   twoPi
 OPERATOR    EMPTY        *
 OPERAND     IDENTIFIER   radius
-### Line 40: print("\tradius=", radius, "twoPi=", twoPi, "circum=", circum);
+ 40 print("\tradius=", radius, "twoPi=", twoPi, "circum=", circum);
 SEPARATOR   EMPTY        ;
 FUNCTION    BUILTIN      print
 SEPARATOR   EMPTY        (
@@ -217,28 +217,28 @@ OPERAND     STRING       circum=
 SEPARATOR   EMPTY        ,
 OPERAND     IDENTIFIER   circum
 SEPARATOR   EMPTY        )
-### Line 41: print("\t4. circumference using twoPi as int * float");
+ 41 print("\t4. circumference using twoPi as int * float");
 SEPARATOR   EMPTY        ;
 FUNCTION    BUILTIN      print
 SEPARATOR   EMPTY        (
 OPERAND     STRING       . 4. circumference using twoPi as int * float
                          09                                           
 SEPARATOR   EMPTY        )
-### Line 42: twoPi = 2 * pi;
+ 42 twoPi = 2 * pi;
 SEPARATOR   EMPTY        ;
 OPERAND     IDENTIFIER   twoPi
 OPERATOR    EMPTY        =
 OPERAND     INTEGER      2
 OPERATOR    EMPTY        *
 OPERAND     IDENTIFIER   pi
-### Line 43: circum = twoPi * radius;
+ 43 circum = twoPi * radius;
 SEPARATOR   EMPTY        ;
 OPERAND     IDENTIFIER   circum
 OPERATOR    EMPTY        =
 OPERAND     IDENTIFIER   twoPi
 OPERATOR    EMPTY        *
 OPERAND     IDENTIFIER   radius
-### Line 44: print("\tradius=", radius, "twoPi=", twoPi, "circum=", circum);
+ 44 print("\tradius=", radius, "twoPi=", twoPi, "circum=", circum);
 SEPARATOR   EMPTY        ;
 FUNCTION    BUILTIN      print
 SEPARATOR   EMPTY        (
@@ -257,29 +257,29 @@ OPERAND     STRING       circum=
 SEPARATOR   EMPTY        ,
 OPERAND     IDENTIFIER   circum
 SEPARATOR   EMPTY        )
-### Line 45: 
-### Line 46: // Simple if
-### Line 47: i = 0;
+ 45 
+ 46 // Simple if
+ 47 i = 0;
 SEPARATOR   EMPTY        ;
 OPERAND     IDENTIFIER   i
 OPERATOR    EMPTY        =
 OPERAND     INTEGER      0
-### Line 48: print(">>> First If");
+ 48 print(">>> First If");
 SEPARATOR   EMPTY        ;
 FUNCTION    BUILTIN      print
 SEPARATOR   EMPTY        (
 OPERAND     STRING       >>> First If
                                      
 SEPARATOR   EMPTY        )
-### Line 49: if loc == "TX": // check for TX
+ 49 if loc == "TX": // check for TX
 SEPARATOR   EMPTY        ;
 CONTROL     FLOW         if
 OPERAND     IDENTIFIER   loc
 OPERATOR    EMPTY        ==
 OPERAND     STRING       TX
                            
-### Line 50:     // It is TX
-### Line 51:     print("\tloc is", loc);
+ 50     // It is TX
+ 51     print("\tloc is", loc);
 SEPARATOR   EMPTY        :
 FUNCTION    BUILTIN      print
 SEPARATOR   EMPTY        (
@@ -288,44 +288,44 @@ OPERAND     STRING       . loc is
 SEPARATOR   EMPTY        ,
 OPERAND     IDENTIFIER   loc
 SEPARATOR   EMPTY        )
-### Line 52:     // it is ok to have this statement on multiple lines.  
-### Line 53:     // That is why we have a semicolon
-### Line 54:     i 
+ 52     // it is ok to have this statement on multiple lines.  
+ 53     // That is why we have a semicolon
+ 54     i 
 SEPARATOR   EMPTY        ;
-### Line 55:        = 
+ 55        = 
 OPERAND     IDENTIFIER   i
-### Line 56:           i 
+ 56           i 
 OPERATOR    EMPTY        =
-### Line 57:           + 1;
+ 57           + 1;
 OPERAND     IDENTIFIER   i
 OPERATOR    EMPTY        +
 OPERAND     INTEGER      1
-### Line 58: endif;
+ 58 endif;
 SEPARATOR   EMPTY        ;
 CONTROL     END          endif
-### Line 59: print("\tDone with first if");
+ 59 print("\tDone with first if");
 SEPARATOR   EMPTY        ;
 FUNCTION    BUILTIN      print
 SEPARATOR   EMPTY        (
 OPERAND     STRING       . Done with first if
                          09                  
 SEPARATOR   EMPTY        )
-### Line 60: 
-### Line 61: print(">>> Second If");
+ 60 
+ 61 print(">>> Second If");
 SEPARATOR   EMPTY        ;
 FUNCTION    BUILTIN      print
 SEPARATOR   EMPTY        (
 OPERAND     STRING       >>> Second If
                                       
 SEPARATOR   EMPTY        )
-### Line 62: // if then else
-### Line 63: if i >= 5:
+ 62 // if then else
+ 63 if i >= 5:
 SEPARATOR   EMPTY        ;
 CONTROL     FLOW         if
 OPERAND     IDENTIFIER   i
 OPERATOR    EMPTY        >=
 OPERAND     INTEGER      5
-### Line 64:     print("\t2nd if true, i >= 5, i =", i);
+ 64     print("\t2nd if true, i >= 5, i =", i);
 SEPARATOR   EMPTY        :
 FUNCTION    BUILTIN      print
 SEPARATOR   EMPTY        (
@@ -334,10 +334,10 @@ OPERAND     STRING       . 2nd if true, i >= 5, i =
 SEPARATOR   EMPTY        ,
 OPERAND     IDENTIFIER   i
 SEPARATOR   EMPTY        )
-### Line 65: else:
+ 65 else:
 SEPARATOR   EMPTY        ;
 CONTROL     END          else
-### Line 66:     print("\t2nd if false, i >= 5, i =", i);
+ 66     print("\t2nd if false, i >= 5, i =", i);
 SEPARATOR   EMPTY        :
 FUNCTION    BUILTIN      print
 SEPARATOR   EMPTY        (
@@ -346,29 +346,29 @@ OPERAND     STRING       . 2nd if false, i >= 5, i =
 SEPARATOR   EMPTY        ,
 OPERAND     IDENTIFIER   i
 SEPARATOR   EMPTY        )
-### Line 67: endif;
+ 67 endif;
 SEPARATOR   EMPTY        ;
 CONTROL     END          endif
-### Line 68: // while and if 
-### Line 69: print(">>> First while i < 5");    
+ 68 // while and if 
+ 69 print(">>> First while i < 5");    
 SEPARATOR   EMPTY        ;
 FUNCTION    BUILTIN      print
 SEPARATOR   EMPTY        (
 OPERAND     STRING       >>> First while i < 5
                                               
 SEPARATOR   EMPTY        )
-### Line 70: i = 1;
+ 70 i = 1;
 SEPARATOR   EMPTY        ;
 OPERAND     IDENTIFIER   i
 OPERATOR    EMPTY        =
 OPERAND     INTEGER      1
-### Line 71: while i < 5:
+ 71 while i < 5:
 SEPARATOR   EMPTY        ;
 CONTROL     FLOW         while
 OPERAND     IDENTIFIER   i
 OPERATOR    EMPTY        <
 OPERAND     INTEGER      5
-### Line 72:     print("\ttop of while, i=", i);
+ 72     print("\ttop of while, i=", i);
 SEPARATOR   EMPTY        :
 FUNCTION    BUILTIN      print
 SEPARATOR   EMPTY        (
@@ -377,13 +377,13 @@ OPERAND     STRING       . top of while, i=
 SEPARATOR   EMPTY        ,
 OPERAND     IDENTIFIER   i
 SEPARATOR   EMPTY        )
-### Line 73:     if i < 3:
+ 73     if i < 3:
 SEPARATOR   EMPTY        ;
 CONTROL     FLOW         if
 OPERAND     IDENTIFIER   i
 OPERATOR    EMPTY        <
 OPERAND     INTEGER      3
-### Line 74:         print("\twhile first if true i<3, i=", i);
+ 74         print("\twhile first if true i<3, i=", i);
 SEPARATOR   EMPTY        :
 FUNCTION    BUILTIN      print
 SEPARATOR   EMPTY        (
@@ -392,31 +392,31 @@ OPERAND     STRING       . while first if true i<3, i=
 SEPARATOR   EMPTY        ,
 OPERAND     IDENTIFIER   i
 SEPARATOR   EMPTY        )
-### Line 75:         i = i + 2;
+ 75         i = i + 2;
 SEPARATOR   EMPTY        ;
 OPERAND     IDENTIFIER   i
 OPERATOR    EMPTY        =
 OPERAND     IDENTIFIER   i
 OPERATOR    EMPTY        +
 OPERAND     INTEGER      2
-### Line 76:         if loc != "TX":
+ 76         if loc != "TX":
 SEPARATOR   EMPTY        ;
 CONTROL     FLOW         if
 OPERAND     IDENTIFIER   loc
 OPERATOR    EMPTY        !=
 OPERAND     STRING       TX
                            
-### Line 77:              print("\t\twhile inner if true ... wrong!");
+ 77              print("\t\twhile inner if true ... wrong!");
 SEPARATOR   EMPTY        :
 FUNCTION    BUILTIN      print
 SEPARATOR   EMPTY        (
 OPERAND     STRING       . . while inner if true ... wrong!
                          0909                              
 SEPARATOR   EMPTY        )
-### Line 78:         else:
+ 78         else:
 SEPARATOR   EMPTY        ;
 CONTROL     END          else
-### Line 79:              print('\t\twhile inner if false, loc!=\'TX\', loc is', loc);
+ 79              print('\t\twhile inner if false, loc!=\'TX\', loc is', loc);
 SEPARATOR   EMPTY        :
 FUNCTION    BUILTIN      print
 SEPARATOR   EMPTY        (
@@ -425,13 +425,13 @@ OPERAND     STRING       . . while inner if false, loc!='TX', loc is
 SEPARATOR   EMPTY        ,
 OPERAND     IDENTIFIER   loc
 SEPARATOR   EMPTY        )
-### Line 80:         endif;
+ 80         endif;
 SEPARATOR   EMPTY        ;
 CONTROL     END          endif
-### Line 81:     else:
+ 81     else:
 SEPARATOR   EMPTY        ;
 CONTROL     END          else
-### Line 82:         print("\twhile first if false i<3, i=", i);
+ 82         print("\twhile first if false i<3, i=", i);
 SEPARATOR   EMPTY        :
 FUNCTION    BUILTIN      print
 SEPARATOR   EMPTY        (
@@ -440,14 +440,14 @@ OPERAND     STRING       . while first if false i<3, i=
 SEPARATOR   EMPTY        ,
 OPERAND     IDENTIFIER   i
 SEPARATOR   EMPTY        )
-### Line 83:         if loc=="TX":
+ 83         if loc=="TX":
 SEPARATOR   EMPTY        ;
 CONTROL     FLOW         if
 OPERAND     IDENTIFIER   loc
 OPERATOR    EMPTY        ==
 OPERAND     STRING       TX
                            
-### Line 84:              print("\t\twhile 2nd inner if true loc=='TX', loc is", loc);
+ 84              print("\t\twhile 2nd inner if true loc=='TX', loc is", loc);
 SEPARATOR   EMPTY        :
 FUNCTION    BUILTIN      print
 SEPARATOR   EMPTY        (
@@ -456,44 +456,44 @@ OPERAND     STRING       . . while 2nd inner if true loc=='TX', loc is
 SEPARATOR   EMPTY        ,
 OPERAND     IDENTIFIER   loc
 SEPARATOR   EMPTY        )
-### Line 85:              i = i + 1;
+ 85              i = i + 1;
 SEPARATOR   EMPTY        ;
 OPERAND     IDENTIFIER   i
 OPERATOR    EMPTY        =
 OPERAND     IDENTIFIER   i
 OPERATOR    EMPTY        +
 OPERAND     INTEGER      1
-### Line 86:         else:
+ 86         else:
 SEPARATOR   EMPTY        ;
 CONTROL     END          else
-### Line 87:              print("\t\twhile 2nd inner if false ... wrong");
+ 87              print("\t\twhile 2nd inner if false ... wrong");
 SEPARATOR   EMPTY        :
 FUNCTION    BUILTIN      print
 SEPARATOR   EMPTY        (
 OPERAND     STRING       . . while 2nd inner if false ... wrong
                          0909                                  
 SEPARATOR   EMPTY        )
-### Line 88:              i = i + 10;
+ 88              i = i + 10;
 SEPARATOR   EMPTY        ;
 OPERAND     IDENTIFIER   i
 OPERATOR    EMPTY        =
 OPERAND     IDENTIFIER   i
 OPERATOR    EMPTY        +
 OPERAND     INTEGER      10
-### Line 89:         endif;
+ 89         endif;
 SEPARATOR   EMPTY        ;
 CONTROL     END          endif
-### Line 90:         print("\twhile first if false after inner if");
+ 90         print("\twhile first if false after inner if");
 SEPARATOR   EMPTY        ;
 FUNCTION    BUILTIN      print
 SEPARATOR   EMPTY        (
 OPERAND     STRING       . while first if false after inner if
                          09                                   
 SEPARATOR   EMPTY        )
-### Line 91:     endif;
+ 91     endif;
 SEPARATOR   EMPTY        ;
 CONTROL     END          endif
-### Line 92:     print("\tbottom of while, i=", i);
+ 92     print("\tbottom of while, i=", i);
 SEPARATOR   EMPTY        ;
 FUNCTION    BUILTIN      print
 SEPARATOR   EMPTY        (
@@ -502,55 +502,55 @@ OPERAND     STRING       . bottom of while, i=
 SEPARATOR   EMPTY        ,
 OPERAND     IDENTIFIER   i
 SEPARATOR   EMPTY        )
-### Line 93: endwhile;
+ 93 endwhile;
 SEPARATOR   EMPTY        ;
 CONTROL     END          endwhile
-### Line 94: print("\tAfter first while");
+ 94 print("\tAfter first while");
 SEPARATOR   EMPTY        ;
 FUNCTION    BUILTIN      print
 SEPARATOR   EMPTY        (
 OPERAND     STRING       . After first while
                          09                 
 SEPARATOR   EMPTY        )
-### Line 95: 
-### Line 96: // nested while loops
-### Line 97: print(">>> Second while i < 5 ... with nested while");
+ 95 
+ 96 // nested while loops
+ 97 print(">>> Second while i < 5 ... with nested while");
 SEPARATOR   EMPTY        ;
 FUNCTION    BUILTIN      print
 SEPARATOR   EMPTY        (
 OPERAND     STRING       >>> Second while i < 5 ... with nested while
                                                                      
 SEPARATOR   EMPTY        )
-### Line 98: i = 1;
+ 98 i = 1;
 SEPARATOR   EMPTY        ;
 OPERAND     IDENTIFIER   i
 OPERATOR    EMPTY        =
 OPERAND     INTEGER      1
-### Line 99: Int j;
+ 99 Int j;
 SEPARATOR   EMPTY        ;
 CONTROL     DECLARE      Int
 OPERAND     IDENTIFIER   j
-### Line 100: Bool bFlag;
+100 Bool bFlag;
 SEPARATOR   EMPTY        ;
 CONTROL     DECLARE      Bool
 OPERAND     IDENTIFIER   bFlag
-### Line 101: bFlag = T;
+101 bFlag = T;
 SEPARATOR   EMPTY        ;
 OPERAND     IDENTIFIER   bFlag
 OPERATOR    EMPTY        =
 OPERAND     BOOLEAN      T
-### Line 102: while i < 5:
+102 while i < 5:
 SEPARATOR   EMPTY        ;
 CONTROL     FLOW         while
 OPERAND     IDENTIFIER   i
 OPERATOR    EMPTY        <
 OPERAND     INTEGER      5
-### Line 103:     j = i;
+103     j = i;
 SEPARATOR   EMPTY        :
 OPERAND     IDENTIFIER   j
 OPERATOR    EMPTY        =
 OPERAND     IDENTIFIER   i
-### Line 104:     print("\ttop of while, i=", i, "j=", j);
+104     print("\ttop of while, i=", i, "j=", j);
 SEPARATOR   EMPTY        ;
 FUNCTION    BUILTIN      print
 SEPARATOR   EMPTY        (
@@ -564,20 +564,20 @@ OPERAND     STRING       j=
 SEPARATOR   EMPTY        ,
 OPERAND     IDENTIFIER   j
 SEPARATOR   EMPTY        )
-### Line 105:     print("\t>>> Inner while j <= 3");
+105     print("\t>>> Inner while j <= 3");
 SEPARATOR   EMPTY        ;
 FUNCTION    BUILTIN      print
 SEPARATOR   EMPTY        (
 OPERAND     STRING       . >>> Inner while j <= 3
                          09                      
 SEPARATOR   EMPTY        )
-### Line 106:     while  j <= 3:
+106     while  j <= 3:
 SEPARATOR   EMPTY        ;
 CONTROL     FLOW         while
 OPERAND     IDENTIFIER   j
 OPERATOR    EMPTY        <=
 OPERAND     INTEGER      3
-### Line 107:         print("\t\tinner while, j=", j);
+107         print("\t\tinner while, j=", j);
 SEPARATOR   EMPTY        :
 FUNCTION    BUILTIN      print
 SEPARATOR   EMPTY        (
@@ -586,22 +586,22 @@ OPERAND     STRING       . . inner while, j=
 SEPARATOR   EMPTY        ,
 OPERAND     IDENTIFIER   j
 SEPARATOR   EMPTY        )
-### Line 108:         j = j + 1;
+108         j = j + 1;
 SEPARATOR   EMPTY        ;
 OPERAND     IDENTIFIER   j
 OPERATOR    EMPTY        =
 OPERAND     IDENTIFIER   j
 OPERATOR    EMPTY        +
 OPERAND     INTEGER      1
-### Line 109:     endwhile;
+109     endwhile;
 SEPARATOR   EMPTY        ;
 CONTROL     END          endwhile
-### Line 110:     bFlag = F;
+110     bFlag = F;
 SEPARATOR   EMPTY        ;
 OPERAND     IDENTIFIER   bFlag
 OPERATOR    EMPTY        =
 OPERAND     BOOLEAN      F
-### Line 111:     print("\tbottom of while, i=", i, "j=", j);
+111     print("\tbottom of while, i=", i, "j=", j);
 SEPARATOR   EMPTY        ;
 FUNCTION    BUILTIN      print
 SEPARATOR   EMPTY        (
@@ -615,22 +615,22 @@ OPERAND     STRING       j=
 SEPARATOR   EMPTY        ,
 OPERAND     IDENTIFIER   j
 SEPARATOR   EMPTY        )
-### Line 112:     i = i + 1;
+112     i = i + 1;
 SEPARATOR   EMPTY        ;
 OPERAND     IDENTIFIER   i
 OPERATOR    EMPTY        =
 OPERAND     IDENTIFIER   i
 OPERATOR    EMPTY        +
 OPERAND     INTEGER      1
-### Line 113: endwhile;
+113 endwhile;
 SEPARATOR   EMPTY        ;
 CONTROL     END          endwhile
-### Line 114: print("\tAfter outer while");
+114 print("\tAfter outer while");
 SEPARATOR   EMPTY        ;
 FUNCTION    BUILTIN      print
 SEPARATOR   EMPTY        (
 OPERAND     STRING       . After outer while
                          09                 
 SEPARATOR   EMPTY        )
-### Line 115:         
+115         
 EOF         EMPTY        
