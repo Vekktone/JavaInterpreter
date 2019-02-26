@@ -46,9 +46,9 @@ public class STEntry
      *
      * @author Gregory Pugh
      */
-    public STEntry copy(STEntry other)
+    public STEntry copy()
     {
-        return new STEntry(other.symbol, other.primClassif);
+        return new STEntry(this.symbol,this.primClassif);
     }
 
     /** Prints formated data of entry.

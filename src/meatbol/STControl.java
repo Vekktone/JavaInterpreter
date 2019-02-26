@@ -53,9 +53,9 @@ public class STControl extends STEntry
      *
      * @author Gregory Pugh
      */
-    public STControl copy(STControl other)
+    public STControl copy()
     {
-        return new STControl(other.symbol, other.primClassif, other.subClassif, other.type);
+        return new STControl(this.symbol,this.primClassif,this.subClassif,this.type);
     }
 
     /** Prints formated data of entry.

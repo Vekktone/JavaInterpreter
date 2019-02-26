@@ -41,8 +41,9 @@ public class SymbolTable
     public STEntry getSymbol(String string) throws IllegalAccessError
     {
         // if it exists, return it
-        if (table.containsKey(string))
-            return table.get(string);
+        if (table.containsKey(string)){
+            return table.get(string).copy();
+        }
         else
             throw new IllegalAccessError("Symbol \"" + string + "\" is not within this symbol table.");
     }

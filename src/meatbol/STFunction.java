@@ -80,10 +80,10 @@ public class STFunction extends STEntry
      *
      * @author Gregory Pugh
      */
-    public STFunction copy(STFunction other)
+    public STFunction copy()
     {
-        return new STFunction(other.symbol, other.primClassif, other.retType
-                , other.numArgs, other.paramList, other.symbolTable);
+        return new STFunction(this.symbol, this.primClassif, this.retType, this.numArgs,
+                this.paramList, this.symbolTable);
     }
 
     /** Prints formated data of entry.

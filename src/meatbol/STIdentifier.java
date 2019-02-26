@@ -56,10 +56,10 @@ public class STIdentifier extends STEntry
      *
      * @author Gregory Pugh
      */
-    public STIdentifier copy(STIdentifier other)
+    public STIdentifier copy()
     {
-        return new STIdentifier(other.symbol, other.primClassif, other.declareType
-                , other.structure, other.paramType, other.nonlocal);
+        return new STIdentifier(this.symbol, this.primClassif, this.declareType
+                , this.structure, this.paramType, this.nonlocal);
     }
 
     /** Prints formated data of entry.
