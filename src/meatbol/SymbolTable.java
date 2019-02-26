@@ -38,13 +38,13 @@ public class SymbolTable
      * @author Gregory Pugh (modified: 2-24-2019)
      * @author Mason Pohler (modified: 2-25-2019)
      */
-    public STEntry getSymbol(String string) throws Exception
+    public STEntry getSymbol(String string) throws IllegalAccessError
     {
         // if it exists, return it
         if (table.containsKey(string))
             return table.get(string);
         else
-            throw new Exception("Symbol \"" + string + "\" is not within this symbol table.");
+            throw new IllegalAccessError("Symbol \"" + string + "\" is not within this symbol table.");
     }
 
     /** A put function used to map a symbol to an STEntry. The symbol - STEntry

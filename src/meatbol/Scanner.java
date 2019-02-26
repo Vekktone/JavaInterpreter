@@ -299,19 +299,23 @@ public class Scanner {
         substring = substring.substring(0, i);
         switch(substring)
         {
+            // boolean values
             case "T": case "F":
         	    sub = SubClassif.BOOLEAN;
-                nextToken = setToken(substring, Classif.OPERATOR, sub, lineNum, index);
+                nextToken = setToken(substring, Classif.OPERAND, sub, lineNum, index);
                 break;
 
+            // either a variable, function, control, or operator. SymbolTable is needed.
             default:
                 STEntry entry;
 
+                // Try catch is used to see if the entry already exists in the SymbolTable
                 try
                 {
                     entry = symbolTable.getSymbol(substring);
                     nextToken = setToken(substring, entry.primClassif, SubClassif.EMPTY, lineNum, index);
 
+                    // Entries need to be handled differently depending on their primary classification.
                     switch (entry.primClassif)
                     {
                         case CONTROL:
@@ -324,17 +328,22 @@ public class Scanner {
                             nextToken.subClassif = SubClassif.IDENTIFIER;
                             break;
                         default:
+                            // operator
                             break;
                     }
                 }
-                catch (Exception e)
+                // not within symbol table
+                catch (IllegalAccessError e)
                 {
-                    //e.printStackTrace();
+                    // if the symbol is not within the table, then it is either a variable
+                    // or a user function and needs to be declared. If the previous token
+                    // was not a control declare, then this is an error.
                     if (currentToken.subClassif != SubClassif.DECLARE)
                     {
                         throw new IllegalArgumentException("Undeclared identifier " + substring + " at line " + lineNum
                                 + " column " + index);
                     }
+                    // if the delimiter is a '(' then this must be a user function.
                     else if (lineData[i] == '(')
                     {
                         SymbolTable functionTable = new SymbolTable();
@@ -344,18 +353,29 @@ public class Scanner {
                         symbolTable.putSymbol(entry);
                         nextToken = setToken(substring, Classif.FUNCTION, SubClassif.USER, lineNum, index);
 
+                        // TODO: ACTUALLY HANDLE PARAMLIST
+                        // placeholder logic for user functions, which do not exist in program 2
                         while (lineData[i-1] != ')')
                         {
                             i++;
                         }
                     }
+                    // if the delimiter is not a '(' and this is not in the symbol table already, then
+                    // this has to be a variable.
                     else
                     {
                         STEntry declareEntry;
-                        try {
+                        // try to get the declare type to store in the STIdentifier
+                        try
+                        {
                             declareEntry = symbolTable.getSymbol(currentToken.tokenStr);
+                            // If the previous token was not a declare, then this variable needs to be declared.
+                            if (currentToken.subClassif != SubClassif.DECLARE)
+                                throw new IllegalArgumentException("Illegal declare type " + currentToken.tokenStr);
                         }
-                        catch (Exception impossibleException)
+                        // The previous token does not have a symbol within the symbol table and thus cannot be
+                        // a declaration type
+                        catch (IllegalAccessError declareError)
                         {
                             throw new IllegalArgumentException("Illegal declare type " + currentToken.tokenStr);
                         }
