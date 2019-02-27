@@ -361,18 +361,19 @@ public class Scanner {
                     // this has to be a variable.
                     else
                     {
-                        STEntry declareEntry;
-                        // try to get the declare type to store in the STIdentifier
-                        try
+                        STEntry declareEntry = symbolTable.getSymbol(currentToken.tokenStr);
+
+                        // Check if the current token has an entry in the symbol table.
+                        if (declareEntry != null)
                         {
-                            declareEntry = symbolTable.getSymbol(currentToken.tokenStr);
+
                             // If the previous token was not a declare, then this variable needs to be declared.
                             if (currentToken.subClassif != SubClassif.DECLARE)
                                 throw new IllegalArgumentException("Illegal declare type " + currentToken.tokenStr);
                         }
                         // The previous token does not have a symbol within the symbol table and thus cannot be
                         // a declaration type
-                        catch (IllegalAccessError declareError)
+                        else
                         {
                             throw new IllegalArgumentException("Illegal declare type " + currentToken.tokenStr);
                         }
