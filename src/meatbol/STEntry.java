@@ -46,9 +46,8 @@ public class STEntry
      *
      * @author Gregory Pugh
      */
-    public STEntry copy(STEntry other)
-    {
-        return new STEntry(other.symbol, other.primClassif);
+    public STEntry copy() throws Exception {
+        return new STEntry(this.symbol,this.primClassif);
     }
 
     /** Prints formated data of entry.

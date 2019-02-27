@@ -2,7 +2,11 @@ package meatbol;
 
 import java.util.ArrayList;
 
- /** Scanner is responsible for accessing the input file.
+import static meatbol.Classif.CONTROL;
+import static meatbol.Classif.FUNCTION;
+import static meatbol.Classif.OPERAND;
+
+/** Scanner is responsible for accessing the input file.
  * <p>
  * Scanner reads all lines of the the input file into an array, pre-process
  * data into Tokens and populates the initial Symbol Table. Checks Tokens for
@@ -87,16 +91,13 @@ public class Scanner {
      * @return String
      * 			   representation of token created
      *
-     * @throws IllegalArgumentException
-     *             if it encounters an illegal char
-     *
-     * @throws		IllegalArgumentException if it encounters an illegal char
+     * @throws		Exception if an STFunction is not a user or builtin
      * 
      * @author Gregory Pugh
      * @author Riley Marfin (modified: 24-2-2019)
      * @author GregoryPugh (modified: 10-2-2019)
      */
-    public String getNext()
+    public String getNext() throws Exception
     {
     	
     	if(!newLineDetected) {
@@ -120,8 +121,8 @@ public class Scanner {
         // if this is first Token in line
         if (columnIndex == 0)
             // print source line
-            System.out.println("### Line " + (this.lineIndex + 1) + ": "
-                        + this.lineList.get(this.lineIndex));
+            System.out.printf("%3d %s\n", (this.lineIndex + 1)
+                    , this.lineList.get(this.lineIndex));
         // iterate through line from last position
         for (; columnIndex < lineData.length; columnIndex++)
         {
@@ -155,7 +156,7 @@ public class Scanner {
                 //create operator for valid operator not inside quotes
                 case '+': case '-': case '*': case '<': case '>': case '!': case '=': case '#': case '^':                	
                     //create token
-		    this.nextToken = setToken(String.valueOf(lineData[columnIndex])
+		            this.nextToken = setToken(String.valueOf(lineData[columnIndex])
                             , Classif.OPERATOR
                             , SubClassif.EMPTY
                             , lineIndex
@@ -165,7 +166,7 @@ public class Scanner {
                 // create separator for valid separator not inside quotes
                 case '(': case ')': case ':': case ';': case '[': case ']': case ',':
                     //create token
-		    this.nextToken = setToken(String.valueOf(lineData[columnIndex])
+		            this.nextToken = setToken(String.valueOf(lineData[columnIndex])
                             , Classif.SEPARATOR
                             , SubClassif.EMPTY
                             , lineIndex
@@ -259,9 +260,9 @@ public class Scanner {
      * @throws				IllegalArgumentException for an invalid numeric
      * @author Mason Pohler
      * @author Riley Marfin (modified 17-2-2019)
+     * @author Mason Pohler (modified 25-2-2019)
      */
-    private int createOperand(String substring, int lineNum, int index)
-    {
+    private int createOperand(String substring, int lineNum, int index) throws Exception {
         int i = 0; // loop counter
         SubClassif sub = SubClassif.IDENTIFIER; // SubClassif type (default)
         char[] lineData = substring.toCharArray(); // converts string to char[]
@@ -270,49 +271,121 @@ public class Scanner {
         for (i = 0; i < lineData.length; i++)
         {
             // if it is a delimiter, this is the end of the operand
-            if (delimiters.contains(String.valueOf(lineData[i])))
+            if (delimiters.contains(String.valueOf(lineData[i])) || lineData[i] == ' ')
                 break;
         }
 
         // trim the string to contain just the operand
         substring = substring.substring(0, i);
-        switch(substring) {
-        case "if": case "else": case "for": case "while":
-        	sub = SubClassif.FLOW;
-            nextToken = setToken(substring, Classif.CONTROL, sub, lineNum, index);
-            return index + i - 1;
-        case "endif": case "endwhile": case "endfor":
-        	sub = SubClassif.END;
-            nextToken = setToken(substring, Classif.CONTROL, sub, lineNum, index);
-            return index + i - 1;
-        case "Int": case "Float": case "String": case "Bool":
-        	sub = SubClassif.DECLARE;
-            nextToken = setToken(substring, Classif.CONTROL, sub, lineNum, index);
-            return index + i - 1;
-        case "and": case "or": case "not": case "in": case "notin":
-        	sub = SubClassif.EMPTY;
-            nextToken = setToken(substring, Classif.OPERATOR, sub, lineNum, index);
-            return index + i - 1;
-        case "T": case "F":
-        	sub = SubClassif.BOOLEAN;
-            nextToken = setToken(substring, Classif.OPERATOR, sub, lineNum, index);
-            return index + i - 1;
-        }
+
         //if the first char is a 0-9, this is a numeric
         if(integers.contains(String.valueOf(lineData[0])))
         {
             // check if the numeric is an integer
             if (isValidInteger(substring))
                 sub = SubClassif.INTEGER;
-            // check if the numeric is a float
+                // check if the numeric is a float
             else if (isValidFloat(substring))
                 sub = SubClassif.FLOAT;
-            // if it is not an valid numeric, throw exception
+                // if it is not an valid numeric, throw exception
             else
                 throw new IllegalArgumentException("Invalid Numeric: Line " + (lineNum + 1) + " - " + substring);
+
+            nextToken = setToken(substring, OPERAND, sub, lineNum, index);
+            return index + i - 1;
         }
-        //Otherwise, create the token and return the new column position after the operand
-        nextToken = setToken(substring, Classif.OPERAND, sub, lineNum, index);
+
+        switch(substring)
+        {
+            // boolean values
+            case "T": case "F":
+        	    sub = SubClassif.BOOLEAN;
+                nextToken = setToken(substring, Classif.OPERAND, sub, lineNum, index);
+                break;
+
+            // either a variable, function, control, or operator. SymbolTable is needed.
+            default:
+                STEntry entry = symbolTable.getSymbol(substring);
+
+                // If the entry is in the table
+                if (entry != null)
+                {
+                    nextToken = setToken(substring, entry.primClassif, SubClassif.EMPTY, lineNum, index);
+
+                    // Entries need to be handled differently depending on their primary classification.
+                    switch (entry.primClassif)
+                    {
+                        case CONTROL:
+                            nextToken.subClassif = ((STControl) entry).subClassif;
+                            break;
+                        case FUNCTION:
+                            nextToken.subClassif = ((STFunction) entry).definedBy;
+                            break;
+                        case OPERAND:
+                            nextToken.subClassif = SubClassif.IDENTIFIER;
+                            break;
+                        default:
+                            // operator
+                            break;
+                    }
+                }
+                // not within symbol table
+                else
+                {
+                    // if the symbol is not within the table, then it is either a variable
+                    // or a user function and needs to be declared. If the previous token
+                    // was not a control declare, then this is an error.
+                    if (currentToken.subClassif != SubClassif.DECLARE)
+                    {
+                        throw new IllegalArgumentException("Undeclared identifier " + substring + " at line " + lineNum
+                                + " column " + index);
+                    }
+                    // if the delimiter is a '(' then this must be a user function.
+                    else if (lineData[i] == '(')
+                    {
+                        SymbolTable functionTable = new SymbolTable();
+                        // TODO: Logic for paramlist
+                        entry = new STFunction(substring, Classif.FUNCTION, SubClassif.USER, 0
+                                , null, functionTable);
+                        symbolTable.putSymbol(entry);
+                        nextToken = setToken(substring, Classif.FUNCTION, SubClassif.USER, lineNum, index);
+
+                        // TODO: ACTUALLY HANDLE PARAMLIST
+                        // placeholder logic for user functions, which do not exist in program 2
+                        while (lineData[i-1] != ')')
+                        {
+                            i++;
+                        }
+                    }
+                    // if the delimiter is not a '(' and this is not in the symbol table already, then
+                    // this has to be a variable.
+                    else
+                    {
+                        STEntry declareEntry;
+                        // try to get the declare type to store in the STIdentifier
+                        try
+                        {
+                            declareEntry = symbolTable.getSymbol(currentToken.tokenStr);
+                            // If the previous token was not a declare, then this variable needs to be declared.
+                            if (currentToken.subClassif != SubClassif.DECLARE)
+                                throw new IllegalArgumentException("Illegal declare type " + currentToken.tokenStr);
+                        }
+                        // The previous token does not have a symbol within the symbol table and thus cannot be
+                        // a declaration type
+                        catch (IllegalAccessError declareError)
+                        {
+                            throw new IllegalArgumentException("Illegal declare type " + currentToken.tokenStr);
+                        }
+                        // TODO: structure and param type logic
+                        entry = new STIdentifier(substring, Classif.OPERAND
+                                , ((STControl) declareEntry).type, null, null, 0);
+                        symbolTable.putSymbol(entry);
+                        nextToken = setToken(substring, Classif.OPERAND, SubClassif.IDENTIFIER, lineNum, index);
+                    }
+                }
+                break;
+        }
+
         return index + i - 1;
     }
 
@@ -345,6 +418,7 @@ public class Scanner {
             // check if the char is not a 0-9
             if (!(integers.contains(String.valueOf(iCharacters[i]))))
             {
+                System.out.println("problem: " + iCharacters[i]);
                 // check if this is the first decimal we have found
                 if (iCharacters[i] == '.' && !(hasDecimal))
                     // set decimal flag and continue searching string
@@ -486,7 +560,7 @@ public class Scanner {
             {
                 //System.out.println("esacpes "+trimEscapes);
                 nextToken = setToken(substring.substring(1, i-trimEscapes) 
-			, Classif.OPERAND, SubClassif.STRING, lineNum, index);
+			, OPERAND, SubClassif.STRING, lineNum, index);
                 break;
             }
 
@@ -498,7 +572,7 @@ public class Scanner {
         }
         //Otherwise, create the token and return the new column position after the matching quote
         nextToken = setToken(substring.substring(1, i-trimEscapes)
-		, Classif.OPERAND, SubClassif.STRING, lineNum, index);
+		, OPERAND, SubClassif.STRING, lineNum, index);
         return index + i;
     }
 

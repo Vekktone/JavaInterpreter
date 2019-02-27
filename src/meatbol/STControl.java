@@ -18,6 +18,12 @@ public class STControl extends STEntry
      */
     SubClassif subClassif;
 
+    /** The type of declaration or empty.
+     * <p>
+     * Types used are INT, FLOAT, STRING, BOOL, DATE, and EMPTY.
+     */
+    SubClassif type;
+
     /** Basic Constructor, used in initGlobal or new Entry
      *
      * @param symbol
@@ -29,10 +35,11 @@ public class STControl extends STEntry
      *
      * @author Mason Pohler
      */
-    public STControl(String symbol, Classif primClassif, SubClassif subClassif)
+    public STControl(String symbol, Classif primClassif, SubClassif subClassif, SubClassif type)
     {
         super(symbol, primClassif);
         this.subClassif = subClassif;
+        this.type = type;
     }
 
     /** Creates a deep copy of a STControl entry
@@ -46,9 +53,9 @@ public class STControl extends STEntry
      *
      * @author Gregory Pugh
      */
-    public STControl copy(STControl other)
+    public STControl copy()
     {
-        return new STControl(other.symbol, other.primClassif, other.subClassif);
+        return new STControl(this.symbol,this.primClassif,this.subClassif,this.type);
     }
 
     /** Prints formated data of entry.

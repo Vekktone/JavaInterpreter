@@ -27,34 +27,30 @@ public class SymbolTable
      * SymbolTable.
      * TODO: if not, should throw error: unknown symbol
      *
-     * @param symbol
+     * @param string
      * 			string representing a symbol within the SymbolTable.
      *
      * @return COPY OF STEntry mapped to the symbol.
      *
-     * @throws Exception if symbol is not within the SymbolTable's hashmap.
+     * @throws Exception for an invalid STFunction value
      *
      * @author Mason Pohler
      * @author Gregory Pugh (modified: 2-24-2019)
+     * @author Mason Pohler (modified: 2-25-2019)
      */
-    public STEntry getSymbol(String string) throws Exception
-    {
-        // for by value copy
-        STEntry entry = new STEntry("", null);
-
+    public STEntry getSymbol(String string) throws Exception {
         // if it exists, return it
-        if (table.containsKey(string))
-            return entry.copy(table.get(string));
+        if (table.containsKey(string)){
+            return table.get(string).copy();
+        }
         else
-            throw new Exception("Symbol \"" + string + "\" is not within this symbol table.");
+            return null;
     }
 
     /** A put function used to map a symbol to an STEntry. The symbol - STEntry
      * relationship is only added if the symbol is not already within the
      * SymbolTable.
      *
-     * @param symbol
-     * 			   	String representing a symbol to be mapped to an STEntry.
      * @param entry
      * 				Entry to be mapped to the symbol.
      *
@@ -75,25 +71,25 @@ public class SymbolTable
     private void initGlobal()
     {
         // Control flow/end
-        table.put("def", new STControl("def", Classif.CONTROL, SubClassif.FLOW));
-        table.put("enddef", new STControl("enddef", Classif.CONTROL, SubClassif.END));
-        table.put("if", new STControl("if", Classif.CONTROL, SubClassif.FLOW));
-        table.put("endif", new STControl("endif", Classif.CONTROL, SubClassif.END));
-        table.put("else", new STControl("else", Classif.CONTROL, SubClassif.END));
-        table.put("for", new STControl("for", Classif.CONTROL, SubClassif.FLOW));
-        table.put("endfor", new STControl("endfor", Classif.CONTROL, SubClassif.END));
-        table.put("while", new STControl("while", Classif.CONTROL, SubClassif.FLOW));
-        table.put("endwhile", new STControl("endwhile", Classif.CONTROL, SubClassif.END));
+        table.put("def", new STControl("def", Classif.CONTROL, SubClassif.FLOW, SubClassif.EMPTY));
+        table.put("enddef", new STControl("enddef", Classif.CONTROL, SubClassif.END, SubClassif.EMPTY));
+        table.put("if", new STControl("if", Classif.CONTROL, SubClassif.FLOW, SubClassif.EMPTY));
+        table.put("endif", new STControl("endif", Classif.CONTROL, SubClassif.END, SubClassif.EMPTY));
+        table.put("else", new STControl("else", Classif.CONTROL, SubClassif.END, SubClassif.EMPTY));
+        table.put("for", new STControl("for", Classif.CONTROL, SubClassif.FLOW, SubClassif.EMPTY));
+        table.put("endfor", new STControl("endfor", Classif.CONTROL, SubClassif.END, SubClassif.EMPTY));
+        table.put("while", new STControl("while", Classif.CONTROL, SubClassif.FLOW, SubClassif.EMPTY));
+        table.put("endwhile", new STControl("endwhile", Classif.CONTROL, SubClassif.END, SubClassif.EMPTY));
 
         // Function void
         table.put("print", new STFunction("print", Classif.FUNCTION, SubClassif.VOID, STFunction.VAR_ARGS));
 
         // Control declare
-        table.put("Int", new STControl("Int", Classif.CONTROL, SubClassif.DECLARE));
-        table.put("Float", new STControl("Float", Classif.CONTROL, SubClassif.DECLARE));
-        table.put("String", new STControl("String", Classif.CONTROL, SubClassif.DECLARE));
-        table.put("Bool", new STControl("Bool", Classif.CONTROL, SubClassif.DECLARE));
-        table.put("Date", new STControl("Date", Classif.CONTROL, SubClassif.DECLARE));
+        table.put("Int", new STControl("Int", Classif.CONTROL, SubClassif.DECLARE, SubClassif.INTEGER));
+        table.put("Float", new STControl("Float", Classif.CONTROL, SubClassif.DECLARE, SubClassif.FLOAT));
+        table.put("String", new STControl("String", Classif.CONTROL, SubClassif.DECLARE, SubClassif.STRING));
+        table.put("Bool", new STControl("Bool", Classif.CONTROL, SubClassif.DECLARE, SubClassif.BOOLEAN));
+        table.put("Date", new STControl("Date", Classif.CONTROL, SubClassif.DECLARE, SubClassif.DATE));
 
         // Function int
         // TODO: Put correct values for numArgs in future project

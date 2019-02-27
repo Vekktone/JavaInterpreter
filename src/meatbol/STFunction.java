@@ -76,14 +76,27 @@ public class STFunction extends STEntry
      * @param other
      * 			The entry from which to make a copy
      *
+     * @throws Exception if the function is incorrect
+     *
      * @return copy of the original STFunction
      *
      * @author Gregory Pugh
+     * @author Mason Pohler (modified 2-26-2019)
      */
-    public STFunction copy(STFunction other)
-    {
-        return new STFunction(other.symbol, other.primClassif, other.retType
-                , other.numArgs, other.paramList, other.symbolTable);
+    public STFunction copy() throws Exception {
+        if (this.definedBy == SubClassif.USER)
+        {
+            return new STFunction(this.symbol, this.primClassif, this.retType, this.numArgs,
+                    this.paramList, this.symbolTable);
+        }
+        else if (this.definedBy == SubClassif.BUILTIN)
+        {
+            return new STFunction(this.symbol, this.primClassif, this.retType, this.numArgs);
+        }
+        else
+        {
+            throw new Exception("Function " + symbol + " is neither a built in or user function");
+        }
     }
 
     /** Prints formated data of entry.
