@@ -307,6 +307,7 @@ public class Scanner {
             default:
                 STEntry entry = symbolTable.getSymbol(substring);
 
+                // If the entry is in the table
                 if (entry != null)
                 {
                     nextToken = setToken(substring, entry.primClassif, SubClassif.EMPTY, lineNum, index);
