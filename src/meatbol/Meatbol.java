@@ -44,9 +44,9 @@ public class Meatbol
             // Print output
             while (!scan.getNext().isEmpty())
             {
-
-                parse.stmt(scan, symbolTable);
                 //scan.currentToken.printToken();
+                parse.stmt(scan, symbolTable);
+
             }
             // print EOF token so user knows we got there
             scan.currentToken.printToken();

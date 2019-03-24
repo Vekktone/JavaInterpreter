@@ -106,6 +106,8 @@ public class SymbolTable
         table.put("in", new STEntry("in", Classif.OPERATOR));
         table.put("notin", new STEntry("notin", Classif.OPERATOR));
     }
+
+
 }
 
 
