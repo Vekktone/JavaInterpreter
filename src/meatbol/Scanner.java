@@ -89,7 +89,7 @@ public class Scanner {
      * @return String
      * 			   representation of token created
      *
-     * @throws		Exception if an STFunction is not a user or builtin
+     * @throws		Exception if an STFunction is not a user or built-in
      *
      * @author Gregory Pugh
      * @author Riley Marfin (modified: 24-2-2019)

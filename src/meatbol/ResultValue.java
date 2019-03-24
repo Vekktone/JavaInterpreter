@@ -22,5 +22,15 @@ public class ResultValue {
     /** terminating string for control functions */
     public String terminatingStr;
 
-
+    public ResultValue(SubClassif type, String value, int struct, String terminal)
+    {
+        this.type = type;
+        this.value = value;
+        this.structure = struct;
+        this.terminatingStr = terminal;
+    }
+    public void printRes()
+    {
+        System.out.println(type + value + structure + terminatingStr);
+    }
 }

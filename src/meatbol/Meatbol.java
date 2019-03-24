@@ -21,8 +21,10 @@ import java.io.IOException;
 
 public class Meatbol
 {
+    public static String filename;
     public static void main(String[] args)
     {
+        filename = args[0];
         try {
             // Print a column heading
             System.out.printf("%-11s %-12s %s\n", "primClassif", "subClassif", "tokenStr");
@@ -59,6 +61,10 @@ public class Meatbol
             }
         }
 
+        catch(ParserException e){
+            e.toString();
+            e.printStackTrace();
+        }
         // expected if user fails to provide filename in command arguments
         catch (ArrayIndexOutOfBoundsException e)
         {

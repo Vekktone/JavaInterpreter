@@ -57,4 +57,17 @@ public class Utility {
         }
 
     }
+    public static String addition(String operandLeft, String operandRight)
+    {
+        String x;
+        x = operandLeft;
+        return x;
+    }
+
+    public static String subtraction(String operandLeft, String operandRight)
+    {
+        String x;
+        x = operandLeft;
+        return x;
+    }
 }

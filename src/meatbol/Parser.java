@@ -33,54 +33,87 @@ public class Parser
             //statements can't begin with these, throw error
             case OPERATOR:
             case SEPARATOR:
-                System.out.println("***Error: Illegal start to statement***");
-                break;
+                throw new ParserException(scan.currentToken.iSourceLineNr
+                        ,"***Error: Illegal start to statement***"
+                        , Meatbol.filename);
             //Unknown state, throw error
             default:
-                System.out.println("***Error: unknown state***");
-                break;
+                throw new ParserException(scan.currentToken.iSourceLineNr
+                        ,"***Error: unknown state***"
+                        , Meatbol.filename);
         }
     }
 
+    /** Determines what type of control statement we have.
+     *
+     * @param scan
+     * @param symbolTable
+     *
+     * @throws Exception
+     */
     public void conStmt(Scanner scan, SymbolTable symbolTable) throws Exception
     {
         //check what type of control statement we have
         switch(scan.currentToken.subClassif)
         {
-            //this is a new identifier
-            //Make sure Scanner has added it to SymbolTable,
-            //then treat as regular assignment
+            //declaring new primitive identifier
             case DECLARE:
-                //scan.currentToken.printToken();
+                //Verify scanner added it to symbolTable
                 if(symbolTable.getSymbol(scan.nextToken.tokenStr) == null)
                 {
-                    System.out.println("***Error: unknown identifier***");
+                    throw new ParserException(scan.currentToken.iSourceLineNr
+                            ,"***Error: unknown identifier***"
+                            , Meatbol.filename);
                 }
                 scan.getNext();
-                //scan.currentToken.printToken();
-                System.out.print("***As Declare:***");
-                assignStmt(scan, symbolTable);
-                break;
-            //if we see an end here, then we don't have the flow that
-            //starts the control, throw error
-            //this won't work right without Flow statements since
-            //those statements consume the matching end statements
-            case END:
-                System.out.println("***Error: END without a FLOW***");
-                while(!scan.nextToken.tokenStr.equals(";"))
+                //see if a value was assigned
+                if(scan.nextToken.tokenStr.equals("="))
                 {
-                    try
-                    {
-                        scan.getNext();
-                        //scan.currentToken.printToken();
-                    }
-                    catch (Exception e)
-                    {
-                        throw e;
-                    }
+                    //treat this like any other assignment
+                    assignStmt(scan, symbolTable);
                 }
-                scan.getNext();
+                else if(scan.nextToken.tokenStr.equals(";"))
+                {
+                    //declared only, we are done
+                    scan.getNext();
+                }
+                else
+                {
+                    //anything else is a syntax error
+                    throw new ParserException(scan.currentToken.iSourceLineNr
+                            ,"***Error: Expected end of statement or assignment***"
+                            , Meatbol.filename);
+                }
                 break;
+            //if we are here, then we are missing matching FLOW
+            case END:
+                switch(scan.currentToken.tokenStr)
+                {
+                    case "enddef":
+                        throw new ParserException(scan.currentToken.iSourceLineNr
+                                ,"***Error: enddef without def***"
+                                , Meatbol.filename);
+                    case "endif":
+                        throw new ParserException(scan.currentToken.iSourceLineNr
+                                ,"***Error: endif without if***"
+                                , Meatbol.filename);
+                    case "else":
+                        throw new ParserException(scan.currentToken.iSourceLineNr
+                                ,"***Error: else without if***"
+                                , Meatbol.filename);
+                    case "endfor":
+                        throw new ParserException(scan.currentToken.iSourceLineNr
+                                ,"***Error: endfor without for***"
+                                , Meatbol.filename);
+                    case "endwhile":
+                        throw new ParserException(scan.currentToken.iSourceLineNr
+                                ,"***Error: endwhile without while***"
+                                , Meatbol.filename);
+                    default:
+                        throw new ParserException(scan.currentToken.iSourceLineNr
+                                ,"***Error: unknown state***"
+                                , Meatbol.filename);
+                }
             //begin new control statement
             case FLOW:
                 switch(scan.currentToken.tokenStr)
@@ -103,14 +136,14 @@ public class Parser
                 break;
             //something went wrong
             default:
-                System.out.println("***Error: unknown state***");
-                break;
+                throw new ParserException(scan.currentToken.iSourceLineNr
+                        ,"***Error: Unknown state***"
+                        , Meatbol.filename);
         }
 
 
     }
     private void ifStmt(Scanner scan, SymbolTable symbolTable) throws Exception {
-        // TODO Auto-generated method stub
         while(!scan.nextToken.tokenStr.equals(";"))
         {
             try
@@ -129,7 +162,6 @@ public class Parser
     }
 
     private void whileStmt(Scanner scan, SymbolTable symbolTable) throws Exception {
-        // TODO Auto-generated method stub
         while(!scan.nextToken.tokenStr.equals(";"))
         {
             try
@@ -148,7 +180,6 @@ public class Parser
     }
 
     private void defStmt(Scanner scan, SymbolTable symbolTable) throws Exception {
-        // TODO Auto-generated method stub
         while(!scan.nextToken.tokenStr.equals(";"))
         {
             try
@@ -167,7 +198,6 @@ public class Parser
     }
 
     private void forStmt(Scanner scan, SymbolTable symbolTable) throws Exception {
-        // TODO Auto-generated method stub
         while(!scan.nextToken.tokenStr.equals(";"))
         {
             try
@@ -197,17 +227,22 @@ public class Parser
                     System.out.println("***Do print function***");
                     break;
                 default:
-                    System.out.println("***Error: Undefined built-in function***");
+                    throw new ParserException(scan.currentToken.iSourceLineNr
+                            ,"***Error: Undefined built-in function***"
+                            , Meatbol.filename);
                 }
                 break;
             //not handling user functions yet, so this is an error
             case USER:
-                System.out.println("***Error: Undefined user function***");
-                break;
-                //something went wrong
-                default:
-                    System.out.println("***Error: unknown state***");
-                    break;
+                throw new ParserException(scan.currentToken.iSourceLineNr
+                        ,"***Error: Undefined user function***"
+                        , Meatbol.filename);
+                //break;
+            //something went wrong
+            default:
+                throw new ParserException(scan.currentToken.iSourceLineNr
+                        ,"***Error: Unknown state***"
+                        , Meatbol.filename);
         }
         while(!scan.nextToken.tokenStr.equals(";"))
         {
@@ -227,6 +262,44 @@ public class Parser
     public void assignStmt(Scanner scan, SymbolTable symbolTable) throws Exception
     {
         System.out.println("***Do assignment to "+scan.currentToken.tokenStr+"***");
+        ResultValue res;
+        if(scan.currentToken.subClassif != SubClassif.IDENTIFIER)
+        {
+            throw new ParserException(scan.currentToken.iSourceLineNr
+                    ,"***Error: No value identifier for assignment***"
+                    , Meatbol.filename);
+        }
+        Token variable = scan.currentToken;
+        scan.getNext();
+        switch(scan.currentToken.tokenStr)
+        {
+            case "=":
+                res = expression();
+                break;
+            case "-=":
+                if(!StorageManager.values.containsKey(variable.tokenStr))
+                {
+                    throw new ParserException(variable.iSourceLineNr
+                            ,"***Error: Illegal assignment: " + variable + " not initialized***"
+                            , Meatbol.filename);
+                }
+                res = expression();
+                break;
+            case "+=":
+                if(!StorageManager.values.containsKey(variable))
+                {
+                    throw new ParserException(scan.currentToken.iSourceLineNr
+                            ,"***Error: Illegal assignment: " + variable + " not initialized***"
+                            , Meatbol.filename);
+                }
+                res = expression();
+                break;
+            default:
+                throw new ParserException(scan.currentToken.iSourceLineNr
+                        ,"***Error: Expected valid assignment operator***"
+                        , Meatbol.filename);
+        }
+        StorageManager.values.put(variable.tokenStr, res.value);
         while(!scan.nextToken.tokenStr.equals(";"))
         {
             try
@@ -241,5 +314,10 @@ public class Parser
         }
         scan.getNext();
         //scan.currentToken.printToken();
+    }
+
+    private ResultValue expression() {
+        ResultValue res = new ResultValue(SubClassif.STRING, "5", 0, null);
+        return res;
     }
 }
