@@ -21,8 +21,10 @@ import java.io.IOException;
 
 public class Meatbol
 {
+    public static String filename;
     public static void main(String[] args)
     {
+        filename = args[0];
         try {
             // Print a column heading
             System.out.printf("%-11s %-12s %s\n", "primClassif", "subClassif", "tokenStr");
@@ -32,7 +34,7 @@ public class Meatbol
             // Create scanner (reads file on creation)
             Scanner scan = new Scanner(args[0], symbolTable);
             //Create parser (not for p2)
-            //Parser parse = new Parser();
+            Parser parse = new Parser();
 
             //check for flag to print to file instead of console
             if ((args.length == 2) && (args[1].equals("-f")))
@@ -44,7 +46,9 @@ public class Meatbol
             // Print output
             while (!scan.getNext().isEmpty())
             {
-                scan.currentToken.printToken();
+                //scan.currentToken.printToken();
+                parse.stmt(scan, symbolTable);
+
             }
             // print EOF token so user knows we got there
             scan.currentToken.printToken();
@@ -57,6 +61,10 @@ public class Meatbol
             }
         }
 
+        catch(ParserException e){
+            e.toString();
+            e.printStackTrace();
+        }
         // expected if user fails to provide filename in command arguments
         catch (ArrayIndexOutOfBoundsException e)
         {

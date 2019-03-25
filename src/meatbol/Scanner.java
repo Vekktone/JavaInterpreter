@@ -42,7 +42,7 @@ public class Scanner {
 
     /** List of all valid numbers */
     private final static String integers = "0123456789";
-    
+
     private static Boolean newLineDetected = false;
 
     /** Constructor
@@ -76,8 +76,6 @@ public class Scanner {
         {
             throw e;
         }
-        
-        
     }
 
     /** Gets the next token in the source file.
@@ -91,19 +89,19 @@ public class Scanner {
      * @return String
      * 			   representation of token created
      *
-     * @throws		Exception if an STFunction is not a user or builtin
-     * 
+     * @throws		Exception if an STFunction is not a user or built-in
+     *
      * @author Gregory Pugh
      * @author Riley Marfin (modified: 24-2-2019)
      * @author GregoryPugh (modified: 10-2-2019)
      */
     public String getNext() throws Exception
     {
-    	
-    	if(!newLineDetected) {
-        	currentToken = nextToken;
-    	}
-    	
+
+        if(!newLineDetected) {
+            currentToken = nextToken;
+        }
+
         // check if we are at end of file
         if (this.lineIndex >= lineList.size())
         {
@@ -144,7 +142,7 @@ public class Scanner {
                     // otherwise this must be a division operator
                     else
                     {
-			//create token
+            //create token
                         this.nextToken = setToken(String.valueOf(lineData[columnIndex])
                                 , Classif.OPERATOR
                                 , SubClassif.EMPTY
@@ -154,9 +152,9 @@ public class Scanner {
                     }
                     break;
                 //create operator for valid operator not inside quotes
-                case '+': case '-': case '*': case '<': case '>': case '!': case '=': case '#': case '^':                	
+                case '+': case '-': case '*': case '<': case '>': case '!': case '=': case '#': case '^':
                     //create token
-		            this.nextToken = setToken(String.valueOf(lineData[columnIndex])
+                    this.nextToken = setToken(String.valueOf(lineData[columnIndex])
                             , Classif.OPERATOR
                             , SubClassif.EMPTY
                             , lineIndex
@@ -166,7 +164,7 @@ public class Scanner {
                 // create separator for valid separator not inside quotes
                 case '(': case ')': case ':': case ';': case '[': case ']': case ',':
                     //create token
-		            this.nextToken = setToken(String.valueOf(lineData[columnIndex])
+                    this.nextToken = setToken(String.valueOf(lineData[columnIndex])
                             , Classif.SEPARATOR
                             , SubClassif.EMPTY
                             , lineIndex
@@ -199,34 +197,34 @@ public class Scanner {
             }
             //verify that we created a new token
             if(validToken)
-            {   
-    		//if current token is a potential 2 char operator		    
-            	if (currentToken.tokenStr.equals("<") 
-            			|| currentToken.tokenStr.equals(">") 
-            			|| currentToken.tokenStr.equals("!")
-            			|| currentToken.tokenStr.equals("^") 
-            			|| currentToken.tokenStr.equals("="))
-            	{
-            	    //if the next token is an =
-            	    if (nextToken.tokenStr.equals("="))
-            	    {
+            {
+            //if current token is a potential 2 char operator
+                if (currentToken.tokenStr.equals("<")
+                        || currentToken.tokenStr.equals(">")
+                        || currentToken.tokenStr.equals("!")
+                        || currentToken.tokenStr.equals("^")
+                        || currentToken.tokenStr.equals("="))
+                {
+                    //if the next token is an =
+                    if (nextToken.tokenStr.equals("="))
+                    {
                         this.currentToken = setToken((currentToken.tokenStr + nextToken.tokenStr)
                             , Classif.OPERATOR
                             , SubClassif.EMPTY
                             , lineIndex
                             , columnIndex);
-                      
+
                         //get next token after combining 2 operator, return current Token
                         columnIndex++;
                         newLineDetected = false;
                         this.nextToken = this.currentToken;
                         getNext();
                         return this.currentToken.tokenStr;
-            	    }
-            	}
+                    }
+                }
                 //increment position and return the string representation of the token
-            	columnIndex++;
-            	newLineDetected = false;
+                columnIndex++;
+                newLineDetected = false;
                 return this.nextToken.tokenStr;
             }
 
@@ -299,7 +297,7 @@ public class Scanner {
         {
             // boolean values
             case "T": case "F":
-        	    sub = SubClassif.BOOLEAN;
+                sub = SubClassif.BOOLEAN;
                 nextToken = setToken(substring, Classif.OPERAND, sub, lineNum, index);
                 break;
 
@@ -522,32 +520,32 @@ public class Scanner {
                     // this is a new line
                     case 'n':
                         //replace and increment lineData and trimEscape count
-                        substring = substring.substring(0,i-trimEscapes) + newLine 
-				+ substring.substring((i-trimEscapes) + 2,lineData.length-trimEscapes);
+                        substring = substring.substring(0,i-trimEscapes) + newLine
+                + substring.substring((i-trimEscapes) + 2,lineData.length-trimEscapes);
                         i++;
                         trimEscapes++;
                         break;
                     //this is an alarm bell
                     case 'a':
                         //replace and increment lineData and trimEscape count
-                         substring = substring.substring(0,i-trimEscapes) + alarmBell 
-				 + substring.substring((i-trimEscapes) + 2,lineData.length-trimEscapes);
+                         substring = substring.substring(0,i-trimEscapes) + alarmBell
+                 + substring.substring((i-trimEscapes) + 2,lineData.length-trimEscapes);
                          i++;
                          trimEscapes++;
-                         break;  	
+                         break;
                     //this is an escaped quote
                     case '\'': case '"':
                         //replace and increment lineData and trimEscape count
-                        substring = substring.substring(0,i-trimEscapes) + lineData[(i+1)] 
-				+ substring.substring((i-trimEscapes)+2,lineData.length-trimEscapes);
+                        substring = substring.substring(0,i-trimEscapes) + lineData[(i+1)]
+                + substring.substring((i-trimEscapes)+2,lineData.length-trimEscapes);
                         i++;
                         trimEscapes++;
                         break;
                     //this is a backslash
                     case '\\':
                         //replace and increment lineData and trimEscape count
-                        substring = substring.substring(0,i-trimEscapes) + lineData[(i+1)] 
-				+ substring.substring((i-trimEscapes)+2,lineData.length-trimEscapes);
+                        substring = substring.substring(0,i-trimEscapes) + lineData[(i+1)]
+                + substring.substring((i-trimEscapes)+2,lineData.length-trimEscapes);
                         i++;
                         trimEscapes++;
                         break;
@@ -560,8 +558,8 @@ public class Scanner {
             else if (lineData[i] == lineData[0])
             {
                 //System.out.println("esacpes "+trimEscapes);
-                nextToken = setToken(substring.substring(1, i-trimEscapes) 
-			, OPERAND, SubClassif.STRING, lineNum, index);
+                nextToken = setToken(substring.substring(1, i-trimEscapes)
+            , OPERAND, SubClassif.STRING, lineNum, index);
                 break;
             }
 
@@ -573,7 +571,7 @@ public class Scanner {
         }
         //Otherwise, create the token and return the new column position after the matching quote
         nextToken = setToken(substring.substring(1, i-trimEscapes)
-		, OPERAND, SubClassif.STRING, lineNum, index);
+        , OPERAND, SubClassif.STRING, lineNum, index);
         return index + i;
     }
 
