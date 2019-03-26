@@ -22,6 +22,12 @@ public class ResultValue {
     /** terminating string for control functions */
     public String terminatingStr;
 
+    /** Empty Constructor */
+    public ResultValue() {
+        // TODO Auto-generated constructor stub
+    }
+
+    /** Known value constructor */
     public ResultValue(SubClassif type, String value, int struct, String terminal)
     {
         this.type = type;
@@ -29,6 +35,7 @@ public class ResultValue {
         this.structure = struct;
         this.terminatingStr = terminal;
     }
+
     public void printRes()
     {
         System.out.println(type + value + structure + terminatingStr);

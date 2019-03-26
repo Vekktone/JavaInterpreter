@@ -2,7 +2,7 @@ package meatbol;
 
 public class Utility {
 
-        //+, -, U-, *, /, ^, ==, <=, >=, <, >, !=, #
+        //U-, *, /, ^, ==, <=, >=, <, >, !=, #
     public static void print(Scanner scan) throws Exception
     {
         try
@@ -57,17 +57,96 @@ public class Utility {
         }
 
     }
-    public static String addition(String operandLeft, String operandRight)
-    {
-        String x;
-        x = operandLeft;
-        return x;
+
+    public static ResultValue doUnaryMinus(ResultValue opLeft) {
+        return opLeft;
+
+    }
+    public static ResultValue doExponent(ResultValue opLeft, ResultValue opRight) {
+        // TODO Auto-generated method stub
+        return opLeft;
+
+    }
+    public static ResultValue doMultiply(ResultValue opLeft, ResultValue opRight) {
+        // TODO Auto-generated method stub
+        return opLeft;
+
+    }
+    public static ResultValue doDivision(ResultValue opLeft, ResultValue opRight) {
+        // TODO Auto-generated method stub
+        return opLeft;
+
+    }
+    public static ResultValue doAddition(ResultValue opLeft, ResultValue opRight) {
+        // TODO Auto-generated method stub
+        return opLeft;
+
     }
 
-    public static String subtraction(String operandLeft, String operandRight)
-    {
-        String x;
-        x = operandLeft;
-        return x;
+    public static ResultValue doSubtraction(ResultValue opLeft, ResultValue opRight) {
+        // TODO Auto-generated method stub
+        return opLeft;
+
+    }
+
+    public static ResultValue doConcatonate(ResultValue opLeft, ResultValue opRight) {
+        // TODO Auto-generated method stub
+        return opLeft;
+
+    }
+
+    public static ResultValue doLessThan(ResultValue opLeft, ResultValue opRight) {
+        // TODO Auto-generated method stub
+        return opLeft;
+    }
+
+    public static ResultValue doGreaterThan(ResultValue opLeft, ResultValue opRight) {
+        // TODO Auto-generated method stub
+        return opLeft;
+    }
+
+    public static ResultValue doLessEqual(ResultValue opLeft, ResultValue opRight) {
+        // TODO Auto-generated method stub
+        return opLeft;
+    }
+
+    public static ResultValue doGreaterEqual(ResultValue opLeft, ResultValue opRight) {
+        // TODO Auto-generated method stub
+        return opLeft;
+    }
+
+    public static ResultValue doLess(ResultValue opLeft, ResultValue opRight) {
+        // TODO Auto-generated method stub
+        return opLeft;
+    }
+
+    public static ResultValue doGreater(ResultValue opLeft, ResultValue opRight) {
+        // TODO Auto-generated method stub
+        return opLeft;
+    }
+
+    public static ResultValue doEqual(ResultValue opLeft, ResultValue opRight) {
+        // TODO Auto-generated method stub
+        return opLeft;
+    }
+
+    public static ResultValue doNotEqual(ResultValue opLeft, ResultValue opRight) {
+        // TODO Auto-generated method stub
+        return opLeft;
+    }
+
+    public static ResultValue doNot(ResultValue opLeft) {
+        // TODO Auto-generated method stub
+        return opLeft;
+    }
+
+    public static ResultValue doAnd(ResultValue opLeft, ResultValue opRight) {
+        // TODO Auto-generated method stub
+        return opLeft;
+    }
+
+    public static ResultValue doOr(ResultValue opLeft, ResultValue opRight) {
+        // TODO Auto-generated method stub
+        return opLeft;
     }
 }
