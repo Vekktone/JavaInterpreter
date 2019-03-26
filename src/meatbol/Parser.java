@@ -1,9 +1,15 @@
 package meatbol;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Stack;
+
 public class Parser
 {
-    public Parser(){
+    public HashMap<String, Integer> precedenceMap;
 
+    public Parser(){
+        initPrecedenceMap();
     }
 
     public void stmt(Scanner scan, SymbolTable symbolTable, Boolean bExec) throws Exception{
@@ -42,6 +48,28 @@ public class Parser
                         ,"***Error: unknown state***"
                         , Meatbol.filename);
         }
+    }
+
+    private void initPrecedenceMap()
+    {
+        precedenceMap = new HashMap<String, Integer>();
+        precedenceMap.put("(", 8);
+        precedenceMap.put("u-", 7);
+        precedenceMap.put("^", 6);
+        precedenceMap.put("*", 5);
+        precedenceMap.put("/", 5);
+        precedenceMap.put("+", 4);
+        precedenceMap.put("-", 4);
+        precedenceMap.put("#", 3);
+        precedenceMap.put("<", 2);
+        precedenceMap.put(">", 2);
+        precedenceMap.put("<=", 2);
+        precedenceMap.put(">=", 2);
+        precedenceMap.put("==", 2);
+        precedenceMap.put("!=", 2);
+        precedenceMap.put("not", 1);
+        precedenceMap.put("and", 0);
+        precedenceMap.put("or", 0);
     }
 
     /** Determines what type of control statement we have.
@@ -615,7 +643,7 @@ public class Parser
         switch(scan.currentToken.tokenStr)
         {
             case "=":
-                res = expression();
+                res = expression(scan);
                 break;
             case "-=":
                 if(!StorageManager.values.containsKey(variable.tokenStr))
@@ -624,7 +652,7 @@ public class Parser
                             ,"***Error: Illegal assignment: " + variable + " not initialized***"
                             , Meatbol.filename);
                 }
-                res = expression();
+                res = expression(scan);
                 break;
             case "+=":
                 if(!StorageManager.values.containsKey(variable))
@@ -633,7 +661,7 @@ public class Parser
                             ,"***Error: Illegal assignment: " + variable + " not initialized***"
                             , Meatbol.filename);
                 }
-                res = expression();
+                res = expression(scan);
                 break;
             default:
                 throw new ParserException(scan.currentToken.iSourceLineNr
@@ -641,7 +669,7 @@ public class Parser
                         , Meatbol.filename);
         }
         StorageManager.values.put(variable.tokenStr, res.value);
-        while(!scan.nextToken.tokenStr.equals(";"))
+        while(!scan.currentToken.tokenStr.equals(";"))
         {
             try
             {
@@ -653,12 +681,158 @@ public class Parser
                 throw e;
             }
         }
-        scan.getNext();
         //scan.currentToken.printToken();
     }
 
-    private ResultValue expression() {
-        ResultValue res = new ResultValue(SubClassif.STRING, "5", 0, null);
-        return res;
+    private ResultValue expression(Scanner scan) throws Exception {
+        ArrayList<Token> infixExpression = makeInfixExpression(scan);
+        ArrayList<Token> postfixExpression = convertInfixExpressionToPostfix(infixExpression);
+        ResultValue evaluatedExpressionValue = evaluatePostfixExpression(postfixExpression);
+        return evaluatedExpressionValue;
+    }
+
+    private ArrayList<Token> makeInfixExpression(Scanner scan) throws Exception {
+        ArrayList<Token> infixExpression = new ArrayList<Token>();
+        while(!scan.currentToken.tokenStr.equals(";"))
+        {
+            infixExpression.add(scan.currentToken);
+            scan.getNext();
+        }
+        return infixExpression;
+    }
+
+    private ArrayList<Token> convertInfixExpressionToPostfix(ArrayList<Token> infixExpression)
+    {
+        ArrayList<Token> postfixExpression = new ArrayList<Token>();
+        Stack<Token> operatorStack = new Stack<Token>();
+        boolean foundParent = false;
+
+        for (Token token : infixExpression)
+        {
+            switch (token.primClassif)
+            {
+                case OPERAND:
+                    postfixExpression.add(token);
+                    break;
+
+                case OPERATOR:
+                    convertInfixOperatorToPostfix(token, operatorStack, postfixExpression);
+                    break;
+
+                case SEPARATOR:
+                    convertInfixSeparatorToPostfix(token, operatorStack, postfixExpression);
+                    break;
+
+                case FUNCTION:
+                    // TODO: EXECUTE FUNCTION AND GET RESULT
+                    break;
+
+                case EMPTY: case EOF: case CONTROL: default:
+                    // TODO: THESE ARE ALL ERRORS
+                    break;
+            }
+        }
+
+        return postfixExpression;
+    }
+
+    private ResultValue evaluatePostfixExpression(ArrayList<Token> postfixExpression)
+    {
+        Stack<ResultValue> operandStack = new Stack<ResultValue>();
+
+        for (Token token : postfixExpression)
+        {
+            switch (token.primClassif)
+            {
+                case OPERAND:
+                    ResultValue value = new ResultValue(token.subClassif, token.tokenStr, 0, "");
+                    operandStack.push(value);
+                    break;
+
+                case OPERATOR:
+                    evaluatePostfixOperator(token, operandStack);
+                    break;
+
+                default:
+                    // TODO: ERROR
+                    break;
+            }
+        }
+
+        if (operandStack.size() != 1)
+        {
+            // TODO: ERROR
+        }
+
+        return operandStack.pop();
+    }
+
+    private void convertInfixOperatorToPostfix(Token token, Stack<Token> operatorStack
+            , ArrayList<Token> postfixExpression)
+    {
+        while(!operatorStack.empty())
+        {
+            if (precedenceMap.get(token.tokenStr) > precedenceMap.get(operatorStack.peek().tokenStr))
+                break;
+
+            postfixExpression.add(operatorStack.pop());
+        }
+        operatorStack.push(token);
+    }
+
+    private void convertInfixSeparatorToPostfix(Token token, Stack<Token> operatorStack
+            , ArrayList<Token> postfixExpression)
+    {
+        switch (token.tokenStr)
+        {
+            case "(":
+                operatorStack.push(token);
+                break;
+
+            case ")":
+                boolean foundParent = false;
+                while (!operatorStack.empty())
+                {
+                    Token poppedToken = operatorStack.pop();
+                    if (poppedToken.tokenStr.equals("("))
+                    {
+                        foundParent = true;
+                        break;
+                    }
+                    else
+                        postfixExpression.add(poppedToken);
+                }
+                if (!foundParent)
+                {
+                    // TODO: ERROR
+                }
+                break;
+
+            default:
+                // TODO: ERROR
+                break;
+        }
+    }
+
+    private void evaluatePostfixOperator(Token operator, Stack<ResultValue> operandStack)
+    {
+        switch (operator.tokenStr)
+        {
+            case "+":
+                // TODO: NUMERIC ADD
+                break;
+
+            case "-":
+                // TODO: NUMERIC SUBTRACT
+                break;
+
+            case "*":
+                // TODO: NUMERIC MULTIPLICATION
+                break;
+
+            case "/":
+                // TODO: NUMERIC DIVISION
+                break;
+        }
     }
 }
