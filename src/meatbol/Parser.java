@@ -300,7 +300,7 @@ public class Parser
                         , StorageManager.values.get(variable.tokenStr)
                         , 0, null);
                 Op2 = expression(scan, symbolTable);
-                res = Utility.doSubtraction(Op1, Op2);
+                res = Utility.doSubtraction(Op1, Op2, variable.iSourceLineNr);
                 break;
             case "+=":
                 if(!StorageManager.values.containsKey(variable))
@@ -314,7 +314,7 @@ public class Parser
                         , 0, null);
 
                 Op2 = expression(scan, symbolTable);
-                res = Utility.doAddition(Op1, Op2);
+                res = Utility.doAddition(Op1, Op2, variable.iSourceLineNr);
                 break;
             default:
                 throw new ParserException(scan.currentToken.iSourceLineNr
@@ -333,37 +333,41 @@ public class Parser
         Token token = new Token();
 
         scan.getNext();
+        token.copyToken(scan.currentToken);
 
         //build infix
-        while(scan.currentToken.tokenStr != ";" && endExpression == false)
+        while(token.tokenStr != ";" && endExpression == false)
         {
-            token.copyToken(scan.currentToken);
-            switch(scan.currentToken.primClassif)
+            switch(token.primClassif)
             {
                 //not handling functions yet, throw error
                 //the result of function will be treated as an operand later
                 case FUNCTION:
-                    throw new ParserException(scan.currentToken.iSourceLineNr
+                    throw new ParserException(token.iSourceLineNr
                             ,"***Error: Functions not possible yet***"
                             , Meatbol.filename);
 
                 case SEPARATOR:
                     //only parenthesis allowed in infix expression
-                    if (! (scan.currentToken.tokenStr == "(" || scan.currentToken.tokenStr == ")"))
+                    if (! (token.tokenStr == "(" || scan.currentToken.tokenStr == ")"))
                     {
                         endExpression = true;
                         break;
                     }
                 case OPERAND:
-                    //if this is an identifier, we need to get the value here
-                    //if(token.subClassif == SubClassif.IDENTIFIER){
-                    //    token.tokenStr = StorageManager.values.get(scan.currentToken.tokenStr);
-                    //}
+                    //if this is an identifier, we need to retrieve its value and type
+                    if(token.subClassif == SubClassif.IDENTIFIER){
+                        token.tokenStr = StorageManager.values.get(scan.currentToken.tokenStr);
+                        STIdentifier variable = (STIdentifier)symbolTable.getSymbol(scan.currentToken.tokenStr);
+                        token.subClassif = variable.declareType;
+                    }
                 case OPERATOR:
-                    infix.add(scan.currentToken);
+                    infix.add(token);
                     try
                     {
                         scan.getNext();
+                        token = new Token();
+                        token.copyToken(scan.currentToken);
                     }
                     catch (Exception e)
                     {
@@ -376,6 +380,11 @@ public class Parser
                     break;
             }
         }
+        for (Token test: infix)
+        {
+            System.out.print(test.tokenStr + ",");
+        }
+        System.out.println();
         return infixToPostfix(infix);
     }
 
@@ -460,6 +469,11 @@ public class Parser
             }
             postfix.add(stack.pop());
         }
+        for (Token test: postfix)
+        {
+            System.out.print(test.tokenStr + ",");
+        }
+        System.out.println();
         return evalPostfix(postfix);
     }
 
@@ -497,6 +511,11 @@ public class Parser
             {
                 //convert Token to ResultValue and push onto stack
                 case OPERAND:
+                    //get the current value of identifiers
+                    if(token.subClassif == SubClassif.IDENTIFIER)
+                    {
+                        System.out.println(StorageManager.values.get(token.tokenStr));
+                    }
                     value = Numeric.convertToken(token);
                     stack.push(value);
                     break;
@@ -522,54 +541,54 @@ public class Parser
                         case "u-":
                             //single operand, put the other one back on stack
                             stack.push(opLeft);
-                            value = Utility.doUnaryMinus(opRight);
+                            value = Utility.doUnaryMinus(opRight,token.iSourceLineNr);
                             break;
                         case "^":
-                            value = Utility.doExponent(opLeft,opRight);
+                            value = Utility.doExponent(opLeft,opRight,token.iSourceLineNr);
                             break;
                         case "*":
-                            value = Utility.doMultiply(opLeft,opRight);
+                            value = Utility.doMultiply(opLeft,opRight,token.iSourceLineNr);
                             break;
                         case "/":
-                            value = Utility.doDivision(opLeft,opRight);
+                            value = Utility.doDivision(opLeft,opRight,token.iSourceLineNr);
                             break;
                         case "+":
-                            value = Utility.doAddition(opLeft,opRight);
+                            value = Utility.doAddition(opLeft,opRight,token.iSourceLineNr);
                             break;
                         case "-":
-                            value = Utility.doSubtraction(opLeft,opRight);
+                            value = Utility.doSubtraction(opLeft,opRight,token.iSourceLineNr);
                             break;
                         case "#":
-                            value = Utility.doConcatonate(opLeft,opRight);
+                            value = Utility.doConcatonate(opLeft,opRight,token.iSourceLineNr);
                             break;
                         case "<":
-                            value = Utility.doLess(opLeft,opRight);
+                            value = Utility.doLess(opLeft,opRight,token.iSourceLineNr);
                             break;
                         case ">":
-                            value = Utility.doGreater(opLeft,opRight);
+                            value = Utility.doGreater(opLeft,opRight,token.iSourceLineNr);
                             break;
                         case "<=":
-                            value = Utility.doLessEqual(opLeft,opRight);
+                            value = Utility.doLessEqual(opLeft,opRight,token.iSourceLineNr);
                             break;
                         case ">=":
-                            value = Utility.doGreaterEqual(opLeft,opRight);
+                            value = Utility.doGreaterEqual(opLeft,opRight,token.iSourceLineNr);
                             break;
                         case "==":
-                            value = Utility.doEqual(opLeft,opRight);
+                            value = Utility.doEqual(opLeft,opRight,token.iSourceLineNr);
                             break;
                         case "!=":
-                            value = Utility.doNotEqual(opLeft,opRight);
+                            value = Utility.doNotEqual(opLeft,opRight,token.iSourceLineNr);
                             break;
                         case "not":
                             //single operand, put the other one back on stack
                             stack.push(opLeft);
-                            value = Utility.doNot(opRight);
+                            value = Utility.doNot(opRight,token.iSourceLineNr);
                             break;
                         case "and":
-                            value = Utility.doAnd(opLeft,opRight);
+                            value = Utility.doAnd(opLeft,opRight,token.iSourceLineNr);
                             break;
                         case "or":
-                            value = Utility.doOr(opLeft,opRight);
+                            value = Utility.doOr(opLeft,opRight,token.iSourceLineNr);
                             break;
                         default:
                                 throw new ParserException(token.iSourceLineNr

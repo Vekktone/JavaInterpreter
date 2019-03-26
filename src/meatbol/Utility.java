@@ -58,95 +58,303 @@ public class Utility {
 
     }
 
-    public static ResultValue doUnaryMinus(ResultValue opLeft) {
+    public static ResultValue doUnaryMinus(ResultValue opLeft, int iSourceLineNr) throws ParserException {
+        switch (opLeft.type)
+        {
+        case FLOAT:
+            break;
+        case INTEGER:
+            break;
+        default:
+            throw new ParserException(iSourceLineNr
+                    ,"***Error: Illegal operation with type***"
+                    , Meatbol.filename);
+        }
+        return opLeft;
+    }
+    public static ResultValue doExponent(ResultValue opLeft, ResultValue opRight, int iSourceLineNr) throws ParserException {
+        switch (opLeft.type)
+        {
+        case FLOAT:
+            break;
+        case INTEGER:
+            break;
+        default:
+            throw new ParserException(iSourceLineNr
+                    ,"***Error: Illegal operation with type***"
+                    , Meatbol.filename);
+        }
         return opLeft;
 
     }
-    public static ResultValue doExponent(ResultValue opLeft, ResultValue opRight) {
-        // TODO Auto-generated method stub
+    public static ResultValue doMultiply(ResultValue opLeft, ResultValue opRight, int iSourceLineNr) throws ParserException {
+        switch (opLeft.type)
+        {
+        case FLOAT:
+            break;
+        case INTEGER:
+            break;
+        default:
+            throw new ParserException(iSourceLineNr
+                    ,"***Error: Illegal operation with type***"
+                    , Meatbol.filename);
+        }
         return opLeft;
 
     }
-    public static ResultValue doMultiply(ResultValue opLeft, ResultValue opRight) {
-        // TODO Auto-generated method stub
+    public static ResultValue doDivision(ResultValue opLeft, ResultValue opRight, int iSourceLineNr) throws ParserException {
+        switch (opLeft.type)
+        {
+        case FLOAT:
+            break;
+        case INTEGER:
+            break;
+        default:
+            throw new ParserException(iSourceLineNr
+                    ,"***Error: Illegal operation with type***"
+                    , Meatbol.filename);
+        }
         return opLeft;
 
     }
-    public static ResultValue doDivision(ResultValue opLeft, ResultValue opRight) {
-        // TODO Auto-generated method stub
-        return opLeft;
-
-    }
-    public static ResultValue doAddition(ResultValue opLeft, ResultValue opRight) {
-        // TODO Auto-generated method stub
-        return opLeft;
-
-    }
-
-    public static ResultValue doSubtraction(ResultValue opLeft, ResultValue opRight) {
-        // TODO Auto-generated method stub
-        return opLeft;
-
-    }
-
-    public static ResultValue doConcatonate(ResultValue opLeft, ResultValue opRight) {
-        // TODO Auto-generated method stub
+    public static ResultValue doAddition(ResultValue opLeft, ResultValue opRight, int iSourceLineNr) throws ParserException {
+        switch (opLeft.type)
+        {
+        case FLOAT:
+            break;
+        case INTEGER:
+            break;
+        default:
+            throw new ParserException(iSourceLineNr
+                    ,"***Error: Illegal operation with type***"
+                    , Meatbol.filename);
+        }
         return opLeft;
 
     }
 
-    public static ResultValue doLessThan(ResultValue opLeft, ResultValue opRight) {
-        // TODO Auto-generated method stub
+    public static ResultValue doSubtraction(ResultValue opLeft, ResultValue opRight, int iSourceLineNr) throws ParserException {
+        switch (opLeft.type)
+        {
+        case FLOAT:
+            break;
+        case INTEGER:
+            break;
+        default:
+            throw new ParserException(iSourceLineNr
+                    ,"***Error: Illegal operation with type***"
+                    , Meatbol.filename);
+        }
+        return opLeft;
+
+    }
+
+    public static ResultValue doConcatonate(ResultValue opLeft, ResultValue opRight, int iSourceLineNr) throws ParserException {
+        switch (opLeft.type)
+        {
+        case STRING:
+            break;
+        default:
+            throw new ParserException(iSourceLineNr
+                    ,"***Error: Illegal operation with type***"
+                    , Meatbol.filename);
+        }
+        return opLeft;
+
+    }
+
+    public static ResultValue doLessThan(ResultValue opLeft, ResultValue opRight, int iSourceLineNr) throws ParserException {
+        switch (opLeft.type)
+        {
+        case DATE:
+            break;
+        case FLOAT:
+            break;
+        case INTEGER:
+            break;
+        case STRING:
+            break;
+        default:
+            throw new ParserException(iSourceLineNr
+                    ,"***Error: Illegal operation with type***"
+                    , Meatbol.filename);
+        }
         return opLeft;
     }
 
-    public static ResultValue doGreaterThan(ResultValue opLeft, ResultValue opRight) {
-        // TODO Auto-generated method stub
+    public static ResultValue doGreaterThan(ResultValue opLeft, ResultValue opRight, int iSourceLineNr) throws ParserException {
+        switch (opLeft.type)
+        {
+        case DATE:
+            break;
+        case FLOAT:
+            break;
+        case INTEGER:
+            break;
+        case STRING:
+            break;
+        default:
+            throw new ParserException(iSourceLineNr
+                    ,"***Error: Illegal operation with type***"
+                    , Meatbol.filename);
+        }
         return opLeft;
     }
 
-    public static ResultValue doLessEqual(ResultValue opLeft, ResultValue opRight) {
-        // TODO Auto-generated method stub
+    public static ResultValue doLessEqual(ResultValue opLeft, ResultValue opRight, int iSourceLineNr) throws ParserException {
+        switch (opLeft.type)
+        {
+        case DATE:
+            break;
+        case FLOAT:
+            break;
+        case INTEGER:
+            break;
+        case STRING:
+            break;
+        default:
+            throw new ParserException(iSourceLineNr
+                    ,"***Error: Illegal operation with type***"
+                    , Meatbol.filename);
+        }
         return opLeft;
     }
 
-    public static ResultValue doGreaterEqual(ResultValue opLeft, ResultValue opRight) {
-        // TODO Auto-generated method stub
+    public static ResultValue doGreaterEqual(ResultValue opLeft, ResultValue opRight, int iSourceLineNr) throws ParserException {
+        switch (opLeft.type)
+        {
+        case DATE:
+            break;
+        case FLOAT:
+            break;
+        case INTEGER:
+            break;
+        case STRING:
+            break;
+        default:
+            throw new ParserException(iSourceLineNr
+                    ,"***Error: Illegal operation with type***"
+                    , Meatbol.filename);
+        }
         return opLeft;
     }
 
-    public static ResultValue doLess(ResultValue opLeft, ResultValue opRight) {
-        // TODO Auto-generated method stub
+    public static ResultValue doLess(ResultValue opLeft, ResultValue opRight, int iSourceLineNr) throws ParserException {
+        switch (opLeft.type)
+        {
+        case DATE:
+            break;
+        case FLOAT:
+            break;
+        case INTEGER:
+            break;
+        case STRING:
+            break;
+        default:
+            throw new ParserException(iSourceLineNr
+                    ,"***Error: Illegal operation with type***"
+                    , Meatbol.filename);
+        }
         return opLeft;
     }
 
-    public static ResultValue doGreater(ResultValue opLeft, ResultValue opRight) {
-        // TODO Auto-generated method stub
+    public static ResultValue doGreater(ResultValue opLeft, ResultValue opRight, int iSourceLineNr) throws ParserException {
+        switch (opLeft.type)
+        {
+        case DATE:
+            break;
+        case FLOAT:
+            break;
+        case INTEGER:
+            break;
+        case STRING:
+            break;
+        default:
+            throw new ParserException(iSourceLineNr
+                    ,"***Error: Illegal operation with type***"
+                    , Meatbol.filename);
+        }
         return opLeft;
     }
 
-    public static ResultValue doEqual(ResultValue opLeft, ResultValue opRight) {
-        // TODO Auto-generated method stub
+    public static ResultValue doEqual(ResultValue opLeft, ResultValue opRight, int iSourceLineNr) throws ParserException {
+        switch (opLeft.type)
+        {
+        case BOOLEAN:
+            break;
+        case DATE:
+            break;
+        case FLOAT:
+            break;
+        case INTEGER:
+            break;
+        case STRING:
+            break;
+        default:
+            throw new ParserException(iSourceLineNr
+                    ,"***Error: Illegal operation with type***"
+                    , Meatbol.filename);
+        }
         return opLeft;
     }
 
-    public static ResultValue doNotEqual(ResultValue opLeft, ResultValue opRight) {
-        // TODO Auto-generated method stub
+    public static ResultValue doNotEqual(ResultValue opLeft, ResultValue opRight, int iSourceLineNr) throws ParserException {
+        switch (opLeft.type)
+        {
+        case BOOLEAN:
+            break;
+        case DATE:
+            break;
+        case FLOAT:
+            break;
+        case INTEGER:
+            break;
+        case STRING:
+            break;
+        default:
+            throw new ParserException(iSourceLineNr
+                    ,"***Error: Illegal operation with type***"
+                    , Meatbol.filename);
+        }
         return opLeft;
     }
 
-    public static ResultValue doNot(ResultValue opLeft) {
-        // TODO Auto-generated method stub
+    public static ResultValue doNot(ResultValue opLeft, int iSourceLineNr) throws ParserException {
+        switch (opLeft.type)
+        {
+        case BOOLEAN:
+            break;
+        default:
+            throw new ParserException(iSourceLineNr
+                    ,"***Error: Illegal operation with type***"
+                    , Meatbol.filename);
+        }
         return opLeft;
     }
 
-    public static ResultValue doAnd(ResultValue opLeft, ResultValue opRight) {
-        // TODO Auto-generated method stub
+    public static ResultValue doAnd(ResultValue opLeft, ResultValue opRight, int iSourceLineNr) throws ParserException {
+        switch (opLeft.type)
+        {
+        case BOOLEAN:
+            break;
+        default:
+            throw new ParserException(iSourceLineNr
+                    ,"***Error: Illegal operation with type***"
+                    , Meatbol.filename);
+        }
         return opLeft;
     }
 
-    public static ResultValue doOr(ResultValue opLeft, ResultValue opRight) {
-        // TODO Auto-generated method stub
+    public static ResultValue doOr(ResultValue opLeft, ResultValue opRight, int iSourceLineNr) throws ParserException {
+        switch (opLeft.type)
+        {
+        case BOOLEAN:
+            break;
+        default:
+            throw new ParserException(iSourceLineNr
+                    ,"***Error: Illegal operation with type***"
+                    , Meatbol.filename);
+        }
         return opLeft;
     }
 }

@@ -35,7 +35,7 @@ public class Token
     public void copyToken(Token other)
     {
         if (other != null) {
-            this.tokenStr.equals(other.tokenStr);
+            this.tokenStr = String.valueOf(other.tokenStr);
             this.primClassif = other.primClassif;
             this.subClassif = other.subClassif;
             this.iColPos = other.iColPos;
