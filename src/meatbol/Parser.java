@@ -180,7 +180,7 @@ public class Parser
     private void ifStmt(Scanner scan, SymbolTable symbolTable, Boolean bExec) throws Exception {
     	System.out.println("I'M IN THE IF YALL");
     	System.out.println("The token is " + scan.currentToken.tokenStr);
-    	
+
     	if (bExec) {
     		// we are executing, not ignoring
     		ResultValue resCond = evalCond(scan, symbolTable);
@@ -197,50 +197,50 @@ public class Parser
     				{
     					errorWithCurrent("expected ':' after 'else'");
     				}
-    				
+
     				resTemp = executeStatements(scan, symbolTable, false); //since cond was true, ignore else part
     			}
-    			
+
     			if (!resTemp.terminatingStr.equals("endif"))
     			{
     				errorWithCurrent("expected 'endif' for an 'if'");
-				}
-    			
+    			}
+
     			scan.getNext();
     			if (!scan.currentToken.tokenStr.equals(";"))
     			{
-					errorWithCurrent("expected ';' after 'endif'");
-				}
+    				errorWithCurrent("expected ';' after 'endif'");
+    			}
     		}	
     		else
     		{
-    				// Cond returned False, ignore execution
-    				ResultValue resTemp = executeStatements(scan, symbolTable, false); //not exec'ing true part
-    				if (resTemp.terminatingStr.equals("else")) 
-    				{
-    					scan.getNext();
-						if (!scan.currentToken.tokenStr.equals(":"))
-						{
-							errorWithCurrent("expected ':' after 'else'");
-						}
-						resTemp = executeStatements(scan, symbolTable, true); //since cond was false, exec else part
-					}
-    				
-    				if (!resTemp.terminatingStr.equals("endif"))
-    				{
-						errorWithCurrent("expected 'endif' for an 'if'");
-					}
-    				
+    			// Cond returned False, ignore execution
+    			ResultValue resTemp = executeStatements(scan, symbolTable, false); //not exec'ing true part
+    			if (resTemp.terminatingStr.equals("else")) 
+    			{
     				scan.getNext();
-    				if (!scan.currentToken.tokenStr.equals(";")) 
+    				if (!scan.currentToken.tokenStr.equals(":"))
     				{
-						errorWithCurrent("expected ';' after 'endif'");
-					}
+    					errorWithCurrent("expected ':' after 'else'");
+    				}
+    				resTemp = executeStatements(scan, symbolTable, true); //since cond was false, exec else part
+    			}
+
+    			if (!resTemp.terminatingStr.equals("endif"))
+    			{
+    				errorWithCurrent("expected 'endif' for an 'if'");
+    			}
+
+    			scan.getNext();
+    			if (!scan.currentToken.tokenStr.equals(";")) 
+    			{
+    				errorWithCurrent("expected ';' after 'endif'");
+    			}
     		}
     	}
     	else
     	{
-			// we are ignoring execution
+    		// we are ignoring execution
     		// we want to ignore the conditional, true part, and false part
     		// should we execute evalCond?
     		skipTo(":", scan);
@@ -251,21 +251,21 @@ public class Parser
     			if (!scan.currentToken.tokenStr.equals(":"))
     			{
     				errorWithCurrent("expected ':' after 'else'");
-				}
+    			}
     			resTemp = executeStatements(scan, symbolTable, false);
-			}
-    		
-			if (!resTemp.terminatingStr.equals("endif"))
-			{
-				errorWithCurrent("expected 'endif' for an 'if'");
-			}
-			
-			scan.getNext();
-			if (!scan.currentToken.tokenStr.equals(";")) 
-			{
-				errorWithCurrent("expected ';' after 'endif'");
-			}
-		}
+    		}
+
+    		if (!resTemp.terminatingStr.equals("endif"))
+    		{
+    			errorWithCurrent("expected 'endif' for an 'if'");
+    		}
+
+    		scan.getNext();
+    		if (!scan.currentToken.tokenStr.equals(";")) 
+    		{
+    			errorWithCurrent("expected ';' after 'endif'");
+    		}
+    	}
     }
 
     private ResultValue evalCond(Scanner scan, SymbolTable symbolTable) throws Exception
@@ -325,7 +325,7 @@ public class Parser
     	resOp2 = expression();
 
     	System.out.println("Expr is " + resOp1.value + cond + resOp2.value);
-    	
+
     	// skip past ':'
     	skipTo(":", scan);
 
@@ -492,64 +492,141 @@ public class Parser
     			, Meatbol.filename);	
     }
 
-	private void skipTo(String skip, Scanner scan) throws Exception {
-		while (!scan.currentToken.tokenStr.equals(skip))
-		{
-			scan.getNext();
-		}
-		
-	}
+    private void skipTo(String skip, Scanner scan) throws Exception {
+    	while (!scan.currentToken.tokenStr.equals(skip))
+    	{
+    		scan.getNext();
+    	}
 
-	private void errorWithCurrent(String message) {
-		// TODO Auto-generated method stub
-		System.out.println(message);
-		
-	}
+    }
 
-	private ResultValue executeStatements(Scanner scan, SymbolTable symbolTable, boolean bExec) throws Exception
-	{
-		// set position to first line in if
-		scan.getNext();
-		
-		if (bExec)
-		{
-			while (!scan.currentToken.tokenStr.equals("else") && !scan.currentToken.tokenStr.equals("endif"))
-			{
-				System.out.println("execing stmts..." + scan.currentToken.tokenStr);
-//				stmt(scan, symbolTable, true);
-				scan.getNext();
-			}
-			ResultValue res = new ResultValue(SubClassif.END, "testVal", 0, scan.currentToken.tokenStr);
-			return res;
-		}
-		else
-		{
-			while (!scan.currentToken.tokenStr.equals("else") && !scan.currentToken.tokenStr.equals("endif"))
-			{
-				System.out.println("execing stmts...");
-//				stmt(scan, symbolTable, false);
-				scan.getNext();
-			}
-			ResultValue res = new ResultValue(SubClassif.END, "testVal", 0, scan.currentToken.tokenStr);
-			return res;	
-		}
-	}
+    private void errorWithCurrent(String message) {
+    	// TODO Auto-generated method stub
+    	System.out.println(message);
+
+    }
+
+    private ResultValue executeStatements(Scanner scan, SymbolTable symbolTable, boolean bExec) throws Exception
+    {
+    	// set position to first line in if
+    	scan.getNext();
+
+    	if (bExec)
+    	{
+    		while (!scan.currentToken.tokenStr.equals("else") && !scan.currentToken.tokenStr.equals("endif") && !scan.currentToken.tokenStr.equals("endwhile"))
+    		{
+    			System.out.println("execing stmts..." + scan.currentToken.tokenStr);
+    			//				stmt(scan, symbolTable, true);
+    			scan.getNext();
+    		}
+    		ResultValue res = new ResultValue(SubClassif.END, "testVal", 0, scan.currentToken.tokenStr);
+    		return res;
+    	}
+    	else
+    	{
+    		while (!scan.currentToken.tokenStr.equals("else") && !scan.currentToken.tokenStr.equals("endif") && !scan.currentToken.tokenStr.equals("endwhile"))
+    		{
+    			System.out.println("execing stmts...");
+    			//				stmt(scan, symbolTable, false);
+    			scan.getNext();
+    		}
+    		ResultValue res = new ResultValue(SubClassif.END, "testVal", 0, scan.currentToken.tokenStr);
+    		return res;	
+    	}
+    }
 
 	private void whileStmt(Scanner scan, SymbolTable symbolTable, Boolean bExec) throws Exception
 	{
-        while(!scan.nextToken.tokenStr.equals(";"))
-        {
-            try
-            {
-                scan.getNext();
-                //scan.currentToken.printToken();
-            }
-            catch (Exception e)
-            {
-                throw e;
-            }
-        }
-        scan.getNext();
+		System.out.println("I'M IN THE WHILE YALL");
+		System.out.println("The token is " + scan.currentToken.tokenStr);
+		
+		// save current line number
+		
+		if (bExec) {
+			// we are executing, not ignoring
+			ResultValue resCond = evalCond(scan, symbolTable);
+			// Did the condition return True?
+			if (resCond.value.equals("true"))
+			{
+				// Cond returned True, continue executing
+				ResultValue resTemp = executeStatements(scan, symbolTable, true);
+				// what ended the statements after the true part? endwhile?
+
+				if (!resTemp.terminatingStr.equals("endwhile"))
+				{
+					errorWithCurrent("expected 'endwhile' for a 'while'");
+				}
+
+				scan.getNext();
+				if (!scan.currentToken.tokenStr.equals(";"))
+				{
+					errorWithCurrent("expected ';' after 'endwhile'");
+				}
+				
+				//TODO: go back and do again
+			}	
+			else
+			{
+				// Cond returned False, ignore execution
+				ResultValue resTemp = executeStatements(scan, symbolTable, false); //not exec'ing true part
+				
+				if (!resTemp.terminatingStr.equals("endwhile"))
+				{
+					errorWithCurrent("expected 'endwhile' for a 'while'");
+				}
+
+				scan.getNext();
+				if (!scan.currentToken.tokenStr.equals(";"))
+				{
+					errorWithCurrent("expected ';' after 'endwhile'");
+				}
+			}
+		}
+		else
+		{
+			// we are ignoring execution
+			// we want to ignore the conditional, true part, and false part
+			// should we execute evalCond?
+			skipTo(":", scan);
+			ResultValue resTemp = executeStatements(scan, symbolTable, false);
+			if (resTemp.terminatingStr.equals("else")) 
+			{
+				scan.getNext();
+				if (!scan.currentToken.tokenStr.equals(":"))
+				{
+					errorWithCurrent("expected ':' after 'else'");
+				}
+				resTemp = executeStatements(scan, symbolTable, false);
+			}
+
+			if (!resTemp.terminatingStr.equals("endif"))
+			{
+				errorWithCurrent("expected 'endif' for an 'if'");
+			}
+
+			scan.getNext();
+			if (!scan.currentToken.tokenStr.equals(";")) 
+			{
+				errorWithCurrent("expected ';' after 'endif'");
+			}
+		}
+    	
+    	
+    	
+    	
+//        while(!scan.nextToken.tokenStr.equals(";"))
+//        {
+//            try
+//            {
+//                scan.getNext();
+//                //scan.currentToken.printToken();
+//            }
+//            catch (Exception e)
+//            {
+//                throw e;
+//            }
+//        }
+//        scan.getNext();
         //scan.currentToken.printToken();
 
     }
@@ -824,6 +901,24 @@ public class Parser
             }
         }
         //scan.currentToken.printToken();
+        //pop rest of stack
+        while(! stack.empty())
+        {
+            //check it for unmatched parenthesis
+            if(stack.peek().tokenStr == "(")
+            {
+                throw new ParserException(stack.peek().iSourceLineNr
+                        ,"***Error: Missing right paranthesis***"
+                        , Meatbol.filename);
+            }
+            postfix.add(stack.pop());
+        }
+        for (Token test: postfix)
+        {
+            System.out.print(test.tokenStr + ",");
+        }
+        System.out.println();
+        return evalPostfix(postfix);
     }
 
     private ResultValue expression(Scanner scan) throws Exception {
@@ -976,24 +1071,6 @@ public class Parser
                 // TODO: NUMERIC DIVISION
                 break;
         }
-        //pop rest of stack
-        while(! stack.empty())
-        {
-            //check it for unmatched parenthesis
-            if(stack.peek().tokenStr == "(")
-            {
-                throw new ParserException(stack.peek().iSourceLineNr
-                        ,"***Error: Missing right paranthesis***"
-                        , Meatbol.filename);
-            }
-            postfix.add(stack.pop());
-        }
-        for (Token test: postfix)
-        {
-            System.out.print(test.tokenStr + ",");
-        }
-        System.out.println();
-        return evalPostfix(postfix);
     }
 
     /** Performs arithmatic and logical operations on postfix expression.
