@@ -823,7 +823,6 @@ public class Parser
                 break;
             }
         }
-<<<<<<< HEAD
         //scan.currentToken.printToken();
     }
 
