@@ -71,7 +71,8 @@ public class FileHandler
         // Catch exception if any.
         catch (Exception e)
         {
-            throw new IllegalArgumentException("Error reading file: " + fileName + "; Line " + i);
+            System.out.println("Error reading file: " + fileName + "; Line " + i);
+            e.printStackTrace();
         }
         return lineList;
     }

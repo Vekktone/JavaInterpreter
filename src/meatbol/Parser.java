@@ -28,18 +28,18 @@ public class Parser
                 break;
             //control statement
             case CONTROL:
-                System.out.println("\n***Control Statement***");
-                conStmt(scan, symbolTable, bExec);
+                //System.out.println("***Control Statement***");
+                conStmt(scan, symbolTable);
                 break;
             //function statement
             case FUNCTION:
-                System.out.println("\n***Function Statement***");
-                funcStmt(scan, symbolTable, bExec);
+                //System.out.println("***Function Statement***");
+                funcStmt(scan, symbolTable);
                 break;
             //assignment statement
             case OPERAND:
-                System.out.println("\n***Assignment Statement***");
-                assignStmt(scan, symbolTable, bExec);
+                //System.out.println("***Assignment Statement***");
+                assignStmt(scan, symbolTable);
                 break;
             //statements can't begin with these, throw error
             case OPERATOR:
@@ -107,9 +107,10 @@ public class Parser
                 }
                 else if(scan.nextToken.tokenStr.equals(";"))
                 {
+                    //System.out.println("***Empty declare of: "+scan.currentToken.tokenStr+"***");
                     //declared only, we are done
                     scan.getNext();
-                    System.out.println("***Empty declare***");
+
                 }
                 else
                 {
@@ -672,7 +673,8 @@ public class Parser
                 switch(scan.currentToken.tokenStr)
                 {
                 case "print":
-                    System.out.println("***Do print function***");
+                    //System.out.println("***Do print function***");
+                    Utility.print(this,scan,symbolTable);
                     break;
                 default:
                     throw new ParserException(scan.currentToken.iSourceLineNr
@@ -709,7 +711,7 @@ public class Parser
     }
     public void assignStmt(Scanner scan, SymbolTable symbolTable, Boolean bExec) throws Exception
     {
-        System.out.println("***Do assignment to "+scan.currentToken.tokenStr+"***");
+        //System.out.println("***Do assignment to "+scan.currentToken.tokenStr+"***");
         ResultValue res;
         if(scan.currentToken.subClassif != SubClassif.IDENTIFIER)
         {
@@ -761,10 +763,10 @@ public class Parser
                         , Meatbol.filename);
         }
         StorageManager.values.put(variable.tokenStr, res.value);
-        System.out.println(variable.tokenStr +" = " + res.value);
+        //System.out.println(variable.tokenStr +" = " + res.value);
     }
 
-    private ResultValue expression(Scanner scan, SymbolTable symbolTable) throws Exception
+    public ResultValue expression(Scanner scan, SymbolTable symbolTable) throws Exception
     {
         //collect tokens for expression
         ArrayList<Token> infix = new ArrayList<Token>();
@@ -772,6 +774,7 @@ public class Parser
         Token token = new Token();
 
         scan.getNext();
+        //scan.currentToken.printToken();
         token.copyToken(scan.currentToken);
 
         //build infix
@@ -819,11 +822,11 @@ public class Parser
                     break;
             }
         }
-        for (Token test: infix)
+        /*for (Token test: infix)
         {
             System.out.print(test.tokenStr + ",");
         }
-        System.out.println();
+        System.out.println();*/
         return infixToPostfix(infix);
     }
 
@@ -909,11 +912,11 @@ public class Parser
             }
             postfix.add(stack.pop());
         }
-        for (Token test: postfix)
+        /*for (Token test: postfix)
         {
             System.out.print(test.tokenStr + ",");
         }
-        System.out.println();
+        System.out.println();*/
         return evalPostfix(postfix);
     }
 
@@ -1093,11 +1096,21 @@ public class Parser
      */
     public ResultValue evalPostfix(ArrayList<Token> postfix) throws ParserException
     {
+        /*for (Token test: postfix)
+        {
+            System.out.print(test.tokenStr + ",");
+        }
+        System.out.println();*/
         //stack for holding operands while advancing to next operator
         Stack<ResultValue> stack = new Stack<ResultValue>();
         //operands for operation and result
         ResultValue value, opLeft, opRight;
 
+        if(postfix.isEmpty()){
+            throw new ParserException(00
+                    ,"***Error: Invalid expression - postfix empty***"
+                    , Meatbol.filename);
+        }
         //iterate through postfix expression
         for(Token token : postfix)
         {
