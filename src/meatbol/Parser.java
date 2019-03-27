@@ -10,7 +10,7 @@ public class Parser
 
     }
 
-    public void stmt(Scanner scan, SymbolTable symbolTable) throws Exception{
+    public void stmt(Scanner scan, SymbolTable symbolTable, Boolean bExec) throws Exception{
         //System.out.println("\n***start statement***");
         //scan.currentToken.printToken();
         switch(scan.currentToken.primClassif)
@@ -26,7 +26,7 @@ public class Parser
             //control statement
             case CONTROL:
                 //System.out.println("***Control Statement***");
-                conStmt(scan, symbolTable);
+                conStmt(scan, symbolTable, bExec);
                 break;
             //function statement
             case FUNCTION:
@@ -59,7 +59,7 @@ public class Parser
      *
      * @throws Exception
      */
-    public void conStmt(Scanner scan, SymbolTable symbolTable) throws Exception
+    public void conStmt(Scanner scan, SymbolTable symbolTable, Boolean bExec) throws Exception
     {
         //check what type of control statement we have
         switch(scan.currentToken.subClassif)
@@ -129,10 +129,10 @@ public class Parser
                 switch(scan.currentToken.tokenStr)
                 {
                 case "if":
-                    ifStmt(scan, symbolTable);
+                    ifStmt(scan, symbolTable, bExec);
                     break;
                 case "while":
-                    whileStmt(scan, symbolTable);
+                    whileStmt(scan, symbolTable, bExec);
                     break;
                 case "def":
                     defStmt(scan, symbolTable);
@@ -150,44 +150,491 @@ public class Parser
                         ,"***Error: Unknown state***"
                         , Meatbol.filename);
         }
-
-
-    }
-    private void ifStmt(Scanner scan, SymbolTable symbolTable) throws Exception {
-        while(!scan.nextToken.tokenStr.equals(";"))
-        {
-            try
-            {
-                scan.getNext();
-                //scan.currentToken.printToken();
-            }
-            catch (Exception e)
-            {
-                throw e;
-            }
-        }
-        scan.getNext();
-        //scan.currentToken.printToken();
-
     }
 
-    private void whileStmt(Scanner scan, SymbolTable symbolTable) throws Exception {
-        while(!scan.nextToken.tokenStr.equals(";"))
-        {
-            try
-            {
-                scan.getNext();
-                //scan.currentToken.printToken();
-            }
-            catch (Exception e)
-            {
-                throw e;
-            }
-        }
-        scan.getNext();
-        //scan.currentToken.printToken();
+    private void ifStmt(Scanner scan, SymbolTable symbolTable, Boolean bExec) throws Exception {
+         System.out.println("I'M IN THE IF YALL");
+         System.out.println("The token is " + scan.currentToken.tokenStr);
 
-    }
+
+         if (bExec) {
+             // we are executing, not ignoring
+             ResultValue resCond = evalCond(scan, symbolTable);
+             // Did the condition return True?
+             if (resCond.value.equals("true"))
+             {
+                 // Cond returned True, continue executing
+                 ResultValue resTemp = executeStatements(scan, symbolTable, true);
+                 // what ended the statements after the true part? else: or endif;
+                 if (resTemp.terminatingStr.equals("else"))
+                 {
+                     scan.getNext();
+                     if (!scan.currentToken.tokenStr.equals(":"))
+                     {
+                         errorWithCurrent("expected ':' after 'else'");
+                     }
+
+
+                     resTemp = executeStatements(scan, symbolTable, false); //since cond was true, ignore else part
+                 }
+
+
+                 if (!resTemp.terminatingStr.equals("endif"))
+                 {
+                     errorWithCurrent("expected 'endif' for an 'if'");
+                 }
+
+
+                 scan.getNext();
+                 if (!scan.currentToken.tokenStr.equals(";"))
+                 {
+                     errorWithCurrent("expected ';' after 'endif'");
+                 }
+             }
+             else
+             {
+                 // Cond returned False, ignore execution
+                 ResultValue resTemp = executeStatements(scan, symbolTable, false); //not exec'ing true part
+                 if (resTemp.terminatingStr.equals("else"))
+                 {
+                     scan.getNext();
+                     if (!scan.currentToken.tokenStr.equals(":"))
+                     {
+                         errorWithCurrent("expected ':' after 'else'");
+                     }
+                     resTemp = executeStatements(scan, symbolTable, true); //since cond was false, exec else part
+                 }
+
+
+                 if (!resTemp.terminatingStr.equals("endif"))
+                 {
+                     errorWithCurrent("expected 'endif' for an 'if'");
+                 }
+
+
+                 scan.getNext();
+                 if (!scan.currentToken.tokenStr.equals(";"))
+                 {
+                     errorWithCurrent("expected ';' after 'endif'");
+                 }
+             }
+         }
+         else
+         {
+             // we are ignoring execution
+             // we want to ignore the conditional, true part, and false part
+             // should we execute evalCond?
+             skipTo(":", scan);
+             ResultValue resTemp = executeStatements(scan, symbolTable, false);
+             if (resTemp.terminatingStr.equals("else"))
+             {
+                 scan.getNext();
+                 if (!scan.currentToken.tokenStr.equals(":"))
+                 {
+                     errorWithCurrent("expected ':' after 'else'");
+                 }
+                 resTemp = executeStatements(scan, symbolTable, false);
+             }
+
+
+             if (!resTemp.terminatingStr.equals("endif"))
+             {
+                 errorWithCurrent("expected 'endif' for an 'if'");
+             }
+
+
+             scan.getNext();
+             if (!scan.currentToken.tokenStr.equals(";"))
+             {
+                 errorWithCurrent("expected ';' after 'endif'");
+             }
+         }
+     }
+
+
+     private ResultValue evalCond(Scanner scan, SymbolTable symbolTable) throws Exception
+     {
+         System.out.println("I will evalCond.");
+         ResultValue resOp1, resOp2;
+
+
+         // get the first operator
+         scan.getNext();
+
+
+         if (scan.currentToken.primClassif != Classif.OPERAND) {
+             throw new ParserException(scan.currentToken.iSourceLineNr
+                     ,"***Error: Expected Operand***"
+                     , Meatbol.filename);
+         }
+
+
+         if (scan.currentToken.subClassif == SubClassif.IDENTIFIER) {
+             if(!StorageManager.values.containsKey(scan.currentToken.tokenStr))
+             {
+                 throw new ParserException(scan.currentToken.iSourceLineNr
+                         ,"***Error: Illegal condition: " + scan.currentToken.tokenStr + " not initialized***"
+                         , Meatbol.filename);
+             }
+         }
+         resOp1 = expression(scan, symbolTable);
+
+
+         // get the cond operator to check
+         scan.getNext();
+
+         if (scan.currentToken.primClassif != Classif.OPERATOR)
+         {
+             throw new ParserException(scan.currentToken.iSourceLineNr
+                     ,"***Error: Expected Operator***"
+                     , Meatbol.filename);
+         }
+         String cond = scan.currentToken.tokenStr;
+
+
+         // get the second operator
+         scan.getNext();
+
+
+         if (scan.currentToken.primClassif != Classif.OPERAND)
+         {
+             throw new ParserException(scan.currentToken.iSourceLineNr
+                     ,"***Error: Expected Operand***"
+                     , Meatbol.filename);
+         }
+
+
+         if (scan.currentToken.subClassif == SubClassif.IDENTIFIER)
+         {
+             if(!StorageManager.values.containsKey(scan.currentToken.tokenStr))
+             {
+                 throw new ParserException(scan.currentToken.iSourceLineNr
+                         ,"***Error: Illegal condition: " + scan.currentToken.tokenStr + " not initialized***"
+                         , Meatbol.filename);
+             }
+         }
+         resOp2 = expression(scan, symbolTable);
+
+
+         System.out.println("Expr is " + resOp1.value + cond + resOp2.value);
+
+
+         // skip past ':'
+         skipTo(":", scan);
+
+         // check for types
+         if (resOp1.type != resOp2.type) {
+             throw new ParserException(scan.currentToken.iSourceLineNr
+                     ,"***Error: Type mismatch***"
+                     , Meatbol.filename);
+         }
+
+        if (resOp1.type == SubClassif.STRING || resOp1.type == SubClassif.BOOLEAN) {
+             switch (cond) {
+             case "==":
+                 if (resOp1.value == resOp2.value)
+                 {
+                     return new ResultValue(SubClassif.EMPTY, "true", 0, null);
+                 }
+                 else
+                 {
+                     return new ResultValue(SubClassif.EMPTY, "false", 0, null);
+                 }
+             case "!=":
+                 if (resOp1.value != resOp2.value)
+                 {
+                     return new ResultValue(SubClassif.EMPTY, "true", 0, null);
+                 }
+                 else
+                 {
+                     return new ResultValue(SubClassif.EMPTY, "false", 0, null);
+                 }
+             }
+         }
+         else {
+             if (resOp1.type == SubClassif.INTEGER)
+             {
+                 int integerOp1 = Integer.parseInt(resOp1.value);
+                 int integerOp2 = Integer.parseInt(resOp1.value);
+
+
+                 // evaluate it
+                 switch (cond) {
+                 case ">":
+                     if (integerOp1 > integerOp2)
+                     {
+                         return new ResultValue(SubClassif.EMPTY, "true", 0, null);
+                     }
+                     else
+                     {
+                         return new ResultValue(SubClassif.EMPTY, "false", 0, null);
+                     }
+                 case "<":
+                     if (integerOp1 < integerOp2)
+                     {
+                         return new ResultValue(SubClassif.EMPTY, "true", 0, null);
+                     }
+                     else
+                     {
+                         return new ResultValue(SubClassif.EMPTY, "false", 0, null);
+                     }
+                 case ">=":
+                     if (integerOp1 >= integerOp2)
+                     {
+                         return new ResultValue(SubClassif.EMPTY, "true", 0, null);
+                     }
+                     else
+                     {
+                         return new ResultValue(SubClassif.EMPTY, "false", 0, null);
+                     }
+                 case "<=":
+                     if (integerOp1 <= integerOp2)
+                     {
+                         return new ResultValue(SubClassif.EMPTY, "true", 0, null);
+                     }
+                     else
+                     {
+                         return new ResultValue(SubClassif.EMPTY, "false", 0, null);
+                     }
+                 case "==":
+                     if (integerOp1 == integerOp2)
+                     {
+                         return new ResultValue(SubClassif.EMPTY, "true", 0, null);
+                     }
+                     else
+                     {
+                         return new ResultValue(SubClassif.EMPTY, "false", 0, null);
+                     }
+                 case "!=":
+                     if (integerOp1 != integerOp2)
+                     {
+                         return new ResultValue(SubClassif.EMPTY, "true", 0, null);
+                     }
+                     else
+                     {
+                         return new ResultValue(SubClassif.EMPTY, "false", 0, null);
+                     }
+                 }
+             }
+             else if (resOp1.type == SubClassif.FLOAT)
+             {
+                 float floatOp1 = Float.parseFloat(resOp1.value);
+                 float floatOp2 = Float.parseFloat(resOp1.value);
+
+
+                 // evaluate it
+                 switch (cond) {
+                 case ">":
+                     if (floatOp1 > floatOp2)
+                     {
+                         return new ResultValue(SubClassif.EMPTY, "true", 0, null);
+                     }
+                     else
+                     {
+                         return new ResultValue(SubClassif.EMPTY, "false", 0, null);
+                     }
+                 case "<":
+                     if (floatOp1 < floatOp2)
+                     {
+                         return new ResultValue(SubClassif.EMPTY, "true", 0, null);
+                     }
+                     else
+                     {
+                         return new ResultValue(SubClassif.EMPTY, "false", 0, null);
+                     }
+                 case ">=":
+                     if (floatOp1 >= floatOp2)
+                     {
+                         return new ResultValue(SubClassif.EMPTY, "true", 0, null);
+                     }
+                     else
+                     {
+                         return new ResultValue(SubClassif.EMPTY, "false", 0, null);
+                     }
+                 case "<=":
+                     if (floatOp1 <= floatOp2)
+                     {
+                         return new ResultValue(SubClassif.EMPTY, "true", 0, null);
+                     }
+                     else
+                     {
+                         return new ResultValue(SubClassif.EMPTY, "false", 0, null);
+                     }
+                 case "==":
+                     if (floatOp1 == floatOp2)
+                     {
+                         return new ResultValue(SubClassif.EMPTY, "true", 0, null);
+                     }
+                     else
+                     {
+                         return new ResultValue(SubClassif.EMPTY, "false", 0, null);
+                     }
+                 case "!=":
+                     if (floatOp1 != floatOp2)
+                     {
+                         return new ResultValue(SubClassif.EMPTY, "true", 0, null);
+                     }
+                     else
+                     {
+                         return new ResultValue(SubClassif.EMPTY, "false", 0, null);
+                     }
+                 }
+             }
+         }
+
+
+         throw new ParserException(scan.currentToken.iSourceLineNr
+                 ,"***Error: Unknown evalCond error***"
+                 , Meatbol.filename);
+     }
+
+
+     private void skipTo(String skip, Scanner scan) throws Exception {
+         while (!scan.currentToken.tokenStr.equals(skip))
+         {
+             scan.getNext();
+         }
+
+
+     }
+
+
+     private void errorWithCurrent(String message) {
+         // TODO Auto-generated method stub
+         System.out.println(message);
+
+
+     }
+
+
+     private ResultValue executeStatements(Scanner scan, SymbolTable symbolTable, boolean bExec) throws Exception
+     {
+         // set position to first line in if
+         scan.getNext();
+
+
+         if (bExec)
+         {
+             while (!scan.currentToken.tokenStr.equals("else") && !scan.currentToken.tokenStr.equals("endif") && !scan.currentToken.tokenStr.equals("endwhile"))
+             {
+                 System.out.println("execing stmts..." + scan.currentToken.tokenStr);
+                 stmt(scan, symbolTable, true);
+                 scan.getNext();
+             }
+             ResultValue res = new ResultValue(SubClassif.END, "testVal", 0, scan.currentToken.tokenStr);
+             return res;
+         }
+         else
+         {
+             while (!scan.currentToken.tokenStr.equals("else") && !scan.currentToken.tokenStr.equals("endif") && !scan.currentToken.tokenStr.equals("endwhile"))
+             {
+                 System.out.println("execing stmts...");
+                 stmt(scan, symbolTable, false);
+                 scan.getNext();
+             }
+             ResultValue res = new ResultValue(SubClassif.END, "testVal", 0, scan.currentToken.tokenStr);
+             return res;
+         }
+     }
+
+
+     private void whileStmt(Scanner scan, SymbolTable symbolTable, Boolean bExec) throws Exception
+     {
+         System.out.println("I'M IN THE WHILE YALL");
+         System.out.println("The token is " + scan.currentToken.tokenStr);
+         ResultValue resTemp, resCond;
+
+         // save current line number
+         int iColPosition = scan.columnIndex;
+         int iRowPos = scan.lineIndex;
+         Token currentToken = scan.currentToken;
+         Token nextToken = scan.nextToken;
+
+         if (bExec) {
+             // we are executing, not ignoring
+             resCond = evalCond(scan, symbolTable);
+             // Did the condition return True?
+             if (resCond.value.equals("true"))
+             {
+
+                 while (resCond.value.equals("true"))
+                 {
+                     // Cond returned True, continue executing
+                     resTemp = executeStatements(scan, symbolTable, true);
+                     // skip back to current line and evalCond
+                     scan.columnIndex = iColPosition;
+                     scan.lineIndex = iRowPos;
+                     scan.currentToken = currentToken;
+                     scan.nextToken = nextToken;
+                     resCond = evalCond(scan, symbolTable);
+                 }
+                 // exec stmts as false
+                 resTemp = executeStatements(scan, symbolTable, false);
+
+
+                 if (!resTemp.terminatingStr.equals("endwhile"))
+                 {
+                     errorWithCurrent("expected 'endwhile' for a 'while'");
+                 }
+
+
+                 scan.getNext();
+                 if (!scan.currentToken.tokenStr.equals(";"))
+                 {
+                     errorWithCurrent("expected ';' after 'endwhile'");
+                 }
+             }
+             else
+             {
+                 // Cond returned False, ignore execution
+                 resTemp = executeStatements(scan, symbolTable, false); //not exec'ing true part
+
+                 if (!resTemp.terminatingStr.equals("endwhile"))
+                 {
+                     errorWithCurrent("expected 'endwhile' for a 'while'");
+                 }
+
+
+                 scan.getNext();
+                 if (!scan.currentToken.tokenStr.equals(";"))
+                 {
+                     errorWithCurrent("expected ';' after 'endwhile'");
+                 }
+             }
+         }
+         else
+         {
+             // we are ignoring execution
+             // we want to ignore the conditional, true part, and false part
+             // should we execute evalCond?
+             skipTo(":", scan);
+             resTemp = executeStatements(scan, symbolTable, false);
+
+             if (resTemp.terminatingStr.equals("else"))
+             {
+                 scan.getNext();
+                 if (!scan.currentToken.tokenStr.equals(":"))
+                 {
+                     errorWithCurrent("expected ':' after 'else'");
+                 }
+                 resTemp = executeStatements(scan, symbolTable, false);
+             }
+
+
+             if (!resTemp.terminatingStr.equals("endif"))
+             {
+                 errorWithCurrent("expected 'endif' for an 'if'");
+             }
+
+
+             scan.getNext();
+             if (!scan.currentToken.tokenStr.equals(";"))
+             {
+                 errorWithCurrent("expected ';' after 'endif'");
+             }
+         }
+     }
+
 
     private void defStmt(Scanner scan, SymbolTable symbolTable) throws Exception {
         while(!scan.nextToken.tokenStr.equals(";"))
@@ -339,7 +786,7 @@ public class Parser
         token.copyToken(scan.currentToken);
 
         //build infix
-        while(token.tokenStr != ";" && endExpression == false)
+        while(token.tokenStr != ";" && token.tokenStr != ":" && endExpression == false)
         {
             switch(token.primClassif)
             {
@@ -509,7 +956,7 @@ public class Parser
         //stack for holding operands while advancing to next operator
         Stack<ResultValue> stack = new Stack<ResultValue>();
         //operands for operation and result
-        ResultValue value, opLeft, opRight;
+        ResultValue value, opLeft = new ResultValue(), opRight;
 
         if(postfix.isEmpty()){
             throw new ParserException(00
@@ -539,7 +986,10 @@ public class Parser
                     try
                     {
                         opRight = stack.pop();
-                        opLeft = stack.pop();
+                        if(token.tokenStr != "u-" && token.tokenStr != "not")
+                        {
+                            opLeft = stack.pop();
+                        }
                     }
                     catch (Exception e)
                     {
@@ -553,7 +1003,6 @@ public class Parser
                     {
                         case "u-":
                             //single operand, put the other one back on stack
-                            stack.push(opLeft);
                             value = Utility.doUnaryMinus(opRight,token.iSourceLineNr);
                             break;
                         case "^":
@@ -594,7 +1043,6 @@ public class Parser
                             break;
                         case "not":
                             //single operand, put the other one back on stack
-                            stack.push(opLeft);
                             value = Utility.doNot(opRight,token.iSourceLineNr);
                             break;
                         case "and":
@@ -627,6 +1075,9 @@ public class Parser
                     ,"***Error: Invalid expression - Unhandled operand in expression***"
                     , Meatbol.filename);
         }
+        //return new ResultValue(SubClassif.BOOLEAN, "F", 0, null);
         return value;
     }
+
+
 }

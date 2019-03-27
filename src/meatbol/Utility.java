@@ -63,8 +63,10 @@ public class Utility {
         switch (opLeft.type)
         {
         case FLOAT:
+            opLeft.value = "-".concat(opLeft.value);
             break;
         case INTEGER:
+            opLeft.value = "-".concat(opLeft.value);
             break;
         default:
             throw new ParserException(iSourceLineNr
@@ -74,17 +76,22 @@ public class Utility {
         return opLeft;
     }
     public static ResultValue doExponent(ResultValue opLeft, ResultValue opRight, int iSourceLineNr) throws ParserException {
+
+
         switch (opLeft.type)
         {
         case FLOAT:
-            break;
+            /*float op1Float = Numeric.toFloat(opRight);
+            float op2Float = Numeric.toFloat(opRight)*/
         case INTEGER:
+            //int resultInt = Numeric.convertToInt(opLeft);
             break;
         default:
             throw new ParserException(iSourceLineNr
                     ,"***Error: Illegal operation with type***"
                     , Meatbol.filename);
         }
+
         return opLeft;
 
     }
@@ -347,6 +354,7 @@ public class Utility {
     }
 
     public static ResultValue doOr(ResultValue opLeft, ResultValue opRight, int iSourceLineNr) throws ParserException {
+
         switch (opLeft.type)
         {
         case BOOLEAN:

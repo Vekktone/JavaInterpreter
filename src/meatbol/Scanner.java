@@ -153,12 +153,23 @@ public class Scanner {
                     break;
                 //create operator for valid operator not inside quotes
                 case '+': case '-': case '*': case '<': case '>': case '!': case '=': case '#': case '^':
+                    if(lineData[columnIndex] == '-' && currentToken.primClassif != Classif.OPERAND)
+                    {
+                        this.nextToken = setToken("u-"
+                                , Classif.OPERATOR
+                                , SubClassif.EMPTY
+                                , lineIndex
+                                , columnIndex);
+                    }
+                    else
+                    {
                     //create token
                     this.nextToken = setToken(String.valueOf(lineData[columnIndex])
                             , Classif.OPERATOR
                             , SubClassif.EMPTY
                             , lineIndex
                             , columnIndex);
+                    }
                     validToken = true;
                     break;
                 // create separator for valid separator not inside quotes
