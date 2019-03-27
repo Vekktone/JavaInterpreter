@@ -3,52 +3,53 @@ package meatbol;
 public class Utility {
 
         //U-, *, /, ^, ==, <=, >=, <, >, !=, #
-    public static void print(Scanner scan) throws Exception
+    public static void print(Parser parser, Scanner scan, SymbolTable symbolTable) throws Exception
     {
+        int startLine, startCol, endLine, endCol;
+        ResultValue res;
+
         try
         {
+            //locate opening paren position
             scan.getNext();
             if(!scan.currentToken.tokenStr.equals("("))
             {
                 System.out.println("***Function missing opening parenthesis***");
             }
+            startLine = scan.currentToken.iSourceLineNr;
+            startCol = scan.currentToken.iColPos;
+
+            //locate closing paren position
             scan.getNext();
-            while(!scan.currentToken.tokenStr.equals(")"))
-            switch(scan.currentToken.primClassif)
+            while(!scan.nextToken.tokenStr.equals(";"))
             {
-                //shouldn't happen, but if it does just ignore
-                case EMPTY:
-                    break;
-            //if we see this then print is incomplete, throw error
-            case EOF:
-                System.out.println("***Incomplete print statement***");
-                break;
-            //nested function, need to print the return value
-            //for now, just throwing error
-            case FUNCTION:
-                System.out.println("***Nested function, not handling this yet***");
-                break;
-            //print this
-            case OPERAND:
-                //variable, print value rather than token
-                if(scan.currentToken.subClassif == SubClassif.IDENTIFIER)
-                {
-
-                }
-                //this is a constant, print it
-                else
-                {
-                    System.out.print(scan.currentToken.tokenStr);
-                }
-                break;
-            case SEPARATOR:
-            //function must start with operand or value of some kind(infix)
-            case CONTROL: case OPERATOR:
-            default:
-                System.out.println("***Missing operand***");
-                break;
-
+                scan.getNext();
             }
+            //make sure function has closing paren
+            if(!scan.currentToken.tokenStr.equals(")"))
+            {
+                System.out.println("***Function missing closing parenthesis***");
+            }
+            endLine = scan.currentToken.iSourceLineNr;
+            endCol = scan.currentToken.iColPos;
+
+            //reset to begining of arguements and process
+            scan.lineIndex = startLine;
+            scan.columnIndex = startCol;
+
+            //System.out.println("Print function: ");
+            scan.getNext();
+            scan.getNext();
+            //scan.currentToken.printToken();
+            //System.out.println(scan.currentToken.iColPos +" "+ scan.currentToken.iSourceLineNr+" "+ endCol+" "+ endLine);
+            while(scan.currentToken.iColPos < endCol && scan.currentToken.iSourceLineNr <= endLine)
+            {
+                //scan.currentToken.printToken();
+                res = parser.expression(scan, symbolTable);
+                System.out.print(res.value + " ");
+                //scan.getNext();
+            }
+            System.out.println();
 
 
         }
