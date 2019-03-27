@@ -290,7 +290,7 @@ public class Parser
     					, Meatbol.filename);
     		}
     	}
-    	resOp1 = expression();
+    	resOp1 = expression(scan);
 
     	// get the cond operator to check
     	scan.getNext();
@@ -322,7 +322,7 @@ public class Parser
     					, Meatbol.filename);
     		}
     	}
-    	resOp2 = expression();
+    	resOp2 = expression(scan);
 
     	System.out.println("Expr is " + resOp1.value + cond + resOp2.value);
 
@@ -516,7 +516,7 @@ public class Parser
     		while (!scan.currentToken.tokenStr.equals("else") && !scan.currentToken.tokenStr.equals("endif") && !scan.currentToken.tokenStr.equals("endwhile"))
     		{
     			System.out.println("execing stmts..." + scan.currentToken.tokenStr);
-    			//				stmt(scan, symbolTable, true);
+    			stmt(scan, symbolTable, true);
     			scan.getNext();
     		}
     		ResultValue res = new ResultValue(SubClassif.END, "testVal", 0, scan.currentToken.tokenStr);
@@ -527,7 +527,7 @@ public class Parser
     		while (!scan.currentToken.tokenStr.equals("else") && !scan.currentToken.tokenStr.equals("endif") && !scan.currentToken.tokenStr.equals("endwhile"))
     		{
     			System.out.println("execing stmts...");
-    			//				stmt(scan, symbolTable, false);
+    			stmt(scan, symbolTable, false);
     			scan.getNext();
     		}
     		ResultValue res = new ResultValue(SubClassif.END, "testVal", 0, scan.currentToken.tokenStr);
@@ -539,18 +539,34 @@ public class Parser
 	{
 		System.out.println("I'M IN THE WHILE YALL");
 		System.out.println("The token is " + scan.currentToken.tokenStr);
+		ResultValue resTemp, resCond;
 		
 		// save current line number
+		int iColPosition = scan.columnIndex;
+		int iRowPos = scan.lineIndex;
+		Token currentToken = scan.currentToken;
+		Token nextToken = scan.nextToken;
 		
 		if (bExec) {
 			// we are executing, not ignoring
-			ResultValue resCond = evalCond(scan, symbolTable);
+			resCond = evalCond(scan, symbolTable);
 			// Did the condition return True?
 			if (resCond.value.equals("true"))
 			{
-				// Cond returned True, continue executing
-				ResultValue resTemp = executeStatements(scan, symbolTable, true);
-				// what ended the statements after the true part? endwhile?
+				
+				while (resCond.value.equals("true"))
+				{
+					// Cond returned True, continue executing
+					resTemp = executeStatements(scan, symbolTable, true);
+					// skip back to current line and evalCond
+					scan.columnIndex = iColPosition;
+					scan.lineIndex = iRowPos;
+					scan.currentToken = currentToken;
+					scan.nextToken = nextToken;
+					resCond = evalCond(scan, symbolTable);
+				}
+				// exec stmts as false
+				resTemp = executeStatements(scan, symbolTable, false);
 
 				if (!resTemp.terminatingStr.equals("endwhile"))
 				{
@@ -562,13 +578,11 @@ public class Parser
 				{
 					errorWithCurrent("expected ';' after 'endwhile'");
 				}
-				
-				//TODO: go back and do again
 			}	
 			else
 			{
 				// Cond returned False, ignore execution
-				ResultValue resTemp = executeStatements(scan, symbolTable, false); //not exec'ing true part
+				resTemp = executeStatements(scan, symbolTable, false); //not exec'ing true part
 				
 				if (!resTemp.terminatingStr.equals("endwhile"))
 				{
@@ -588,7 +602,8 @@ public class Parser
 			// we want to ignore the conditional, true part, and false part
 			// should we execute evalCond?
 			skipTo(":", scan);
-			ResultValue resTemp = executeStatements(scan, symbolTable, false);
+			resTemp = executeStatements(scan, symbolTable, false);
+			
 			if (resTemp.terminatingStr.equals("else")) 
 			{
 				scan.getNext();
@@ -610,25 +625,6 @@ public class Parser
 				errorWithCurrent("expected ';' after 'endif'");
 			}
 		}
-    	
-    	
-    	
-    	
-//        while(!scan.nextToken.tokenStr.equals(";"))
-//        {
-//            try
-//            {
-//                scan.getNext();
-//                //scan.currentToken.printToken();
-//            }
-//            catch (Exception e)
-//            {
-//                throw e;
-//            }
-//        }
-//        scan.getNext();
-        //scan.currentToken.printToken();
-
     }
 
     private void defStmt(Scanner scan, SymbolTable symbolTable, Boolean bExec) throws Exception {
@@ -922,10 +918,13 @@ public class Parser
     }
 
     private ResultValue expression(Scanner scan) throws Exception {
-        ArrayList<Token> infixExpression = makeInfixExpression(scan);
-        ArrayList<Token> postfixExpression = convertInfixExpressionToPostfix(infixExpression);
-        ResultValue evaluatedExpressionValue = evaluatePostfixExpression(postfixExpression);
-        return evaluatedExpressionValue;
+    	
+    	ResultValue res = new ResultValue(SubClassif.STRING, "5", 0, null);
+        return res;
+//        ArrayList<Token> infixExpression = makeInfixExpression(scan);
+//        ArrayList<Token> postfixExpression = convertInfixExpressionToPostfix(infixExpression);
+//        ResultValue evaluatedExpressionValue = evaluatePostfixExpression(postfixExpression);
+//        return evaluatedExpressionValue;
     }
 
     private ArrayList<Token> makeInfixExpression(Scanner scan) throws Exception {
