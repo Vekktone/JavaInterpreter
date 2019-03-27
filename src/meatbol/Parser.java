@@ -29,17 +29,17 @@ public class Parser
             //control statement
             case CONTROL:
                 //System.out.println("***Control Statement***");
-                conStmt(scan, symbolTable);
+                conStmt(scan, symbolTable, bExec);
                 break;
             //function statement
             case FUNCTION:
                 //System.out.println("***Function Statement***");
-                funcStmt(scan, symbolTable);
+                funcStmt(scan, symbolTable, bExec);
                 break;
             //assignment statement
             case OPERAND:
                 //System.out.println("***Assignment Statement***");
-                assignStmt(scan, symbolTable);
+                assignStmt(scan, symbolTable, bExec);
                 break;
             //statements can't begin with these, throw error
             case OPERATOR:
@@ -196,7 +196,9 @@ public class Parser
     				scan.getNext();
     				if (!scan.currentToken.tokenStr.equals(":"))
     				{
-    					errorWithCurrent("expected ':' after 'else'");
+                        throw new ParserException(scan.currentToken.iSourceLineNr
+                                ,"***Error: expected ':' after 'else'***"
+                                , Meatbol.filename);
     				}
 
     				resTemp = executeStatements(scan, symbolTable, false); //since cond was true, ignore else part
@@ -204,13 +206,17 @@ public class Parser
 
     			if (!resTemp.terminatingStr.equals("endif"))
     			{
-    				errorWithCurrent("expected 'endif' for an 'if'");
+                    throw new ParserException(scan.currentToken.iSourceLineNr
+                            ,"***Error: expected 'endif' for an 'if'***"
+                            , Meatbol.filename);
     			}
 
     			scan.getNext();
     			if (!scan.currentToken.tokenStr.equals(";"))
     			{
-    				errorWithCurrent("expected ';' after 'endif'");
+                    throw new ParserException(scan.currentToken.iSourceLineNr
+                            ,"***Error: expected ';' after 'endif'***"
+                            , Meatbol.filename);
     			}
     		}	
     		else
@@ -222,20 +228,26 @@ public class Parser
     				scan.getNext();
     				if (!scan.currentToken.tokenStr.equals(":"))
     				{
-    					errorWithCurrent("expected ':' after 'else'");
+                        throw new ParserException(scan.currentToken.iSourceLineNr
+                                ,"***Error: expected ':' after 'else'***"
+                                , Meatbol.filename);
     				}
     				resTemp = executeStatements(scan, symbolTable, true); //since cond was false, exec else part
     			}
 
     			if (!resTemp.terminatingStr.equals("endif"))
     			{
-    				errorWithCurrent("expected 'endif' for an 'if'");
+                    throw new ParserException(scan.currentToken.iSourceLineNr
+                            ,"***Error: expected 'endif' for an 'if'***"
+                            , Meatbol.filename);
     			}
 
     			scan.getNext();
     			if (!scan.currentToken.tokenStr.equals(";")) 
     			{
-    				errorWithCurrent("expected ';' after 'endif'");
+                    throw new ParserException(scan.currentToken.iSourceLineNr
+                            ,"***Error: expected ';' after 'endif'***"
+                            , Meatbol.filename);
     			}
     		}
     	}
@@ -251,20 +263,26 @@ public class Parser
     			scan.getNext();
     			if (!scan.currentToken.tokenStr.equals(":"))
     			{
-    				errorWithCurrent("expected ':' after 'else'");
+                    throw new ParserException(scan.currentToken.iSourceLineNr
+                            ,"***Error: expected ':' after 'else'***"
+                            , Meatbol.filename);
     			}
     			resTemp = executeStatements(scan, symbolTable, false);
     		}
 
     		if (!resTemp.terminatingStr.equals("endif"))
     		{
-    			errorWithCurrent("expected 'endif' for an 'if'");
+                throw new ParserException(scan.currentToken.iSourceLineNr
+                        ,"***Error: expected 'endif' for an 'if'***"
+                        , Meatbol.filename);
     		}
 
     		scan.getNext();
     		if (!scan.currentToken.tokenStr.equals(";")) 
     		{
-    			errorWithCurrent("expected ';' after 'endif'");
+                throw new ParserException(scan.currentToken.iSourceLineNr
+                        ,"***Error: expected ';' after 'endif'***"
+                        , Meatbol.filename);
     		}
     	}
     }
@@ -501,12 +519,6 @@ public class Parser
 
     }
 
-    private void errorWithCurrent(String message) {
-    	// TODO Auto-generated method stub
-    	System.out.println(message);
-
-    }
-
     private ResultValue executeStatements(Scanner scan, SymbolTable symbolTable, boolean bExec) throws Exception
     {
     	// set position to first line in if
@@ -571,13 +583,17 @@ public class Parser
 
 				if (!resTemp.terminatingStr.equals("endwhile"))
 				{
-					errorWithCurrent("expected 'endwhile' for a 'while'");
+	                throw new ParserException(scan.currentToken.iSourceLineNr
+	                        ,"***Error: expected 'endwhile' for a 'while'***"
+	                        , Meatbol.filename);
 				}
 
 				scan.getNext();
 				if (!scan.currentToken.tokenStr.equals(";"))
 				{
-					errorWithCurrent("expected ';' after 'endwhile'");
+	                throw new ParserException(scan.currentToken.iSourceLineNr
+	                        ,"***Error:expected ';' after 'endwhile'***"
+	                        , Meatbol.filename);
 				}
 			}	
 			else
@@ -587,13 +603,17 @@ public class Parser
 				
 				if (!resTemp.terminatingStr.equals("endwhile"))
 				{
-					errorWithCurrent("expected 'endwhile' for a 'while'");
+	                throw new ParserException(scan.currentToken.iSourceLineNr
+	                        ,"***Error: expected 'endwhile' for a 'while'***"
+	                        , Meatbol.filename);
 				}
 
 				scan.getNext();
 				if (!scan.currentToken.tokenStr.equals(";"))
 				{
-					errorWithCurrent("expected ';' after 'endwhile'");
+	                throw new ParserException(scan.currentToken.iSourceLineNr
+	                        ,"***Error: expected ';' after 'endwhile'***"
+	                        , Meatbol.filename);
 				}
 			}
 		}
@@ -610,20 +630,26 @@ public class Parser
 				scan.getNext();
 				if (!scan.currentToken.tokenStr.equals(":"))
 				{
-					errorWithCurrent("expected ':' after 'else'");
+	                throw new ParserException(scan.currentToken.iSourceLineNr
+	                        ,"***Error: expected ':' after 'else'***"
+	                        , Meatbol.filename);
 				}
 				resTemp = executeStatements(scan, symbolTable, false);
 			}
 
 			if (!resTemp.terminatingStr.equals("endif"))
 			{
-				errorWithCurrent("expected 'endif' for an 'if'");
+                throw new ParserException(scan.currentToken.iSourceLineNr
+                        ,"***Error: expected 'endif' for an 'if'***"
+                        , Meatbol.filename);
 			}
 
 			scan.getNext();
 			if (!scan.currentToken.tokenStr.equals(";")) 
 			{
-				errorWithCurrent("expected ';' after 'endif'");
+                throw new ParserException(scan.currentToken.iSourceLineNr
+                        ,"***Error: expected ';' after 'endif'***"
+                        , Meatbol.filename);
 			}
 		}
     }
