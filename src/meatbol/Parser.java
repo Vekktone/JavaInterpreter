@@ -74,10 +74,12 @@ public class Parser
 	{
 		while(lineNumber < scan.lineList.size() && !scan.lineList.get(lineNumber).contains(";"))
 		{
-			System.out.println(scan.lineList.get(lineNumber));
+			System.out.printf("%3d %s\n", (lineNumber + 1)
+                    , scan.lineList.get(lineNumber));
 			lineNumber++;
 		}
-		System.out.println(scan.lineList.get(lineNumber));
+		System.out.printf("%3d %s\n", (lineNumber + 1)
+				, scan.lineList.get(lineNumber));
 	}
 
 	/** Determines what type of control statement we have.
