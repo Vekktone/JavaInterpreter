@@ -307,7 +307,6 @@ public class Parser
     	{
     		while (!scan.currentToken.tokenStr.equals("else") && !scan.currentToken.tokenStr.equals("endif") && !scan.currentToken.tokenStr.equals("endwhile"))
     		{
-    			System.out.println("execing stmts..." + scan.currentToken.tokenStr);
     			stmt(scan, symbolTable, true);
     			scan.getNext();
     		}
@@ -318,7 +317,6 @@ public class Parser
     	{
     		while (!scan.currentToken.tokenStr.equals("else") && !scan.currentToken.tokenStr.equals("endif") && !scan.currentToken.tokenStr.equals("endwhile"))
     		{
-    			System.out.println("execing stmts...");
     			stmt(scan, symbolTable, false);
     			scan.getNext();
     		}
@@ -329,8 +327,6 @@ public class Parser
 
 	private void whileStmt(Scanner scan, SymbolTable symbolTable, Boolean bExec) throws Exception
 	{
-		System.out.println("I'M IN THE WHILE YALL");
-		System.out.println("The token is " + scan.currentToken.tokenStr);
 		ResultValue resTemp, resCond;
 		
 		// save current line number
