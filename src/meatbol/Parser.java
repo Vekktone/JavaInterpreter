@@ -550,19 +550,17 @@ public class Parser
 	}
 
 	public void debugStmt(Scanner scan, SymbolTable symbolTable, boolean bExec) throws Exception {
-		if (scan.nextToken.primClassif != Classif.DEBUG)
+		if (scan.currentToken.primClassif != Classif.DEBUG || scan.nextToken.primClassif != Classif.DEBUG)
 		{
 			// TODO: ERROR
 		}
 
-		String debugType = scan.getNext();
+		scan.getNext();
 
-		if (scan.nextToken.primClassif != Classif.DEBUG)
-		{
-			// TODO: ERROR
-		}
+		String debugType = scan.currentToken.tokenStr;
+		String onOrOffString = scan.nextToken.tokenStr;
 
-		String onOrOffString = scan.getNext();
+		scan.getNext();
 
 		if (scan.nextToken.primClassif != Classif.SEPARATOR)
 		{
@@ -585,6 +583,8 @@ public class Parser
 		scan.getNext();
 		//scan.currentToken.printToken();
 		token.copyToken(scan.currentToken);
+
+		boolean atLeastOneOperator = false;
 
 		//build infix
 		while(token.tokenStr != ";" && token.tokenStr != ":" && endExpression == false)
@@ -613,6 +613,7 @@ public class Parser
 					token.subClassif = variable.declareType;
 				}
 			case OPERATOR:
+				atLeastOneOperator = true;
 				infix.add(token);
 				try
 				{
@@ -636,7 +637,15 @@ public class Parser
             System.out.print(test.tokenStr + ",");
         }
         System.out.println();*/
-		return infixToPostfix(infix);
+		ResultValue resultValue = infixToPostfix(infix);
+
+		// Debugging for Expr
+		if (scan.debugOptionsMap.get(DebuggerTypes.EXPRESSION) && atLeastOneOperator)
+		{
+			System.out.println("... " + resultValue.value);
+		}
+
+		return resultValue;
 	}
 
 	public ResultValue infixToPostfix(ArrayList<Token> infix) throws ParserException{

@@ -109,10 +109,10 @@ public class SymbolTable
 
         // Debug
         table.put("debug", new STEntry("debug", Classif.DEBUG));
-        table.put("Token", new STEntry("Token", Classif.DEBUG));
-        table.put("Expr", new STEntry("Expr", Classif.DEBUG));
-        table.put("Assign", new STEntry("Assign", Classif.DEBUG));
-        table.put("Stmt", new STEntry("Stmt", Classif.DEBUG));
+        table.put(DebuggerTypes.TOKEN, new STEntry(DebuggerTypes.TOKEN, Classif.DEBUG));
+        table.put(DebuggerTypes.EXPRESSION, new STEntry(DebuggerTypes.EXPRESSION, Classif.DEBUG));
+        table.put(DebuggerTypes.ASSIGNMENT, new STEntry(DebuggerTypes.ASSIGNMENT, Classif.DEBUG));
+        table.put(DebuggerTypes.STATEMENT, new STEntry(DebuggerTypes.STATEMENT, Classif.DEBUG));
         table.put("on", new STEntry("on", Classif.DEBUG));
         table.put("off", new STEntry("off", Classif.DEBUG));
     }

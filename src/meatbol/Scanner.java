@@ -237,6 +237,13 @@ public class Scanner {
                         return this.currentToken.tokenStr;
                     }
                 }
+                // Debugging for printing the current token
+                if (debugOptionsMap.get(DebuggerTypes.TOKEN))
+                {
+                    System.out.println("...");
+                    currentToken.printToken();
+                }
+
                 //increment position and return the string representation of the token
                 columnIndex++;
                 newLineDetected = false;
@@ -244,6 +251,7 @@ public class Scanner {
             }
 
         }
+
         // if we reach the end of a line, reset column index and increment line index
         this.columnIndex = 0;
         this.lineIndex++;
@@ -407,10 +415,10 @@ public class Scanner {
     private void initDebugOptions()
     {
         debugOptionsMap = new HashMap<String, Boolean>();
-        debugOptionsMap.put("Token", false);
-        debugOptionsMap.put("Expr", false);
-        debugOptionsMap.put("Assign", false);
-        debugOptionsMap.put("Stmt", false);
+        debugOptionsMap.put(DebuggerTypes.TOKEN, false);
+        debugOptionsMap.put(DebuggerTypes.EXPRESSION, false);
+        debugOptionsMap.put(DebuggerTypes.ASSIGNMENT, false);
+        debugOptionsMap.put(DebuggerTypes.STATEMENT, false);
     }
 
     /** Checks if a string is a valid float.
