@@ -1,5 +1,9 @@
 package meatbol;
 
+import com.sun.org.apache.xerces.internal.impl.dv.dtd.NMTOKENDatatypeValidator;
+
+import java.math.BigDecimal;
+
 public class Utility {
 
         //U-, *, /, ^, ==, <=, >=, <, >, !=, #
@@ -81,8 +85,15 @@ public class Utility {
         switch (opLeft.type)
         {
         case FLOAT:
-            /*float op1Float = Numeric.toFloat(opRight);
-            float op2Float = Numeric.toFloat(opRight)*/
+            float leftFloatValue = Numeric.toFloat(opLeft);
+            float rightFloatValue = Numeric.toFloat(opRight);
+
+            BigDecimal leftDecimalValue = new BigDecimal(leftFloatValue);
+            BigDecimal rightDecimalValue = new BigDecimal(rightFloatValue);
+            //BigDecimal decimalResult = BigFunctions
+
+            //opLeft.value = Numeric.floatToString(floatResult);
+            break;
         case INTEGER:
             //int resultInt = Numeric.convertToInt(opLeft);
             break;
@@ -99,8 +110,16 @@ public class Utility {
         switch (opLeft.type)
         {
         case FLOAT:
+            float leftFloatValue = Numeric.toFloat(opLeft);
+            float rightFloatValue = Numeric.toFloat(opRight);
+            float floatResult = leftFloatValue * rightFloatValue;
+            opLeft.value = Numeric.floatToString(floatResult);
             break;
         case INTEGER:
+            int leftIntValue = Numeric.toInt(opLeft);
+            int rightIntValue = Numeric.toInt(opRight);
+            int intResult = leftIntValue * rightIntValue;
+            opLeft.value = Numeric.intToString(intResult);
             break;
         default:
             throw new ParserException(iSourceLineNr
@@ -114,8 +133,16 @@ public class Utility {
         switch (opLeft.type)
         {
         case FLOAT:
+            float leftFloatValue = Numeric.toFloat(opLeft);
+            float rightFloatValue = Numeric.toFloat(opRight);
+            float floatResult = leftFloatValue / rightFloatValue;
+            opLeft.value = Numeric.floatToString(floatResult);
             break;
         case INTEGER:
+            int leftIntValue = Numeric.toInt(opLeft);
+            int rightIntValue = Numeric.toInt(opRight);
+            int intResult = leftIntValue / rightIntValue;
+            opLeft.value = Numeric.intToString(intResult);
             break;
         default:
             throw new ParserException(iSourceLineNr
@@ -129,8 +156,16 @@ public class Utility {
         switch (opLeft.type)
         {
         case FLOAT:
+            float leftFloatValue = Numeric.toFloat(opLeft);
+            float rightFloatValue = Numeric.toFloat(opRight);
+            float floatResult = leftFloatValue + rightFloatValue;
+            opLeft.value = Numeric.floatToString(floatResult);
             break;
         case INTEGER:
+            int leftIntValue = Numeric.toInt(opLeft);
+            int rightIntValue = Numeric.toInt(opRight);
+            int intResult = leftIntValue + rightIntValue;
+            opLeft.value = Numeric.intToString(intResult);
             break;
         default:
             throw new ParserException(iSourceLineNr
@@ -145,8 +180,16 @@ public class Utility {
         switch (opLeft.type)
         {
         case FLOAT:
+            float leftFloatValue = Numeric.toFloat(opLeft);
+            float rightFloatValue = Numeric.toFloat(opRight);
+            float floatResult = leftFloatValue - rightFloatValue;
+            opLeft.value = Numeric.floatToString(floatResult);
             break;
         case INTEGER:
+            int leftIntValue = Numeric.toInt(opLeft);
+            int rightIntValue = Numeric.toInt(opRight);
+            int intResult = leftIntValue - rightIntValue;
+            opLeft.value = Numeric.intToString(intResult);
             break;
         default:
             throw new ParserException(iSourceLineNr
@@ -161,6 +204,7 @@ public class Utility {
         switch (opLeft.type)
         {
         case STRING:
+            opLeft.value += opRight.value;
             break;
         default:
             throw new ParserException(iSourceLineNr

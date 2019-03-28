@@ -12,7 +12,7 @@ public class Numeric {
     }
 
     public static int toInt(ResultValue resultValue) {
-        int value = Integer.parseInt(resultValue.value);
+        int value = (int) Float.parseFloat(resultValue.value);
         return value;
     }
 
