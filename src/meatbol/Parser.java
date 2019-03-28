@@ -157,9 +157,10 @@ public class Parser
          System.out.println("The token is " + scan.currentToken.tokenStr);
 
 
+
          if (bExec) {
              // we are executing, not ignoring
-             ResultValue resCond = evalCond(scan, symbolTable);
+             ResultValue resCond = expression(scan, symbolTable);
              // Did the condition return True?
              if (resCond.value.equals("true"))
              {
@@ -332,7 +333,7 @@ public class Parser
         if (resOp1.type == SubClassif.STRING || resOp1.type == SubClassif.BOOLEAN) {
              switch (cond) {
              case "==":
-                 if (resOp1.value.equals(resOp2.value))
+                 if (resOp1.value == resOp2.value)
                  {
                      return new ResultValue(SubClassif.EMPTY, "true", 0, null);
                  }
@@ -341,7 +342,7 @@ public class Parser
                      return new ResultValue(SubClassif.EMPTY, "false", 0, null);
                  }
              case "!=":
-                 if (!resOp1.value.equals(resOp2.value))
+                 if (resOp1.value != resOp2.value)
                  {
                      return new ResultValue(SubClassif.EMPTY, "true", 0, null);
                  }
@@ -552,7 +553,7 @@ public class Parser
 
          if (bExec) {
              // we are executing, not ignoring
-             resCond = evalCond(scan, symbolTable);
+             resCond = expression(scan, symbolTable);
              // Did the condition return True?
              if (resCond.value.equals("true"))
              {
@@ -786,7 +787,7 @@ public class Parser
         token.copyToken(scan.currentToken);
 
         //build infix
-        while(!token.tokenStr.equals(";") && !token.tokenStr.equals(":") && !endExpression)
+        while(token.tokenStr != ";" && token.tokenStr != ":" && endExpression == false)
         {
             switch(token.primClassif)
             {
@@ -799,7 +800,7 @@ public class Parser
 
                 case SEPARATOR:
                     //only parenthesis allowed in infix expression
-                    if (! (token.tokenStr.equals("(") || scan.currentToken.tokenStr.equals(")")))
+                    if (! (token.tokenStr == "(" || scan.currentToken.tokenStr == ")"))
                     {
                         endExpression = true;
                         break;
@@ -870,17 +871,17 @@ public class Parser
             //try to put on stack
             case SEPARATOR:
                 //left parens, always push
-                if(token.tokenStr.equals("("))
+                if(token.tokenStr == "(")
                 {
                     stack.push(token);
                 }
                 //right paren
-                else if(token.tokenStr.equals(")"))
+                else if(token.tokenStr == ")")
                 {
                     try
                     {
                         //pop and out until we reach a right paren
-                        while(stack.peek().tokenStr.equals("("))
+                        while(stack.peek().tokenStr != "(")
                         {
                             postfix.add(stack.pop());
                             //stack cannot be empty
@@ -888,7 +889,6 @@ public class Parser
                     }
                     catch (EmptyStackException e)
                     {
-                        e.printStackTrace();
                         throw new ParserException(token.iSourceLineNr
                                 ,"***Error: Missing left paranthesis***"
                                 , Meatbol.filename);
@@ -912,7 +912,7 @@ public class Parser
         while(! stack.empty())
         {
             //check it for unmatched parenthesis
-            if(stack.peek().tokenStr.equals("("))
+            if(stack.peek().tokenStr == "(")
             {
                 throw new ParserException(stack.peek().iSourceLineNr
                         ,"***Error: Missing right paranthesis***"
@@ -987,7 +987,7 @@ public class Parser
                     try
                     {
                         opRight = stack.pop();
-                        if(!token.tokenStr.equals("u-") && !token.tokenStr.equals("not"))
+                        if(token.tokenStr != "u-" && token.tokenStr != "not")
                         {
                             opLeft = stack.pop();
                         }
