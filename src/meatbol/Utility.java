@@ -171,44 +171,6 @@ public class Utility {
 
     }
 
-    public static ResultValue doLessThan(ResultValue opLeft, ResultValue opRight, int iSourceLineNr) throws ParserException {
-        switch (opLeft.type)
-        {
-        case DATE:
-            break;
-        case FLOAT:
-            break;
-        case INTEGER:
-            break;
-        case STRING:
-            break;
-        default:
-            throw new ParserException(iSourceLineNr
-                    ,"***Error: Illegal operation with type***"
-                    , Meatbol.filename);
-        }
-        return opLeft;
-    }
-
-    public static ResultValue doGreaterThan(ResultValue opLeft, ResultValue opRight, int iSourceLineNr) throws ParserException {
-        switch (opLeft.type)
-        {
-        case DATE:
-            break;
-        case FLOAT:
-            break;
-        case INTEGER:
-            break;
-        case STRING:
-            break;
-        default:
-            throw new ParserException(iSourceLineNr
-                    ,"***Error: Illegal operation with type***"
-                    , Meatbol.filename);
-        }
-        return opLeft;
-    }
-
     public static ResultValue doLessEqual(ResultValue opLeft, ResultValue opRight, int iSourceLineNr) throws ParserException {
         switch (opLeft.type)
         {

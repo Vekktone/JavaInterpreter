@@ -160,7 +160,7 @@ public class Parser
 
          if (bExec) {
              // we are executing, not ignoring
-             ResultValue resCond = evalCond(scan, symbolTable);
+             ResultValue resCond = expression(scan, symbolTable);
              // Did the condition return True?
              if (resCond.value.equals("true"))
              {
@@ -553,7 +553,7 @@ public class Parser
 
          if (bExec) {
              // we are executing, not ignoring
-             resCond = evalCond(scan, symbolTable);
+             resCond = expression(scan, symbolTable);
              // Did the condition return True?
              if (resCond.value.equals("true"))
              {
