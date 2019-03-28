@@ -387,7 +387,7 @@ public class Utility {
 			}
             break;
         case STRING:
-        	if (opLeft.value == opRight.value)
+        	if (opLeft.value.equals(opRight.value))
         	{
         		resCond = new ResultValue(SubClassif.BOOLEAN, "T", 0, null);
 			}
@@ -435,7 +435,7 @@ public class Utility {
 			}
             break;
         case STRING:
-        	if (opLeft.value != opRight.value)
+        	if (!opLeft.value.equals(opRight.value))
         	{
         		resCond = new ResultValue(SubClassif.BOOLEAN, "T", 0, null);
 			}

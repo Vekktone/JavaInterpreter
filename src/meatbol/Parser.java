@@ -31,12 +31,12 @@ public class Parser
 			//function statement
 		case FUNCTION:
 			//System.out.println("***Function Statement***");
-			funcStmt(scan, symbolTable);
+			funcStmt(scan, symbolTable, bExec);
 			break;
 			//assignment statement
 		case OPERAND:
 			//System.out.println("***Assignment Statement***");
-			assignStmt(scan, symbolTable);
+			assignStmt(scan, symbolTable, bExec);
 			break;
 			//statements can't begin with these, throw error
 		case OPERATOR:
@@ -78,7 +78,7 @@ public class Parser
 			if(scan.nextToken.tokenStr.equals("="))
 			{
 				//treat this like any other assignment
-				assignStmt(scan, symbolTable);
+				assignStmt(scan, symbolTable, bExec);
 			}
 			else if(scan.nextToken.tokenStr.equals(";"))
 			{
@@ -422,106 +422,120 @@ public class Parser
 
 	}
 
-	public void funcStmt(Scanner scan, SymbolTable symbolTable) throws Exception
+	public void funcStmt(Scanner scan, SymbolTable symbolTable, Boolean bExec) throws Exception
 	{
-		switch(scan.currentToken.subClassif)
+		if (bExec)
 		{
-		//use the utility function
-		case BUILTIN:
+
+			switch(scan.currentToken.subClassif)
+			{
+			//use the utility function
+			case BUILTIN:
+				switch(scan.currentToken.tokenStr)
+				{
+				case "print":
+					//System.out.println("***Do print function***");
+					Utility.print(this,scan,symbolTable);
+					break;
+				default:
+					throw new ParserException(scan.currentToken.iSourceLineNr
+							,"***Error: Undefined built-in function***"
+							, Meatbol.filename);
+				}
+				break;
+				//not handling user functions yet, so this is an error
+			case USER:
+				throw new ParserException(scan.currentToken.iSourceLineNr
+						,"***Error: Undefined user function***"
+						, Meatbol.filename);
+				//break;
+				//something went wrong
+			default:
+				throw new ParserException(scan.currentToken.iSourceLineNr
+						,"***Error: Unknown state***"
+						, Meatbol.filename);
+			}
+			while(!scan.nextToken.tokenStr.equals(";"))
+			{
+				try
+				{
+					scan.getNext();
+					//scan.currentToken.printToken();
+				}
+				catch (Exception e)
+				{
+					throw e;
+				}
+			}
+			scan.getNext();
+			//scan.currentToken.printToken();
+		}
+		else {
+			skipTo(";", scan);
+		}
+	}
+	public void assignStmt(Scanner scan, SymbolTable symbolTable, Boolean bExec) throws Exception
+	{
+		if (bExec)
+		{
+			//System.out.println("***Do assignment to "+scan.currentToken.tokenStr+"***");
+			ResultValue res;
+			if(scan.currentToken.subClassif != SubClassif.IDENTIFIER)
+			{
+				throw new ParserException(scan.currentToken.iSourceLineNr
+						,"***Error: No value identifier for assignment***"
+						, Meatbol.filename);
+			}
+			Token variable = scan.currentToken;
+			ResultValue Op1;
+			ResultValue Op2;
+
+			scan.getNext();
+
 			switch(scan.currentToken.tokenStr)
 			{
-			case "print":
-				//System.out.println("***Do print function***");
-				Utility.print(this,scan,symbolTable);
+			case "=":
+				res = expression(scan, symbolTable);
+				break;
+			case "-=":
+				if(!StorageManager.values.containsKey(variable.tokenStr))
+				{
+					throw new ParserException(variable.iSourceLineNr
+							,"***Error: Illegal assignment: " + variable + " not initialized***"
+							, Meatbol.filename);
+				}
+				Op1 = new ResultValue(variable.subClassif
+						, StorageManager.values.get(variable.tokenStr)
+						, 0, null);
+				Op2 = expression(scan, symbolTable);
+				res = Utility.doSubtraction(Op1, Op2, variable.iSourceLineNr);
+				break;
+			case "+=":
+				if(!StorageManager.values.containsKey(variable))
+				{
+					throw new ParserException(scan.currentToken.iSourceLineNr
+							,"***Error: Illegal assignment: " + variable + " not initialized***"
+							, Meatbol.filename);
+				}
+				Op1 = new ResultValue(variable.subClassif
+						, StorageManager.values.get(variable.tokenStr)
+						, 0, null);
+
+				Op2 = expression(scan, symbolTable);
+				res = Utility.doAddition(Op1, Op2, variable.iSourceLineNr);
 				break;
 			default:
 				throw new ParserException(scan.currentToken.iSourceLineNr
-						,"***Error: Undefined built-in function***"
+						,"***Error: Expected valid assignment operator***"
 						, Meatbol.filename);
 			}
-			break;
-			//not handling user functions yet, so this is an error
-		case USER:
-			throw new ParserException(scan.currentToken.iSourceLineNr
-					,"***Error: Undefined user function***"
-					, Meatbol.filename);
-			//break;
-			//something went wrong
-		default:
-			throw new ParserException(scan.currentToken.iSourceLineNr
-					,"***Error: Unknown state***"
-					, Meatbol.filename);
+			StorageManager.values.put(variable.tokenStr, res.value);
+			//System.out.println(variable.tokenStr +" = " + res.value);
 		}
-		while(!scan.nextToken.tokenStr.equals(";"))
+		else
 		{
-			try
-			{
-				scan.getNext();
-				//scan.currentToken.printToken();
-			}
-			catch (Exception e)
-			{
-				throw e;
-			}
+			skipTo(";", scan);
 		}
-		scan.getNext();
-		//scan.currentToken.printToken();
-	}
-	public void assignStmt(Scanner scan, SymbolTable symbolTable) throws Exception
-	{
-		//System.out.println("***Do assignment to "+scan.currentToken.tokenStr+"***");
-		ResultValue res;
-		if(scan.currentToken.subClassif != SubClassif.IDENTIFIER)
-		{
-			throw new ParserException(scan.currentToken.iSourceLineNr
-					,"***Error: No value identifier for assignment***"
-					, Meatbol.filename);
-		}
-		Token variable = scan.currentToken;
-		ResultValue Op1;
-		ResultValue Op2;
-
-		scan.getNext();
-
-		switch(scan.currentToken.tokenStr)
-		{
-		case "=":
-			res = expression(scan, symbolTable);
-			break;
-		case "-=":
-			if(!StorageManager.values.containsKey(variable.tokenStr))
-			{
-				throw new ParserException(variable.iSourceLineNr
-						,"***Error: Illegal assignment: " + variable + " not initialized***"
-						, Meatbol.filename);
-			}
-			Op1 = new ResultValue(variable.subClassif
-					, StorageManager.values.get(variable.tokenStr)
-					, 0, null);
-			Op2 = expression(scan, symbolTable);
-			res = Utility.doSubtraction(Op1, Op2, variable.iSourceLineNr);
-			break;
-		case "+=":
-			if(!StorageManager.values.containsKey(variable))
-			{
-				throw new ParserException(scan.currentToken.iSourceLineNr
-						,"***Error: Illegal assignment: " + variable + " not initialized***"
-						, Meatbol.filename);
-			}
-			Op1 = new ResultValue(variable.subClassif
-					, StorageManager.values.get(variable.tokenStr)
-					, 0, null);
-
-			Op2 = expression(scan, symbolTable);
-			res = Utility.doAddition(Op1, Op2, variable.iSourceLineNr);
-			break;
-		default:
-			throw new ParserException(scan.currentToken.iSourceLineNr
-					,"***Error: Expected valid assignment operator***"
-					, Meatbol.filename);
-		}
-		StorageManager.values.put(variable.tokenStr, res.value);
-		//System.out.println(variable.tokenStr +" = " + res.value);
 	}
 
 	public ResultValue expression(Scanner scan, SymbolTable symbolTable) throws Exception
