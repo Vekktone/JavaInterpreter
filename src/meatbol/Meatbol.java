@@ -27,7 +27,7 @@ public class Meatbol
         filename = args[0];
         try {
             // Print a column heading
-            System.out.printf("%-11s %-12s %s\n", "primClassif", "subClassif", "tokenStr");
+//            System.out.printf("%-11s %-12s %s\n", "primClassif", "subClassif", "tokenStr");
 
             // Create the SymbolTable
             SymbolTable symbolTable = new SymbolTable();

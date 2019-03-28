@@ -562,7 +562,7 @@ public class Parser
 			// Debugging for Assign
 			if (scan.debugOptionsMap.get(DebuggerTypes.ASSIGNMENT))
 			{
-				System.out.println("...variable name: " + variable.tokenStr + " value: " + res.value);
+				System.out.println("... Assign result into '" + variable.tokenStr + "' is '" + res.value + "'");
 			}
 
 			//System.out.println(variable.tokenStr +" = " + res.value);
