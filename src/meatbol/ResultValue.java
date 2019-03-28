@@ -1,7 +1,31 @@
 package meatbol;
 
+/** ResultValue class is a data storage structure to assist in the handling of calculations.
+ * <p>
+ *
+ * Stores:
+ * 1. variable type (underlying type for arrays)
+ * 2. value as a String (convert as necessary)
+ * 3. variable structure (primitive/array)
+ * 4. terminating string
+ *
+ * @author Gregory Pugh
+ */
 public class ResultValue {
+    /** Data type of the result */
+    public SubClassif type;
+    /** Value of the result
+     * <p>
+     * value is saved as a string regardless of actual type.
+     * type cast value for primitives; delimiter separated for
+     * arrays. */
+    public String value;
+    /** Identifier for value type (primitive, fixed array, unbound array)*/
+    public int structure;
+    /** terminating string for control functions */
+    public String terminatingStr;
 
+    //Constants for use in structure
     /** Type for ResultValue structure */
     public final int PRIMITIVE = 0;
     /** Type for ResultValue structure */
@@ -9,22 +33,10 @@ public class ResultValue {
     /** Type for ResultValue structure */
     public final int UNBOUND_ARRAY = 2;
 
-    /** Data type of the result */
-    public SubClassif type;
-    /** Value of the result
-     * value is saved as a string regardless of actual type.
-     * type cast value for primitives; delimiter separated for
-     * arrays.
-     */
-    public String value;
-    /** Identifier for value type (primitive, fixed array, unbound array)*/
-    public int structure;
-    /** terminating string for control functions */
-    public String terminatingStr;
-
     /** Empty Constructor */
-    public ResultValue() {
-        // TODO Auto-generated constructor stub
+    public ResultValue()
+    {
+
     }
 
     /** Known value constructor */
@@ -36,8 +48,10 @@ public class ResultValue {
         this.terminatingStr = terminal;
     }
 
+    /** Prints ResultValue data for error checking */
     public void printRes()
     {
-        System.out.println(type + value + structure + terminatingStr);
+        System.out.println("Result value: " + type.toString() + " " + value
+                + " " + structure + " " + terminatingStr);
     }
 }

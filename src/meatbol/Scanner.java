@@ -3,9 +3,6 @@ package meatbol;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import static meatbol.Classif.CONTROL;
-import static meatbol.Classif.FUNCTION;
-import static meatbol.Classif.OPERAND;
 
 /** Scanner is responsible for accessing the input file.
  * <p>
@@ -15,7 +12,7 @@ import static meatbol.Classif.OPERAND;
  * to the Parser for processing.
  *
  * @author Gregory Pugh
- * @author GregoryPugh (modified: 10-2-2019)
+ * @author (last modified: 3-28-2019)
  * @author Reviewed by Riley Marfin, Mason Pohler, Gregory Pugh
  */
 public class Scanner {
@@ -44,8 +41,10 @@ public class Scanner {
     /** List of all valid numbers */
     private final static String integers = "0123456789";
 
+    /** Determines when new line has been started */
     private static Boolean newLineDetected = false;
 
+    /** Stores debugger text strings */
     public HashMap<String, Boolean> debugOptionsMap;
 
     /** Constructor
@@ -68,8 +67,10 @@ public class Scanner {
      */
     public Scanner(String fileName, SymbolTable symbolTable) throws Exception
     {
-        this.symbolTable = symbolTable;
+        //TODO: initDebugOptions should probably be in SymbolTable?
         initDebugOptions();
+        this.symbolTable = symbolTable;
+
         try
         {
             // loads each line into the line array list
@@ -101,7 +102,7 @@ public class Scanner {
      */
     public String getNext() throws Exception
     {
-
+        //shift next to current
         if(!newLineDetected) {
             currentToken = nextToken;
         }
@@ -113,18 +114,19 @@ public class Scanner {
             currentToken = setToken("", Classif.EOF, SubClassif.EMPTY, lineIndex, columnIndex);
             return this.currentToken.tokenStr;
         }
-        // convert current line to char[]
+
+        // Prepare to parse a new token
         char[] lineData = this.lineList.get(lineIndex).toCharArray();
-        // create a new tokens
         this.nextToken = new Token();
-        // flag indicating that current token is valid
         boolean validToken = false;
 
+        /* LEGACY, has been moved to work more accurately with Debugger
         // if this is first Token in line
-//        if (columnIndex == 0 && debugOptionsMap.get(DebuggerTypes.STATEMENT))
-//            // print source line
-//            System.out.printf("%3d %s\n", (this.lineIndex + 1)
-//                    , this.lineList.get(this.lineIndex));
+        if (columnIndex == 0 && debugOptionsMap.get(DebuggerTypes.STATEMENT))
+              System.out.printf("%3d %s\n", (this.lineIndex + 1)
+                    , this.lineList.get(this.lineIndex));
+        */
+
         // iterate through line from last position
         for (; columnIndex < lineData.length; columnIndex++)
         {
@@ -157,6 +159,7 @@ public class Scanner {
                     break;
                 //create operator for valid operator not inside quotes
                 case '+': case '-': case '*': case '<': case '>': case '!': case '=': case '#': case '^':
+                    //if we have a minus and it doesn't follow an operand, it must be a unary
                     if(lineData[columnIndex] == '-' && currentToken.primClassif != Classif.OPERAND)
                     {
                         this.nextToken = setToken("u-"
@@ -165,6 +168,7 @@ public class Scanner {
                                 , lineIndex
                                 , columnIndex);
                     }
+                    //otherwise, it is an operator
                     else
                     {
                     //create token
@@ -204,8 +208,7 @@ public class Scanner {
                                 , columnIndex);
                         validToken = true;
                     }
-                    // if that fails, re-throw exception
-                    catch (IllegalArgumentException e)
+                    catch (Exception e)
                     {
                         throw e;
                     }
@@ -213,7 +216,7 @@ public class Scanner {
             //verify that we created a new token
             if(validToken)
             {
-            //if current token is a potential 2 char operator
+                //if current token is a potential 2 char operator
                 if (currentToken.tokenStr.equals("<")
                         || currentToken.tokenStr.equals(">")
                         || currentToken.tokenStr.equals("!")
@@ -256,6 +259,7 @@ public class Scanner {
         this.columnIndex = 0;
         this.lineIndex++;
         newLineDetected = true;
+
         //then try to get the first token on the new line
         return this.getNext();
     }
@@ -306,17 +310,22 @@ public class Scanner {
             // check if the numeric is an integer
             if (isValidInteger(substring))
                 sub = SubClassif.INTEGER;
-                // check if the numeric is a float
+            // check if the numeric is a float
             else if (isValidFloat(substring))
                 sub = SubClassif.FLOAT;
-                // if it is not an valid numeric, throw exception
+            // if it is not an valid numeric, throw exception
             else
-                throw new IllegalArgumentException("Invalid Numeric: Line " + (lineNum + 1) + " - " + substring);
+                throw new ScannerException(lineNum
+                        , index
+                        , "Syntax error - Invalid Numeric:  " + substring
+                        , Meatbol.filename);
 
-            nextToken = setToken(substring, OPERAND, sub, lineNum, index);
+            //create and return token
+            nextToken = setToken(substring, Classif.OPERAND, sub, lineNum, index);
             return index + i - 1;
         }
 
+        //Otherwise
         switch(substring)
         {
             // boolean values
@@ -359,8 +368,10 @@ public class Scanner {
                     // was not a control declare, then this is an error.
                     if (currentToken.subClassif != SubClassif.DECLARE)
                     {
-                        throw new IllegalArgumentException("Undeclared identifier " + substring + " at line " + lineNum
-                                + " column " + index);
+                        throw new ScannerException(lineNum
+                                , index
+                                , "Syntax error: Undeclared identifier" + substring
+                                , Meatbol.filename);
                     }
                     // if the delimiter is a '(' then this must be a user function.
                     else if (lineData[i] == '(')
@@ -391,13 +402,19 @@ public class Scanner {
 
                             // If the previous token was not a declare, then this variable needs to be declared.
                             if (currentToken.subClassif != SubClassif.DECLARE)
-                                throw new IllegalArgumentException("Illegal declare type " + currentToken.tokenStr);
+                                throw new ScannerException(currentToken.iSourceLineNr
+                                        , currentToken.iColPos
+                                        , "Syntax error: Variable not declared " + currentToken.tokenStr
+                                        , Meatbol.filename);
                         }
                         // The previous token does not have a symbol within the symbol table and thus cannot be
                         // a declaration type
                         else
                         {
-                            throw new IllegalArgumentException("Illegal declare type " + currentToken.tokenStr);
+                            throw new ScannerException(currentToken.iSourceLineNr
+                                    , currentToken.iColPos
+                                    , "Syntax error: Invalid declaration " + currentToken.tokenStr
+                                    , Meatbol.filename);
                         }
                         // TODO: structure and param type logic
                         entry = new STIdentifier(substring, Classif.OPERAND
@@ -408,12 +425,16 @@ public class Scanner {
                 }
                 break;
         }
-
         return index + i - 1;
     }
 
+    /** Initializes string to boolean values for use in Debug
+     *
+     * @author Mason Pohler
+     */
     private void initDebugOptions()
     {
+        //create and populate
         debugOptionsMap = new HashMap<String, Boolean>();
         debugOptionsMap.put(DebuggerTypes.TOKEN, false);
         debugOptionsMap.put(DebuggerTypes.EXPRESSION, false);
@@ -522,16 +543,16 @@ public class Scanner {
      * @author	Gregory Pugh
      * @author  GregoryPugh (modified: 10-2-2019)
      * @author  Riley Marfin (modified 17-2-2019)
+     * @throws ScannerException
      */
-    private int createStringToken(String substring, int lineNum, int index) {
+    private int createStringToken(String substring, int lineNum, int index) throws ScannerException {
         int trimEscapes = 0;							//counter for escape chars
         int i = 0;										//loop counter
         char[] lineData = substring.toCharArray();		//converts String to char[]
+        //char constants for conversion
         char tab = 0x09;
         char newLine = 0x0a;
         char alarmBell = 0x07;
-
-        //System.out.println("createString reached");
 
         //search string one char at a time
         for(i = 1; i < lineData.length;i++)
@@ -592,7 +613,7 @@ public class Scanner {
             {
                 //System.out.println("esacpes "+trimEscapes);
                 nextToken = setToken(substring.substring(1, i-trimEscapes)
-            , OPERAND, SubClassif.STRING, lineNum, index);
+            , Classif.OPERAND, SubClassif.STRING, lineNum, index);
                 break;
             }
 
@@ -600,11 +621,14 @@ public class Scanner {
         //if we reached the end of the line without finding a match, throw exception and exit
         if(i == lineData.length)
         {
-            throw new IllegalArgumentException("Syntax Error: missing closing quote at Line " + (lineNum + 1) + " - " + substring);
+            throw new ScannerException(lineNum + 1
+                    , index
+                    , "Syntax error - Missing closing quotation: " + substring
+                    , Meatbol.filename);
         }
         //Otherwise, create the token and return the new column position after the matching quote
         nextToken = setToken(substring.substring(1, i-trimEscapes)
-        , OPERAND, SubClassif.STRING, lineNum, index);
+        , Classif.OPERAND, SubClassif.STRING, lineNum, index);
         return index + i;
     }
 

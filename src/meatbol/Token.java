@@ -125,7 +125,16 @@ public class Token
         System.out.printf("\n");
     }
 
+    /** Determines Operator Token's precedence when converting infix to postfix
+     *
+     * @return int representing the precedence value
+     *
+     * @throws ParserException
+     *
+     * @author Gregory Pugh
+     */
     public int prec() throws ParserException {
+        //lookup the tokenStr
         switch(this.tokenStr)
         {
             case "(":
@@ -154,7 +163,16 @@ public class Token
         }
     }
 
+    /** Determines Operator Token's precedence in the stack when converting infix to postfix
+     *
+     * @return int representing the precedence value
+     *
+     * @throws ParserException
+     *
+     * @author Gregory Pugh
+     */
     public int stackPrec() throws ParserException {
+        //lookup the tokenStr
         switch(this.tokenStr)
         {
             case "(":
