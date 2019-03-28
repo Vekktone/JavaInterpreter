@@ -175,11 +175,11 @@ public class Utility {
         	Float fOpRight = Float.parseFloat(opRight.value);
         	if (fOpLeft < fOpRight)
         	{
-        		resCond = new ResultValue(SubClassif.BOOLEAN, "true", 0, null);
+        		resCond = new ResultValue(SubClassif.BOOLEAN, "T", 0, null);
 			}
         	else
         	{
-        		resCond = new ResultValue(SubClassif.BOOLEAN, "false", 0, null);
+        		resCond = new ResultValue(SubClassif.BOOLEAN, "F", 0, null);
 			}
             break;
         case INTEGER:
@@ -187,11 +187,11 @@ public class Utility {
         	Integer iOpRight = Integer.parseInt(opRight.value);
         	if (iOpLeft < iOpRight)
         	{
-        		resCond = new ResultValue(SubClassif.BOOLEAN, "true", 0, null);
+        		resCond = new ResultValue(SubClassif.BOOLEAN, "T", 0, null);
 			}
         	else
         	{
-        		resCond = new ResultValue(SubClassif.BOOLEAN, "false", 0, null);
+        		resCond = new ResultValue(SubClassif.BOOLEAN, "F", 0, null);
 			}
             break;
         case STRING:
@@ -215,11 +215,11 @@ public class Utility {
         	Float fOpRight = Float.parseFloat(opRight.value);
         	if (fOpLeft > fOpRight)
         	{
-        		resCond = new ResultValue(SubClassif.BOOLEAN, "true", 0, null);
+        		resCond = new ResultValue(SubClassif.BOOLEAN, "T", 0, null);
 			}
         	else
         	{
-        		resCond = new ResultValue(SubClassif.BOOLEAN, "false", 0, null);
+        		resCond = new ResultValue(SubClassif.BOOLEAN, "F", 0, null);
 			}
             break;
         case INTEGER:
@@ -227,11 +227,11 @@ public class Utility {
         	Integer iOpRight = Integer.parseInt(opRight.value);
         	if (iOpLeft > iOpRight)
         	{
-        		resCond = new ResultValue(SubClassif.BOOLEAN, "true", 0, null);
+        		resCond = new ResultValue(SubClassif.BOOLEAN, "T", 0, null);
 			}
         	else
         	{
-        		resCond = new ResultValue(SubClassif.BOOLEAN, "false", 0, null);
+        		resCond = new ResultValue(SubClassif.BOOLEAN, "F", 0, null);
 			}
             break;
         case STRING:
@@ -255,11 +255,11 @@ public class Utility {
         	Float fOpRight = Float.parseFloat(opRight.value);
         	if (fOpLeft <= fOpRight)
         	{
-        		resCond = new ResultValue(SubClassif.BOOLEAN, "true", 0, null);
+        		resCond = new ResultValue(SubClassif.BOOLEAN, "T", 0, null);
 			}
         	else
         	{
-        		resCond = new ResultValue(SubClassif.BOOLEAN, "false", 0, null);
+        		resCond = new ResultValue(SubClassif.BOOLEAN, "F", 0, null);
 			}
             break;
         case INTEGER:
@@ -267,11 +267,11 @@ public class Utility {
         	Integer iOpRight = Integer.parseInt(opRight.value);
         	if (iOpLeft <= iOpRight)
         	{
-        		resCond = new ResultValue(SubClassif.BOOLEAN, "true", 0, null);
+        		resCond = new ResultValue(SubClassif.BOOLEAN, "T", 0, null);
 			}
         	else
         	{
-        		resCond = new ResultValue(SubClassif.BOOLEAN, "false", 0, null);
+        		resCond = new ResultValue(SubClassif.BOOLEAN, "F", 0, null);
 			}
             break;
         case STRING:
@@ -295,11 +295,11 @@ public class Utility {
         	Float fOpRight = Float.parseFloat(opRight.value);
         	if (fOpLeft >= fOpRight)
         	{
-        		resCond = new ResultValue(SubClassif.BOOLEAN, "true", 0, null);
+        		resCond = new ResultValue(SubClassif.BOOLEAN, "T", 0, null);
 			}
         	else
         	{
-        		resCond = new ResultValue(SubClassif.BOOLEAN, "false", 0, null);
+        		resCond = new ResultValue(SubClassif.BOOLEAN, "F", 0, null);
 			}
             break;
         case INTEGER:
@@ -307,11 +307,11 @@ public class Utility {
         	Integer iOpRight = Integer.parseInt(opRight.value);
         	if (iOpLeft >= iOpRight)
         	{
-        		resCond = new ResultValue(SubClassif.BOOLEAN, "true", 0, null);
+        		resCond = new ResultValue(SubClassif.BOOLEAN, "T", 0, null);
 			}
         	else
         	{
-        		resCond = new ResultValue(SubClassif.BOOLEAN, "false", 0, null);
+        		resCond = new ResultValue(SubClassif.BOOLEAN, "F", 0, null);
 			}
             break;
         case STRING:
@@ -335,11 +335,11 @@ public class Utility {
         	Float fOpRight = Float.parseFloat(opRight.value);
         	if (fOpLeft == fOpRight)
         	{
-        		resCond = new ResultValue(SubClassif.BOOLEAN, "true", 0, null);
+        		resCond = new ResultValue(SubClassif.BOOLEAN, "T", 0, null);
 			}
         	else
         	{
-        		resCond = new ResultValue(SubClassif.BOOLEAN, "false", 0, null);
+        		resCond = new ResultValue(SubClassif.BOOLEAN, "F", 0, null);
 			}
             break;
         case INTEGER:
@@ -347,11 +347,11 @@ public class Utility {
         	Integer iOpRight = Integer.parseInt(opRight.value);
         	if (iOpLeft == iOpRight)
         	{
-        		resCond = new ResultValue(SubClassif.BOOLEAN, "true", 0, null);
+        		resCond = new ResultValue(SubClassif.BOOLEAN, "T", 0, null);
 			}
         	else
         	{
-        		resCond = new ResultValue(SubClassif.BOOLEAN, "false", 0, null);
+        		resCond = new ResultValue(SubClassif.BOOLEAN, "F", 0, null);
 			}
             break;
         case STRING:
@@ -375,11 +375,11 @@ public class Utility {
         	Float fOpRight = Float.parseFloat(opRight.value);
         	if (fOpLeft != fOpRight)
         	{
-        		resCond = new ResultValue(SubClassif.BOOLEAN, "true", 0, null);
+        		resCond = new ResultValue(SubClassif.BOOLEAN, "T", 0, null);
 			}
         	else
         	{
-        		resCond = new ResultValue(SubClassif.BOOLEAN, "false", 0, null);
+        		resCond = new ResultValue(SubClassif.BOOLEAN, "F", 0, null);
 			}
             break;
         case INTEGER:
@@ -387,11 +387,11 @@ public class Utility {
         	Integer iOpRight = Integer.parseInt(opRight.value);
         	if (iOpLeft != iOpRight)
         	{
-        		resCond = new ResultValue(SubClassif.BOOLEAN, "true", 0, null);
+        		resCond = new ResultValue(SubClassif.BOOLEAN, "T", 0, null);
 			}
         	else
         	{
-        		resCond = new ResultValue(SubClassif.BOOLEAN, "false", 0, null);
+        		resCond = new ResultValue(SubClassif.BOOLEAN, "F", 0, null);
 			}
             break;
         case STRING:
@@ -412,11 +412,11 @@ public class Utility {
         	Boolean bOpLeft = Boolean.parseBoolean(opLeft.value);
         	if (!bOpLeft)
         	{
-				resCond = new ResultValue(SubClassif.BOOLEAN, "true", 0, null);
+				resCond = new ResultValue(SubClassif.BOOLEAN, "T", 0, null);
 			}
         	else
         	{
-        		resCond = new ResultValue(SubClassif.BOOLEAN, "false", 0, null);
+        		resCond = new ResultValue(SubClassif.BOOLEAN, "F", 0, null);
         	}
             break;
         default:
@@ -436,11 +436,11 @@ public class Utility {
         	Boolean bOpRight = Boolean.parseBoolean(opRight.value);
         	if (bOpLeft && bOpRight)
         	{
-				resCond = new ResultValue(SubClassif.BOOLEAN, "true", 0, null);
+				resCond = new ResultValue(SubClassif.BOOLEAN, "T", 0, null);
 			}
         	else
         	{
-        		resCond = new ResultValue(SubClassif.BOOLEAN, "false", 0, null);
+        		resCond = new ResultValue(SubClassif.BOOLEAN, "F", 0, null);
         	}
             break;
         default:
@@ -460,11 +460,11 @@ public class Utility {
         	Boolean bOpRight = Boolean.parseBoolean(opRight.value);
         	if (bOpLeft || bOpRight)
         	{
-				resCond = new ResultValue(SubClassif.BOOLEAN, "true", 0, null);
+				resCond = new ResultValue(SubClassif.BOOLEAN, "T", 0, null);
 			}
         	else
         	{
-        		resCond = new ResultValue(SubClassif.BOOLEAN, "false", 0, null);
+        		resCond = new ResultValue(SubClassif.BOOLEAN, "F", 0, null);
         	}
             break;
         default:

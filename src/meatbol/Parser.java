@@ -184,7 +184,7 @@ public class Parser
     		// we are executing, not ignoring
     		ResultValue resCond = evalCond(scan, symbolTable);
     		// Did the condition return True?
-    		if (resCond.value.equals("true"))
+    		if (resCond.value.equals("T"))
     		{
     			// Cond returned True, continue executing
     			ResultValue resTemp = executeStatements(scan, symbolTable, true);
@@ -339,10 +339,10 @@ public class Parser
 			// we are executing, not ignoring
 			resCond = evalCond(scan, symbolTable);
 			// Did the condition return True?
-			if (resCond.value.equals("true"))
+			if (resCond.value.equals("T"))
 			{
 				
-				while (resCond.value.equals("true"))
+				while (resCond.value.equals("T"))
 				{
 					// Cond returned True, continue executing
 					resTemp = executeStatements(scan, symbolTable, true);
