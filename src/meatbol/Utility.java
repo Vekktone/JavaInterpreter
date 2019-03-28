@@ -164,7 +164,7 @@ public class Utility {
 
     }
 
-    public static ResultValue doLessThan(ResultValue opLeft, ResultValue opRight, int iSourceLineNr) throws ParserException {
+    public static ResultValue doLess(ResultValue opLeft, ResultValue opRight, int iSourceLineNr) throws ParserException {
     	ResultValue resCond = new ResultValue();
         switch (opLeft.type)
         {
@@ -204,7 +204,7 @@ public class Utility {
         return resCond;
     }
 
-    public static ResultValue doGreaterThan(ResultValue opLeft, ResultValue opRight, int iSourceLineNr) throws ParserException {
+    public static ResultValue doGreater(ResultValue opLeft, ResultValue opRight, int iSourceLineNr) throws ParserException {
     	ResultValue resCond = new ResultValue();
         switch (opLeft.type)
         {

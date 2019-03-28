@@ -826,10 +826,10 @@ public class Parser
                             value = Utility.doConcatonate(opLeft,opRight,token.iSourceLineNr);
                             break;
                         case "<":
-                            value = Utility.doLessThan(opLeft,opRight,token.iSourceLineNr);
+                            value = Utility.doLess(opLeft,opRight,token.iSourceLineNr);
                             break;
                         case ">":
-                            value = Utility.doGreaterThan(opLeft,opRight,token.iSourceLineNr);
+                            value = Utility.doGreater(opLeft,opRight,token.iSourceLineNr);
                             break;
                         case "<=":
                             value = Utility.doLessEqual(opLeft,opRight,token.iSourceLineNr);
