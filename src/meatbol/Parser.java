@@ -17,7 +17,8 @@ public class Parser
 	 * @param bExec
 	 * @throws Exception
 	 */
-	public void stmt(Scanner scan, SymbolTable symbolTable, Boolean bExec) throws Exception{
+	public void stmt(Scanner scan, SymbolTable symbolTable, Boolean bExec) throws Exception
+	{
 		//System.out.println("\n***start statement***");
 		//scan.currentToken.printToken();
 		switch(scan.currentToken.primClassif)

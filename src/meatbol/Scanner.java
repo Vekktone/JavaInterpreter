@@ -121,10 +121,10 @@ public class Scanner {
         boolean validToken = false;
 
         // if this is first Token in line
-        //if (columnIndex == 0)
+        if (columnIndex == 0 && debugOptionsMap.get(DebuggerTypes.STATEMENT))
             // print source line
-            //System.out.printf("%3d %s\n", (this.lineIndex + 1)
-            //        , this.lineList.get(this.lineIndex));
+            System.out.printf("%3d %s\n", (this.lineIndex + 1)
+                    , this.lineList.get(this.lineIndex));
         // iterate through line from last position
         for (; columnIndex < lineData.length; columnIndex++)
         {
@@ -450,7 +450,7 @@ public class Scanner {
             // check if the char is not a 0-9
             if (!(integers.contains(String.valueOf(iCharacters[i]))))
             {
-                System.out.println("problem: " + iCharacters[i]);
+                // System.out.println("problem: " + iCharacters[i]);
                 // check if this is the first decimal we have found
                 if (iCharacters[i] == '.' && !(hasDecimal))
                     // set decimal flag and continue searching string
