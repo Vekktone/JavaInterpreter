@@ -19,6 +19,12 @@ public class Parser
 	 */
 	public void stmt(Scanner scan, SymbolTable symbolTable, Boolean bExec) throws Exception
 	{
+
+		if (scan.debugOptionsMap.get(DebuggerTypes.STATEMENT))
+		{
+			printStatement(scan, scan.currentToken.iSourceLineNr);
+		}
+
 		//System.out.println("\n***start statement***");
 		//scan.currentToken.printToken();
 		switch(scan.currentToken.primClassif)
@@ -62,6 +68,16 @@ public class Parser
 						,"***Error: unknown state***"
 						, Meatbol.filename);
 		}
+	}
+
+	private void printStatement(Scanner scan, int lineNumber)
+	{
+		while(lineNumber < scan.lineList.size() && !scan.lineList.get(lineNumber).contains(";"))
+		{
+			System.out.println(scan.lineList.get(lineNumber));
+			lineNumber++;
+		}
+		System.out.println(scan.lineList.get(lineNumber));
 	}
 
 	/** Determines what type of control statement we have.

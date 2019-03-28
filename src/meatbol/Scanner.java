@@ -121,10 +121,10 @@ public class Scanner {
         boolean validToken = false;
 
         // if this is first Token in line
-        if (columnIndex == 0 && debugOptionsMap.get(DebuggerTypes.STATEMENT))
-            // print source line
-            System.out.printf("%3d %s\n", (this.lineIndex + 1)
-                    , this.lineList.get(this.lineIndex));
+//        if (columnIndex == 0 && debugOptionsMap.get(DebuggerTypes.STATEMENT))
+//            // print source line
+//            System.out.printf("%3d %s\n", (this.lineIndex + 1)
+//                    , this.lineList.get(this.lineIndex));
         // iterate through line from last position
         for (; columnIndex < lineData.length; columnIndex++)
         {
