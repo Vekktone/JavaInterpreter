@@ -195,6 +195,14 @@ public class Utility {
 			}
             break;
         case STRING:
+        	if (opLeft.value.compareTo(opRight.value) < 0)
+        	{
+        		resCond = new ResultValue(SubClassif.BOOLEAN, "T", 0, null);
+			}
+        	else
+        	{
+        		resCond = new ResultValue(SubClassif.BOOLEAN, "F", 0, null);
+			}
             break;
         default:
             throw new ParserException(iSourceLineNr
@@ -235,6 +243,14 @@ public class Utility {
 			}
             break;
         case STRING:
+        	if (opLeft.value.compareTo(opRight.value) > 0)
+        	{
+        		resCond = new ResultValue(SubClassif.BOOLEAN, "T", 0, null);
+			}
+        	else
+        	{
+        		resCond = new ResultValue(SubClassif.BOOLEAN, "F", 0, null);
+			}
             break;
         default:
             throw new ParserException(iSourceLineNr
@@ -275,6 +291,14 @@ public class Utility {
 			}
             break;
         case STRING:
+        	if (opLeft.value.compareTo(opRight.value) <= 0)
+        	{
+        		resCond = new ResultValue(SubClassif.BOOLEAN, "T", 0, null);
+			}
+        	else
+        	{
+        		resCond = new ResultValue(SubClassif.BOOLEAN, "F", 0, null);
+			}
             break;
         default:
             throw new ParserException(iSourceLineNr
@@ -315,6 +339,14 @@ public class Utility {
 			}
             break;
         case STRING:
+        	if (opLeft.value.compareTo(opRight.value) >= 0)
+        	{
+        		resCond = new ResultValue(SubClassif.BOOLEAN, "T", 0, null);
+			}
+        	else
+        	{
+        		resCond = new ResultValue(SubClassif.BOOLEAN, "F", 0, null);
+			}
             break;
         default:
             throw new ParserException(iSourceLineNr
@@ -355,6 +387,14 @@ public class Utility {
 			}
             break;
         case STRING:
+        	if (opLeft.value == opRight.value)
+        	{
+        		resCond = new ResultValue(SubClassif.BOOLEAN, "T", 0, null);
+			}
+        	else
+        	{
+        		resCond = new ResultValue(SubClassif.BOOLEAN, "F", 0, null);
+			}
             break;
         default:
             throw new ParserException(iSourceLineNr
@@ -395,6 +435,14 @@ public class Utility {
 			}
             break;
         case STRING:
+        	if (opLeft.value != opRight.value)
+        	{
+        		resCond = new ResultValue(SubClassif.BOOLEAN, "T", 0, null);
+			}
+        	else
+        	{
+        		resCond = new ResultValue(SubClassif.BOOLEAN, "F", 0, null);
+			}
             break;
         default:
             throw new ParserException(iSourceLineNr
