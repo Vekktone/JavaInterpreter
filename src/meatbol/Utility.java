@@ -3,11 +3,12 @@ package meatbol;
 import sun.misc.FloatingDecimal;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 
 public class Utility {
 
         //U-, *, /, ^, ==, <=, >=, <, >, !=, #
-    public static void print(Parser parser, Scanner scan, SymbolTable symbolTable) throws Exception
+    public static void print(Parser parser, Scanner scan, ArrayList<Token> tokenArrayList, SymbolTable symbolTable) throws Exception
     {
         int startLine, startCol, endLine, endCol;
         ResultValue res;
@@ -15,47 +16,49 @@ public class Utility {
         try
         {
             //locate opening paren position
-            scan.getNext();
-            if(!scan.currentToken.tokenStr.equals("("))
+            if(!tokenArrayList.get(0).tokenStr.equals("("))
             {
                 System.out.println("***Function missing opening parenthesis***");
             }
-            startLine = scan.currentToken.iSourceLineNr;
-            startCol = scan.currentToken.iColPos;
+            startLine = tokenArrayList.get(0).iSourceLineNr;
+            startCol = tokenArrayList.get(0).iColPos;
 
             //locate closing paren position
-            scan.getNext();
-            while(!scan.nextToken.tokenStr.equals(";"))
-            {
-                scan.getNext();
-            }
+//            while(!tokenArrayList.get(2).tokenStr.equals(";"))
+//            {
+//                scan.getNext();
+//            }
             //make sure function has closing paren
-            if(!scan.currentToken.tokenStr.equals(")"))
+//            System.out.println(tokenArrayList.get(tokenArrayList.size()-2).tokenStr);
+            if(!tokenArrayList.get(tokenArrayList.size()-2).tokenStr.equals(")"))
             {
                 System.out.println("***Function missing closing parenthesis***");
             }
-            endLine = scan.currentToken.iSourceLineNr;
-            endCol = scan.currentToken.iColPos;
+            endLine = tokenArrayList.get(tokenArrayList.size()-2).iSourceLineNr;
+            endCol = tokenArrayList.get(tokenArrayList.size()-2).iColPos;
 
             //reset to begining of arguements and process
-            scan.lineIndex = startLine;
-            scan.columnIndex = startCol;
+//            scan.lineIndex = startLine;
+//            scan.columnIndex = startCol;
 
             //System.out.println("Print function: ");
-            scan.getNext();
-            scan.getNext();
+//            scan.getNext();
+//            scan.getNext();
             //scan.currentToken.printToken();
             //System.out.println(scan.currentToken.iColPos +" "+ scan.currentToken.iSourceLineNr+" "+ endCol+" "+ endLine);
-            while(scan.currentToken.iColPos < endCol && scan.currentToken.iSourceLineNr <= endLine)
-            {
-                //scan.currentToken.printToken();
-                res = parser.expression(scan, symbolTable);
-                System.out.print(res.value + " ");
-                //scan.getNext();
-            }
-            System.out.println();
+//            while(scan.currentToken.iColPos < endCol && scan.currentToken.iSourceLineNr <= endLine)
+//            {
+//                //scan.currentToken.printToken();
+//                res = parser.expression(scan, symbolTable);
+//                System.out.print(res.value + " ");
+//                //scan.getNext();
+//            }
 
+//            System.out.println(tokenArrayList.get(1).tokenStr);
 
+            res = parser.expression(scan, new ArrayList<Token>(tokenArrayList.subList(1, tokenArrayList.size()-2))
+                    , symbolTable);
+            System.out.println(res.value);
         }
         catch (Exception e){
             throw e;

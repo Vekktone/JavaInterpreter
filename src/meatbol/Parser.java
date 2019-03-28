@@ -17,10 +17,16 @@ public class Parser
 	 * @param bExec
 	 * @throws Exception
 	 */
-	public void stmt(Scanner scan, SymbolTable symbolTable, Boolean bExec) throws Exception{
+	public void stmt(Scanner scan, SymbolTable symbolTable, Boolean bExec) throws Exception
+	{
+
+		ArrayList<Token> tokenArrayList = buildLine(scan);
+
 		//System.out.println("\n***start statement***");
 		//scan.currentToken.printToken();
-		switch(scan.currentToken.primClassif)
+//		System.out.println(tokenArrayList.get(0).tokenStr);
+//		System.out.println(tokenArrayList.get(0).primClassif);
+		switch(tokenArrayList.get(0).primClassif)
 		{
 			// shouldn't see this, but if it occurs skip it
 			case EMPTY:
@@ -33,21 +39,21 @@ public class Parser
 			// control statement
 			case CONTROL:
 				// System.out.println("***Control Statement***");
-				conStmt(scan, symbolTable, bExec);
+				conStmt(scan, tokenArrayList, symbolTable, bExec);
 				break;
 			// function statement
 			case FUNCTION:
 				// System.out.println("***Function Statement***");
-				funcStmt(scan, symbolTable, bExec);
+				funcStmt(scan, tokenArrayList, symbolTable, bExec);
 				break;
 			// assignment statement
 			case OPERAND:
 				//System.out.println("***Assignment Statement***");
-				assignStmt(scan, symbolTable, bExec);
+				assignStmt(scan, tokenArrayList, symbolTable, bExec);
 				break;
 			// debug statement
 			case DEBUG:
-				debugStmt(scan, symbolTable, bExec);
+				debugStmt(scan, tokenArrayList, symbolTable, bExec);
 				break;
 			// statements can't begin with these, throw error
 			case OPERATOR:
@@ -63,6 +69,20 @@ public class Parser
 		}
 	}
 
+	private ArrayList<Token> buildLine(Scanner scan) throws Exception {
+		ArrayList<Token> tokenArrayList = new ArrayList<Token>();
+
+		while (!scan.currentToken.tokenStr.equals(";") && scan.currentToken.primClassif != Classif.EOF)
+		{
+			tokenArrayList.add(scan.currentToken);
+			scan.getNext();
+		}
+
+		tokenArrayList.add(scan.currentToken);
+
+		return tokenArrayList;
+	}
+
 	/** Determines what type of control statement we have.
 	 *
 	 * @param scan
@@ -70,28 +90,27 @@ public class Parser
 	 *
 	 * @throws Exception
 	 */
-	public void conStmt(Scanner scan, SymbolTable symbolTable, Boolean bExec) throws Exception
+	public void conStmt(Scanner scan, ArrayList<Token> tokenArrayList, SymbolTable symbolTable, Boolean bExec) throws Exception
 	{
 		//check what type of control statement we have
-		switch(scan.currentToken.subClassif)
+		switch(tokenArrayList.get(0).subClassif)
 		{
 		//declaring new primitive identifier
 		case DECLARE:
 			//Verify scanner added it to symbolTable
-			if(symbolTable.getSymbol(scan.nextToken.tokenStr) == null)
+			if(symbolTable.getSymbol(tokenArrayList.get(1).tokenStr) == null)
 			{
-				throw new ParserException(scan.currentToken.iSourceLineNr
+				throw new ParserException(tokenArrayList.get(0).iSourceLineNr
 						,"***Error: unknown identifier***"
 						, Meatbol.filename);
 			}
-			scan.getNext();
 			//see if a value was assigned
-			if(scan.nextToken.tokenStr.equals("="))
+			if(tokenArrayList.get(2).tokenStr.equals("="))
 			{
 				//treat this like any other assignment
-				assignStmt(scan, symbolTable, bExec);
+				assignStmt(scan, new ArrayList<Token>(tokenArrayList.subList(1, tokenArrayList.size())), symbolTable, bExec);
 			}
-			else if(scan.nextToken.tokenStr.equals(";"))
+			else if(tokenArrayList.get(2).tokenStr.equals(";"))
 			{
 				//System.out.println("***Empty declare of: "+scan.currentToken.tokenStr+"***");
 				//declared only, we are done
@@ -101,49 +120,49 @@ public class Parser
 			else
 			{
 				//anything else is a syntax error
-				throw new ParserException(scan.currentToken.iSourceLineNr
+				throw new ParserException(tokenArrayList.get(1).iSourceLineNr
 						,"***Error: Expected end of statement or assignment***"
 						, Meatbol.filename);
 			}
 			break;
 			//if we are here, then we are missing matching FLOW
 		case END:
-			switch(scan.currentToken.tokenStr)
+			switch(tokenArrayList.get(0).tokenStr)
 			{
 			case "enddef":
-				throw new ParserException(scan.currentToken.iSourceLineNr
+				throw new ParserException(tokenArrayList.get(0).iSourceLineNr
 						,"***Error: enddef without def***"
 						, Meatbol.filename);
 			case "endif":
-				throw new ParserException(scan.currentToken.iSourceLineNr
+				throw new ParserException(tokenArrayList.get(0).iSourceLineNr
 						,"***Error: endif without if***"
 						, Meatbol.filename);
 			case "else":
-				throw new ParserException(scan.currentToken.iSourceLineNr
+				throw new ParserException(tokenArrayList.get(0).iSourceLineNr
 						,"***Error: else without if***"
 						, Meatbol.filename);
 			case "endfor":
-				throw new ParserException(scan.currentToken.iSourceLineNr
+				throw new ParserException(tokenArrayList.get(0).iSourceLineNr
 						,"***Error: endfor without for***"
 						, Meatbol.filename);
 			case "endwhile":
-				throw new ParserException(scan.currentToken.iSourceLineNr
+				throw new ParserException(tokenArrayList.get(0).iSourceLineNr
 						,"***Error: endwhile without while***"
 						, Meatbol.filename);
 			default:
-				throw new ParserException(scan.currentToken.iSourceLineNr
+				throw new ParserException(tokenArrayList.get(0).iSourceLineNr
 						,"***Error: unknown state***"
 						, Meatbol.filename);
 			}
 			//begin new control statement
 		case FLOW:
-			switch(scan.currentToken.tokenStr)
+			switch(tokenArrayList.get(0).tokenStr)
 			{
 			case "if":
-				ifStmt(scan, symbolTable, bExec);
+				ifStmt(scan, tokenArrayList, symbolTable, bExec);
 				break;
 			case "while":
-				whileStmt(scan, symbolTable, bExec);
+				whileStmt(scan, tokenArrayList, symbolTable, bExec);
 				break;
 			case "def":
 				defStmt(scan, symbolTable);
@@ -157,17 +176,18 @@ public class Parser
 			break;
 			//something went wrong
 		default:
-			throw new ParserException(scan.currentToken.iSourceLineNr
+			throw new ParserException(tokenArrayList.get(0).iSourceLineNr
 					,"***Error: Unknown state***"
 					, Meatbol.filename);
 		}
 	}
 
-	private void ifStmt(Scanner scan, SymbolTable symbolTable, Boolean bExec) throws Exception {
+	private void ifStmt(Scanner scan, ArrayList<Token> tokenArrayList, SymbolTable symbolTable, Boolean bExec) throws Exception {
 
 		if (bExec) {
 			// we are executing, not ignoring
-			ResultValue resCond = expression(scan, symbolTable);
+			ResultValue resCond = expression(scan, new ArrayList<Token>(tokenArrayList.subList(1, tokenArrayList.size()))
+					, symbolTable);
 			// Did the condition return True?
 			if (resCond.value.equals("T"))
 			{
@@ -176,28 +196,29 @@ public class Parser
 				// what ended the statements after the true part? else: or endif;
 				if (resTemp.terminatingStr.equals("else"))
 				{
-					scan.getNext();
-					if (!scan.currentToken.tokenStr.equals(":"))
+//					scan.getNext();
+					if (!tokenArrayList.get(1).equals(":"))
 					{
-						throw new ParserException(scan.currentToken.iSourceLineNr
+						throw new ParserException(tokenArrayList.get(1).iSourceLineNr
 								,"***Error: expected ':' after 'else'***"
 								, Meatbol.filename);
 					}
 
 					resTemp = executeStatements(scan, symbolTable, false); //since cond was true, ignore else part
+					tokenArrayList = buildLine(scan);
 				}
 
 				if (!resTemp.terminatingStr.equals("endif"))
 				{
-					throw new ParserException(scan.currentToken.iSourceLineNr
+					throw new ParserException(tokenArrayList.get(1).iSourceLineNr
 							,"***Error: expected 'endif' for an 'if'***"
 							, Meatbol.filename);
 				}
 
-				scan.getNext();
-				if (!scan.currentToken.tokenStr.equals(";"))
+//				scan.getNext();
+				if (!tokenArrayList.get(2).tokenStr.equals(";"))
 				{
-					throw new ParserException(scan.currentToken.iSourceLineNr
+					throw new ParserException(tokenArrayList.get(2).iSourceLineNr
 							,"***Error: expected ';' after 'endif'***"
 							, Meatbol.filename);
 				}
@@ -206,29 +227,31 @@ public class Parser
 			{
 				// Cond returned False, ignore execution
 				ResultValue resTemp = executeStatements(scan, symbolTable, false); //not exec'ing true part
+				tokenArrayList = buildLine(scan);
 				if (resTemp.terminatingStr.equals("else")) 
 				{
-					scan.getNext();
-					if (!scan.currentToken.tokenStr.equals(":"))
+//					scan.getNext();
+					if (!tokenArrayList.get(1).tokenStr.equals(":"))
 					{
-						throw new ParserException(scan.currentToken.iSourceLineNr
+						throw new ParserException(tokenArrayList.get(1).iSourceLineNr
 								,"***Error: expected ':' after 'else'***"
 								, Meatbol.filename);
 					}
 					resTemp = executeStatements(scan, symbolTable, true); //since cond was false, exec else part
+					tokenArrayList = buildLine(scan);
 				}
 
 				if (!resTemp.terminatingStr.equals("endif"))
 				{
-					throw new ParserException(scan.currentToken.iSourceLineNr
+					throw new ParserException(tokenArrayList.get(0).iSourceLineNr
 							,"***Error: expected 'endif' for an 'if'***"
 							, Meatbol.filename);
 				}
 
-				scan.getNext();
-				if (!scan.currentToken.tokenStr.equals(";")) 
+//				scan.getNext();
+				if (!tokenArrayList.get(1).tokenStr.equals(";"))
 				{
-					throw new ParserException(scan.currentToken.iSourceLineNr
+					throw new ParserException(tokenArrayList.get(1).iSourceLineNr
 							,"***Error: expected ';' after 'endif'***"
 							, Meatbol.filename);
 				}
@@ -239,18 +262,20 @@ public class Parser
 			// we are ignoring execution
 			// we want to ignore the conditional, true part, and false part
 			// should we execute evalCond?
-			skipTo(":", scan);
+//			skipTo(":", scan);
 			ResultValue resTemp = executeStatements(scan, symbolTable, false);
+			tokenArrayList = buildLine(scan);
 			if (resTemp.terminatingStr.equals("else")) 
 			{
-				scan.getNext();
-				if (!scan.currentToken.tokenStr.equals(":"))
+//				scan.getNext();
+				if (!tokenArrayList.get(1).tokenStr.equals(":"))
 				{
-					throw new ParserException(scan.currentToken.iSourceLineNr
+					throw new ParserException(tokenArrayList.get(1).iSourceLineNr
 							,"***Error: expected ':' after 'else'***"
 							, Meatbol.filename);
 				}
 				resTemp = executeStatements(scan, symbolTable, false);
+				tokenArrayList = buildLine(scan);
 			}
 
 			if (!resTemp.terminatingStr.equals("endif"))
@@ -260,35 +285,35 @@ public class Parser
 						, Meatbol.filename);
 			}
 
-			scan.getNext();
-			if (!scan.currentToken.tokenStr.equals(";")) 
+//			scan.getNext();
+			if (!tokenArrayList.get(1).tokenStr.equals(";"))
 			{
-				throw new ParserException(scan.currentToken.iSourceLineNr
+				throw new ParserException(tokenArrayList.get(1).iSourceLineNr
 						,"***Error: expected ';' after 'endif'***"
 						, Meatbol.filename);
 			}
 		}
 	}
 
-	private void skipTo(String skip, Scanner scan) throws Exception {
-		while (!scan.currentToken.tokenStr.equals(skip))
-		{
-			scan.getNext();
-		}
-
-	}
+//	private void skipTo(String skip, Scanner scan) throws Exception {
+//		while (!scan.currentToken.tokenStr.equals(skip))
+//		{
+//			scan.getNext();
+//		}
+//
+//	}
 
 	private ResultValue executeStatements(Scanner scan, SymbolTable symbolTable, boolean bExec) throws Exception
 	{
 		// set position to first line in if
-		scan.getNext();
+//		scan.getNext();
 
 		if (bExec)
 		{
 			while (!scan.currentToken.tokenStr.equals("else") && !scan.currentToken.tokenStr.equals("endif") && !scan.currentToken.tokenStr.equals("endwhile"))
 			{
 				stmt(scan, symbolTable, true);
-				scan.getNext();
+//				scan.getNext();
 			}
 			ResultValue res = new ResultValue(SubClassif.END, "testVal", 0, scan.currentToken.tokenStr);
 			return res;
@@ -298,26 +323,27 @@ public class Parser
 			while (!scan.currentToken.tokenStr.equals("else") && !scan.currentToken.tokenStr.equals("endif") && !scan.currentToken.tokenStr.equals("endwhile"))
 			{
 				stmt(scan, symbolTable, false);
-				scan.getNext();
+//				scan.getNext();
 			}
 			ResultValue res = new ResultValue(SubClassif.END, "testVal", 0, scan.currentToken.tokenStr);
 			return res;	
 		}
 	}
 
-	private void whileStmt(Scanner scan, SymbolTable symbolTable, Boolean bExec) throws Exception
+	private void whileStmt(Scanner scan, ArrayList<Token> tokenArrayList, SymbolTable symbolTable, Boolean bExec) throws Exception
 	{
 		ResultValue resTemp, resCond;
 
 		// save current line number
-		int iColPosition = scan.columnIndex;
+		int iColPosition = scan.columnIndex-1;
 		int iRowPos = scan.lineIndex;
-		Token currentToken = scan.currentToken;
-		Token nextToken = scan.nextToken;
+		Token currentToken = tokenArrayList.get(0);
+		Token nextToken = tokenArrayList.get(1);
 
 		if (bExec) {
 			// we are executing, not ignoring
-			resCond = expression(scan, symbolTable);
+			resCond = expression(scan, new ArrayList<Token>(tokenArrayList.subList(1, tokenArrayList.size()))
+					, symbolTable);
 			// Did the condition return True?
 			if (resCond.value.equals("T"))
 			{
@@ -329,24 +355,27 @@ public class Parser
 					// skip back to current line and evalCond
 					scan.columnIndex = iColPosition;
 					scan.lineIndex = iRowPos;
-					scan.currentToken = currentToken;
-					scan.nextToken = nextToken;
-					resCond = expression(scan, symbolTable);
+					tokenArrayList = buildLine(scan);
+//					scan.currentToken = currentToken;
+//					scan.nextToken = nextToken;
+					resCond = expression(scan, new ArrayList<Token>(tokenArrayList.subList(1, tokenArrayList.size()))
+							, symbolTable);
 				}
 				// exec stmts as false
 				resTemp = executeStatements(scan, symbolTable, false);
+				tokenArrayList = buildLine(scan);
 
 				if (!resTemp.terminatingStr.equals("endwhile"))
 				{
-					throw new ParserException(scan.currentToken.iSourceLineNr
+					throw new ParserException(tokenArrayList.get(0).iSourceLineNr
 							,"***Error: expected 'endwhile' for a 'while'***"
 							, Meatbol.filename);
 				}
 
-				scan.getNext();
-				if (!scan.currentToken.tokenStr.equals(";"))
+//				scan.getNext();
+				if (!tokenArrayList.get(1).tokenStr.equals(";"))
 				{
-					throw new ParserException(scan.currentToken.iSourceLineNr
+					throw new ParserException(tokenArrayList.get(1).iSourceLineNr
 							,"***Error:expected ';' after 'endwhile'***"
 							, Meatbol.filename);
 				}
@@ -355,18 +384,19 @@ public class Parser
 			{
 				// Cond returned False, ignore execution
 				resTemp = executeStatements(scan, symbolTable, false); //not exec'ing true part
+				tokenArrayList = buildLine(scan);
 
 				if (!resTemp.terminatingStr.equals("endwhile"))
 				{
-					throw new ParserException(scan.currentToken.iSourceLineNr
+					throw new ParserException(tokenArrayList.get(0).iSourceLineNr
 							,"***Error: expected 'endwhile' for a 'while'***"
 							, Meatbol.filename);
 				}
 
-				scan.getNext();
-				if (!scan.currentToken.tokenStr.equals(";"))
+//				scan.getNext();
+				if (!tokenArrayList.get(1).tokenStr.equals(";"))
 				{
-					throw new ParserException(scan.currentToken.iSourceLineNr
+					throw new ParserException(tokenArrayList.get(1).iSourceLineNr
 							,"***Error: expected ';' after 'endwhile'***"
 							, Meatbol.filename);
 				}
@@ -377,20 +407,21 @@ public class Parser
 			// we are ignoring execution
 			// we want to ignore the conditional, true part, and false part
 			// should we execute evalCond?
-			skipTo(":", scan);
+//			skipTo(":", scan);
 			resTemp = executeStatements(scan, symbolTable, false);
+			tokenArrayList = buildLine(scan);
 
 			if (!resTemp.terminatingStr.equals("endwhile"))
 			{
-				throw new ParserException(scan.currentToken.iSourceLineNr
+				throw new ParserException(tokenArrayList.get(0).iSourceLineNr
 						,"***Error: expected 'endwhile' for a 'while'***"
 						, Meatbol.filename);
 			}
 
-			scan.getNext();
-			if (!scan.currentToken.tokenStr.equals(";")) 
+//			scan.getNext();
+			if (!tokenArrayList.get(1).tokenStr.equals(";"))
 			{
-				throw new ParserException(scan.currentToken.iSourceLineNr
+				throw new ParserException(tokenArrayList.get(1).iSourceLineNr
 						,"***Error: expected ';' after 'endwhile'***"
 						, Meatbol.filename);
 			}
@@ -398,115 +429,115 @@ public class Parser
 	}
 
 	private void defStmt(Scanner scan, SymbolTable symbolTable) throws Exception {
-		while(!scan.nextToken.tokenStr.equals(";"))
-		{
-			try
-			{
-				scan.getNext();
-				//scan.currentToken.printToken();
-			}
-			catch (Exception e)
-			{
-				throw e;
-			}
-		}
-		scan.getNext();
-		//scan.currentToken.printToken();
+//		while(!scan.nextToken.tokenStr.equals(";"))
+//		{
+//			try
+//			{
+//				scan.getNext();
+//				//scan.currentToken.printToken();
+//			}
+//			catch (Exception e)
+//			{
+//				throw e;
+//			}
+//		}
+//		scan.getNext();
+//		//scan.currentToken.printToken();
 
 	}
 
 	private void forStmt(Scanner scan, SymbolTable symbolTable) throws Exception {
-		while(!scan.nextToken.tokenStr.equals(";"))
-		{
-			try
-			{
-				scan.getNext();
-				//scan.currentToken.printToken();
-			}
-			catch (Exception e)
-			{
-				throw e;
-			}
-		}
-		scan.getNext();
-		//scan.currentToken.printToken();
+//		while(!scan.nextToken.tokenStr.equals(";"))
+//		{
+//			try
+//			{
+//				scan.getNext();
+//				//scan.currentToken.printToken();
+//			}
+//			catch (Exception e)
+//			{
+//				throw e;
+//			}
+//		}
+//		scan.getNext();
+//		//scan.currentToken.printToken();
 
 	}
 
-	public void funcStmt(Scanner scan, SymbolTable symbolTable, Boolean bExec) throws Exception
+	public void funcStmt(Scanner scan, ArrayList<Token> tokenArrayList, SymbolTable symbolTable, Boolean bExec) throws Exception
 	{
 		if (bExec)
 		{
 
-			switch(scan.currentToken.subClassif)
+			switch(tokenArrayList.get(0).subClassif)
 			{
 			//use the utility function
 			case BUILTIN:
-				switch(scan.currentToken.tokenStr)
+				switch(tokenArrayList.get(0).tokenStr)
 				{
-				case "print":
-					//System.out.println("***Do print function***");
-					Utility.print(this,scan,symbolTable);
-					break;
-				default:
-					throw new ParserException(scan.currentToken.iSourceLineNr
-							,"***Error: Undefined built-in function***"
-							, Meatbol.filename);
+					case "print":
+						//System.out.println("***Do print function***");
+						Utility.print(this, scan, new ArrayList<Token>(tokenArrayList.subList(1, tokenArrayList.size())),symbolTable);
+						break;
+					default:
+						throw new ParserException(tokenArrayList.get(0).iSourceLineNr
+								,"***Error: Undefined built-in function***"
+								, Meatbol.filename);
 				}
 				break;
 				//not handling user functions yet, so this is an error
 			case USER:
-				throw new ParserException(scan.currentToken.iSourceLineNr
+				throw new ParserException(tokenArrayList.get(0).iSourceLineNr
 						,"***Error: Undefined user function***"
 						, Meatbol.filename);
 				//break;
 				//something went wrong
 			default:
-				throw new ParserException(scan.currentToken.iSourceLineNr
+				throw new ParserException(tokenArrayList.get(0).iSourceLineNr
 						,"***Error: Unknown state***"
 						, Meatbol.filename);
 			}
-			while(!scan.nextToken.tokenStr.equals(";"))
-			{
-				try
-				{
-					scan.getNext();
-					//scan.currentToken.printToken();
-				}
-				catch (Exception e)
-				{
-					throw e;
-				}
-			}
-			scan.getNext();
-			//scan.currentToken.printToken();
+//			while(!scan.nextToken.tokenStr.equals(";"))
+//			{
+//				try
+//				{
+//					scan.getNext();
+//					//scan.currentToken.printToken();
+//				}
+//				catch (Exception e)
+//				{
+//					throw e;
+//				}
+//			}
+//			scan.getNext();
+//			//scan.currentToken.printToken();
 		}
-		else {
-			skipTo(";", scan);
-		}
+//		else {
+//			skipTo(";", scan);
+//		}
 	}
-	public void assignStmt(Scanner scan, SymbolTable symbolTable, Boolean bExec) throws Exception
+
+	public void assignStmt(Scanner scan, ArrayList<Token> tokenArrayList, SymbolTable symbolTable, Boolean bExec) throws Exception
 	{
 		if (bExec)
 		{
 			//System.out.println("***Do assignment to "+scan.currentToken.tokenStr+"***");
 			ResultValue res;
-			if(scan.currentToken.subClassif != SubClassif.IDENTIFIER)
+			if(tokenArrayList.get(0).subClassif != SubClassif.IDENTIFIER)
 			{
-				throw new ParserException(scan.currentToken.iSourceLineNr
+				throw new ParserException(tokenArrayList.get(0).iSourceLineNr
 						,"***Error: No value identifier for assignment***"
 						, Meatbol.filename);
 			}
-			Token variable = scan.currentToken;
+			Token variable = tokenArrayList.get(0);
 			ResultValue Op1;
 			ResultValue Op2;
 
-			scan.getNext();
-
-			switch(scan.currentToken.tokenStr)
+			switch(tokenArrayList.get(1).tokenStr)
 			{
 			case "=":
-				res = expression(scan, symbolTable);
+				res = expression(scan, new ArrayList<Token>(tokenArrayList.subList(2, tokenArrayList.size()))
+						, symbolTable);
 				break;
 			case "-=":
 				if(!StorageManager.values.containsKey(variable.tokenStr))
@@ -518,13 +549,14 @@ public class Parser
 				Op1 = new ResultValue(variable.subClassif
 						, StorageManager.values.get(variable.tokenStr)
 						, 0, null);
-				Op2 = expression(scan, symbolTable);
+				Op2 = expression(scan, new ArrayList<Token>(tokenArrayList.subList(2, tokenArrayList.size()))
+						, symbolTable);
 				res = Utility.doSubtraction(Op1, Op2, variable.iSourceLineNr);
 				break;
 			case "+=":
-				if(!StorageManager.values.containsKey(variable))
+				if(!StorageManager.values.containsKey(variable.tokenStr))
 				{
-					throw new ParserException(scan.currentToken.iSourceLineNr
+					throw new ParserException(tokenArrayList.get(1).iSourceLineNr
 							,"***Error: Illegal assignment: " + variable + " not initialized***"
 							, Meatbol.filename);
 				}
@@ -532,11 +564,12 @@ public class Parser
 						, StorageManager.values.get(variable.tokenStr)
 						, 0, null);
 
-				Op2 = expression(scan, symbolTable);
+				Op2 = expression(scan, new ArrayList<Token>(tokenArrayList.subList(2, tokenArrayList.size()))
+						, symbolTable);
 				res = Utility.doAddition(Op1, Op2, variable.iSourceLineNr);
 				break;
 			default:
-				throw new ParserException(scan.currentToken.iSourceLineNr
+				throw new ParserException(tokenArrayList.get(1).iSourceLineNr
 						,"***Error: Expected valid assignment operator***"
 						, Meatbol.filename);
 			}
@@ -547,55 +580,47 @@ public class Parser
 			{
 				System.out.println("...variable name: " + variable.tokenStr + " value: " + res.value);
 			}
-
-			//System.out.println(variable.tokenStr +" = " + res.value);
 		}
-		else
-		{
-			skipTo(";", scan);
-		}
+//		else
+//		{
+//			skipTo(";", scan);
+//		}
 	}
 
-	public void debugStmt(Scanner scan, SymbolTable symbolTable, boolean bExec) throws Exception {
-		if (scan.currentToken.primClassif != Classif.DEBUG || scan.nextToken.primClassif != Classif.DEBUG)
+	public void debugStmt(Scanner scan, ArrayList<Token> tokenArrayList, SymbolTable symbolTable, boolean bExec) throws Exception {
+		if (tokenArrayList.size() < 4 || tokenArrayList.get(1).primClassif != Classif.DEBUG
+				|| tokenArrayList.get(2).primClassif != Classif.DEBUG
+				|| tokenArrayList.get(3).primClassif != Classif.SEPARATOR)
 		{
 			// TODO: ERROR
 		}
-
-		scan.getNext();
-
-		String debugType = scan.currentToken.tokenStr;
-		String onOrOffString = scan.nextToken.tokenStr;
-
-		scan.getNext();
-
-		if (scan.nextToken.primClassif != Classif.SEPARATOR)
-		{
-			// TODO: ERROR
-		}
-		// clear semicolon token
-		scan.getNext();
-
+		String debugType = tokenArrayList.get(1).tokenStr;
+		String onOrOffString = tokenArrayList.get(2).tokenStr;
 		boolean setValue = onOrOffString.equals("on");
 		scan.debugOptionsMap.put(debugType, setValue);
 	}
 
-	public ResultValue expression(Scanner scan, SymbolTable symbolTable) throws Exception
+	public ResultValue expression(Scanner scan, ArrayList<Token> tokenArrayList, SymbolTable symbolTable) throws Exception
 	{
-		//collect tokens for expression
 		ArrayList<Token> infix = new ArrayList<Token>();
+
+		//collect tokens for expression
 		Boolean endExpression = false;
 		Token token = new Token();
+		token.copyToken(tokenArrayList.get(0));
 
-		scan.getNext();
+		//scan.getNext();
 		//scan.currentToken.printToken();
-		token.copyToken(scan.currentToken);
+		int i = 0;
 
 		boolean atLeastOneOperator = false;
 
 		//build infix
-		while(token.tokenStr != ";" && token.tokenStr != ":" && endExpression == false)
+		while(i < tokenArrayList.size() && !token.tokenStr.equals(";") && !token.tokenStr.equals(":")
+				&& endExpression == false)
 		{
+			token = new Token();
+			token.copyToken(tokenArrayList.get(i));
 			switch(token.primClassif)
 			{
 			//not handling functions yet, throw error
@@ -607,7 +632,7 @@ public class Parser
 
 			case SEPARATOR:
 				//only parenthesis allowed in infix expression
-				if (! (token.tokenStr == "(" || scan.currentToken.tokenStr == ")"))
+				if (!token.tokenStr.equals("(") && !token.tokenStr.equals(")"))
 				{
 					endExpression = true;
 					break;
@@ -615,18 +640,23 @@ public class Parser
 			case OPERAND:
 				//if this is an identifier, we need to retrieve its value and type
 				if(token.subClassif == SubClassif.IDENTIFIER){
-					token.tokenStr = StorageManager.values.get(scan.currentToken.tokenStr);
-					STIdentifier variable = (STIdentifier)symbolTable.getSymbol(scan.currentToken.tokenStr);
+					Token temp = new Token();
+					temp.copyToken(token);
+					token.tokenStr = StorageManager.values.get(token.tokenStr);
+					STIdentifier variable = (STIdentifier)symbolTable.getSymbol(temp.tokenStr);
 					token.subClassif = variable.declareType;
 				}
+				infix.add(token);
+				i++;
+				break;
 			case OPERATOR:
 				atLeastOneOperator = true;
 				infix.add(token);
 				try
 				{
-					scan.getNext();
+					i++;
 					token = new Token();
-					token.copyToken(scan.currentToken);
+					token.copyToken(tokenArrayList.get(i));
 				}
 				catch (Exception e)
 				{
@@ -638,7 +668,14 @@ public class Parser
 				endExpression = true;
 				break;
 			}
+
+//			System.out.println("expr loop");
 		}
+
+//		System.out.println(tokenArrayList.toArray().toString());
+//		tokenArrayList = new ArrayList<>(tokenArrayList.subList(i, tokenArrayList.size()));
+//		System.out.println(tokenArrayList.toArray().toString());
+
 		/*for (Token test: infix)
         {
             System.out.print(test.tokenStr + ",");
