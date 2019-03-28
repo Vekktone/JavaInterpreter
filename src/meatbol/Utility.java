@@ -165,13 +165,34 @@ public class Utility {
     }
 
     public static ResultValue doLessThan(ResultValue opLeft, ResultValue opRight, int iSourceLineNr) throws ParserException {
+    	ResultValue resCond = new ResultValue();
         switch (opLeft.type)
         {
         case DATE:
             break;
         case FLOAT:
+        	Float fOpLeft = Float.parseFloat(opLeft.value);
+        	Float fOpRight = Float.parseFloat(opRight.value);
+        	if (fOpLeft < fOpRight)
+        	{
+        		resCond = new ResultValue(SubClassif.BOOLEAN, "true", 0, null);
+			}
+        	else
+        	{
+        		resCond = new ResultValue(SubClassif.BOOLEAN, "false", 0, null);
+			}
             break;
         case INTEGER:
+        	Integer iOpLeft = Integer.parseInt(opLeft.value);
+        	Integer iOpRight = Integer.parseInt(opRight.value);
+        	if (iOpLeft < iOpRight)
+        	{
+        		resCond = new ResultValue(SubClassif.BOOLEAN, "true", 0, null);
+			}
+        	else
+        	{
+        		resCond = new ResultValue(SubClassif.BOOLEAN, "false", 0, null);
+			}
             break;
         case STRING:
             break;
@@ -180,17 +201,38 @@ public class Utility {
                     ,"***Error: Illegal operation with type***"
                     , Meatbol.filename);
         }
-        return opLeft;
+        return resCond;
     }
 
     public static ResultValue doGreaterThan(ResultValue opLeft, ResultValue opRight, int iSourceLineNr) throws ParserException {
+    	ResultValue resCond = new ResultValue();
         switch (opLeft.type)
         {
         case DATE:
             break;
         case FLOAT:
+        	Float fOpLeft = Float.parseFloat(opLeft.value);
+        	Float fOpRight = Float.parseFloat(opRight.value);
+        	if (fOpLeft > fOpRight)
+        	{
+        		resCond = new ResultValue(SubClassif.BOOLEAN, "true", 0, null);
+			}
+        	else
+        	{
+        		resCond = new ResultValue(SubClassif.BOOLEAN, "false", 0, null);
+			}
             break;
         case INTEGER:
+        	Integer iOpLeft = Integer.parseInt(opLeft.value);
+        	Integer iOpRight = Integer.parseInt(opRight.value);
+        	if (iOpLeft > iOpRight)
+        	{
+        		resCond = new ResultValue(SubClassif.BOOLEAN, "true", 0, null);
+			}
+        	else
+        	{
+        		resCond = new ResultValue(SubClassif.BOOLEAN, "false", 0, null);
+			}
             break;
         case STRING:
             break;
@@ -199,17 +241,38 @@ public class Utility {
                     ,"***Error: Illegal operation with type***"
                     , Meatbol.filename);
         }
-        return opLeft;
+        return resCond;
     }
 
     public static ResultValue doLessEqual(ResultValue opLeft, ResultValue opRight, int iSourceLineNr) throws ParserException {
+    	ResultValue resCond = new ResultValue();
         switch (opLeft.type)
         {
         case DATE:
             break;
         case FLOAT:
+        	Float fOpLeft = Float.parseFloat(opLeft.value);
+        	Float fOpRight = Float.parseFloat(opRight.value);
+        	if (fOpLeft <= fOpRight)
+        	{
+        		resCond = new ResultValue(SubClassif.BOOLEAN, "true", 0, null);
+			}
+        	else
+        	{
+        		resCond = new ResultValue(SubClassif.BOOLEAN, "false", 0, null);
+			}
             break;
         case INTEGER:
+        	Integer iOpLeft = Integer.parseInt(opLeft.value);
+        	Integer iOpRight = Integer.parseInt(opRight.value);
+        	if (iOpLeft <= iOpRight)
+        	{
+        		resCond = new ResultValue(SubClassif.BOOLEAN, "true", 0, null);
+			}
+        	else
+        	{
+        		resCond = new ResultValue(SubClassif.BOOLEAN, "false", 0, null);
+			}
             break;
         case STRING:
             break;
@@ -218,17 +281,38 @@ public class Utility {
                     ,"***Error: Illegal operation with type***"
                     , Meatbol.filename);
         }
-        return opLeft;
+        return resCond;
     }
 
     public static ResultValue doGreaterEqual(ResultValue opLeft, ResultValue opRight, int iSourceLineNr) throws ParserException {
+    	ResultValue resCond = new ResultValue();
         switch (opLeft.type)
         {
         case DATE:
             break;
         case FLOAT:
+        	Float fOpLeft = Float.parseFloat(opLeft.value);
+        	Float fOpRight = Float.parseFloat(opRight.value);
+        	if (fOpLeft >= fOpRight)
+        	{
+        		resCond = new ResultValue(SubClassif.BOOLEAN, "true", 0, null);
+			}
+        	else
+        	{
+        		resCond = new ResultValue(SubClassif.BOOLEAN, "false", 0, null);
+			}
             break;
         case INTEGER:
+        	Integer iOpLeft = Integer.parseInt(opLeft.value);
+        	Integer iOpRight = Integer.parseInt(opRight.value);
+        	if (iOpLeft >= iOpRight)
+        	{
+        		resCond = new ResultValue(SubClassif.BOOLEAN, "true", 0, null);
+			}
+        	else
+        	{
+        		resCond = new ResultValue(SubClassif.BOOLEAN, "false", 0, null);
+			}
             break;
         case STRING:
             break;
@@ -237,57 +321,38 @@ public class Utility {
                     ,"***Error: Illegal operation with type***"
                     , Meatbol.filename);
         }
-        return opLeft;
-    }
-
-    public static ResultValue doLess(ResultValue opLeft, ResultValue opRight, int iSourceLineNr) throws ParserException {
-        switch (opLeft.type)
-        {
-        case DATE:
-            break;
-        case FLOAT:
-            break;
-        case INTEGER:
-            break;
-        case STRING:
-            break;
-        default:
-            throw new ParserException(iSourceLineNr
-                    ,"***Error: Illegal operation with type***"
-                    , Meatbol.filename);
-        }
-        return opLeft;
-    }
-
-    public static ResultValue doGreater(ResultValue opLeft, ResultValue opRight, int iSourceLineNr) throws ParserException {
-        switch (opLeft.type)
-        {
-        case DATE:
-            break;
-        case FLOAT:
-            break;
-        case INTEGER:
-            break;
-        case STRING:
-            break;
-        default:
-            throw new ParserException(iSourceLineNr
-                    ,"***Error: Illegal operation with type***"
-                    , Meatbol.filename);
-        }
-        return opLeft;
+        return resCond;
     }
 
     public static ResultValue doEqual(ResultValue opLeft, ResultValue opRight, int iSourceLineNr) throws ParserException {
+    	ResultValue resCond = new ResultValue();
         switch (opLeft.type)
         {
-        case BOOLEAN:
-            break;
         case DATE:
             break;
         case FLOAT:
+        	Float fOpLeft = Float.parseFloat(opLeft.value);
+        	Float fOpRight = Float.parseFloat(opRight.value);
+        	if (fOpLeft == fOpRight)
+        	{
+        		resCond = new ResultValue(SubClassif.BOOLEAN, "true", 0, null);
+			}
+        	else
+        	{
+        		resCond = new ResultValue(SubClassif.BOOLEAN, "false", 0, null);
+			}
             break;
         case INTEGER:
+        	Integer iOpLeft = Integer.parseInt(opLeft.value);
+        	Integer iOpRight = Integer.parseInt(opRight.value);
+        	if (iOpLeft == iOpRight)
+        	{
+        		resCond = new ResultValue(SubClassif.BOOLEAN, "true", 0, null);
+			}
+        	else
+        	{
+        		resCond = new ResultValue(SubClassif.BOOLEAN, "false", 0, null);
+			}
             break;
         case STRING:
             break;
@@ -296,19 +361,38 @@ public class Utility {
                     ,"***Error: Illegal operation with type***"
                     , Meatbol.filename);
         }
-        return opLeft;
+        return resCond;
     }
 
     public static ResultValue doNotEqual(ResultValue opLeft, ResultValue opRight, int iSourceLineNr) throws ParserException {
+    	ResultValue resCond = new ResultValue();
         switch (opLeft.type)
         {
-        case BOOLEAN:
-            break;
         case DATE:
             break;
         case FLOAT:
+        	Float fOpLeft = Float.parseFloat(opLeft.value);
+        	Float fOpRight = Float.parseFloat(opRight.value);
+        	if (fOpLeft != fOpRight)
+        	{
+        		resCond = new ResultValue(SubClassif.BOOLEAN, "true", 0, null);
+			}
+        	else
+        	{
+        		resCond = new ResultValue(SubClassif.BOOLEAN, "false", 0, null);
+			}
             break;
         case INTEGER:
+        	Integer iOpLeft = Integer.parseInt(opLeft.value);
+        	Integer iOpRight = Integer.parseInt(opRight.value);
+        	if (iOpLeft != iOpRight)
+        	{
+        		resCond = new ResultValue(SubClassif.BOOLEAN, "true", 0, null);
+			}
+        	else
+        	{
+        		resCond = new ResultValue(SubClassif.BOOLEAN, "false", 0, null);
+			}
             break;
         case STRING:
             break;
@@ -317,45 +401,77 @@ public class Utility {
                     ,"***Error: Illegal operation with type***"
                     , Meatbol.filename);
         }
-        return opLeft;
+        return resCond;
     }
 
     public static ResultValue doNot(ResultValue opLeft, int iSourceLineNr) throws ParserException {
+    	ResultValue resCond = new ResultValue();
         switch (opLeft.type)
         {
         case BOOLEAN:
+        	Boolean bOpLeft = Boolean.parseBoolean(opLeft.value);
+        	if (!bOpLeft)
+        	{
+				resCond = new ResultValue(SubClassif.BOOLEAN, "true", 0, null);
+			}
+        	else
+        	{
+        		resCond = new ResultValue(SubClassif.BOOLEAN, "false", 0, null);
+        	}
             break;
         default:
             throw new ParserException(iSourceLineNr
                     ,"***Error: Illegal operation with type***"
                     , Meatbol.filename);
         }
-        return opLeft;
+        return resCond;
     }
 
     public static ResultValue doAnd(ResultValue opLeft, ResultValue opRight, int iSourceLineNr) throws ParserException {
+    	ResultValue resCond = new ResultValue();
         switch (opLeft.type)
         {
         case BOOLEAN:
+        	Boolean bOpLeft = Boolean.parseBoolean(opLeft.value);
+        	Boolean bOpRight = Boolean.parseBoolean(opRight.value);
+        	if (bOpLeft && bOpRight)
+        	{
+				resCond = new ResultValue(SubClassif.BOOLEAN, "true", 0, null);
+			}
+        	else
+        	{
+        		resCond = new ResultValue(SubClassif.BOOLEAN, "false", 0, null);
+        	}
             break;
         default:
             throw new ParserException(iSourceLineNr
                     ,"***Error: Illegal operation with type***"
                     , Meatbol.filename);
         }
-        return opLeft;
+        return resCond;
     }
 
     public static ResultValue doOr(ResultValue opLeft, ResultValue opRight, int iSourceLineNr) throws ParserException {
+    	ResultValue resCond = new ResultValue();
         switch (opLeft.type)
         {
         case BOOLEAN:
+        	Boolean bOpLeft = Boolean.parseBoolean(opLeft.value);
+        	Boolean bOpRight = Boolean.parseBoolean(opRight.value);
+        	if (bOpLeft || bOpRight)
+        	{
+				resCond = new ResultValue(SubClassif.BOOLEAN, "true", 0, null);
+			}
+        	else
+        	{
+        		resCond = new ResultValue(SubClassif.BOOLEAN, "false", 0, null);
+        	}
             break;
         default:
             throw new ParserException(iSourceLineNr
                     ,"***Error: Illegal operation with type***"
                     , Meatbol.filename);
         }
-        return opLeft;
+        return resCond;
     }
 }
