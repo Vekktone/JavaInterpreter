@@ -157,6 +157,7 @@ public class Parser
          System.out.println("The token is " + scan.currentToken.tokenStr);
 
 
+
          if (bExec) {
              // we are executing, not ignoring
              ResultValue resCond = evalCond(scan, symbolTable);
