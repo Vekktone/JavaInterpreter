@@ -399,23 +399,11 @@ public class Parser
 			// should we execute evalCond?
 			skipTo(":", scan);
 			resTemp = executeStatements(scan, symbolTable, false);
-			
-			if (resTemp.terminatingStr.equals("else")) 
-			{
-				scan.getNext();
-				if (!scan.currentToken.tokenStr.equals(":"))
-				{
-	                throw new ParserException(scan.currentToken.iSourceLineNr
-	                        ,"***Error: expected ':' after 'else'***"
-	                        , Meatbol.filename);
-				}
-				resTemp = executeStatements(scan, symbolTable, false);
-			}
 
-			if (!resTemp.terminatingStr.equals("endif"))
+			if (!resTemp.terminatingStr.equals("endwhile"))
 			{
                 throw new ParserException(scan.currentToken.iSourceLineNr
-                        ,"***Error: expected 'endif' for an 'if'***"
+                        ,"***Error: expected 'endwhile' for a 'while'***"
                         , Meatbol.filename);
 			}
 
@@ -423,7 +411,7 @@ public class Parser
 			if (!scan.currentToken.tokenStr.equals(";")) 
 			{
                 throw new ParserException(scan.currentToken.iSourceLineNr
-                        ,"***Error: expected ';' after 'endif'***"
+                        ,"***Error: expected ';' after 'endwhile'***"
                         , Meatbol.filename);
 			}
 		}
