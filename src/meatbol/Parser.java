@@ -541,6 +541,13 @@ public class Parser
 						, Meatbol.filename);
 			}
 			StorageManager.values.put(variable.tokenStr, res.value);
+
+			// Debugging for Assign
+			if (scan.debugOptionsMap.get(DebuggerTypes.ASSIGNMENT))
+			{
+				System.out.println("...variable name: " + variable.tokenStr + " value: " + res.value);
+			}
+
 			//System.out.println(variable.tokenStr +" = " + res.value);
 		}
 		else
