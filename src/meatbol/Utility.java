@@ -1,5 +1,7 @@
 package meatbol;
 
+import sun.misc.FloatingDecimal;
+
 import java.math.BigDecimal;
 
 public class Utility {
@@ -77,23 +79,24 @@ public class Utility {
         }
         return opLeft;
     }
+
     public static ResultValue doExponent(ResultValue opLeft, ResultValue opRight, int iSourceLineNr) throws ParserException {
-
-
         switch (opLeft.type)
         {
             case FLOAT:
                 float leftFloatValue = Numeric.toFloat(opLeft);
                 float rightFloatValue = Numeric.toFloat(opRight);
-
-                BigDecimal leftDecimalValue = new BigDecimal(leftFloatValue);
-                BigDecimal rightDecimalValue = new BigDecimal(rightFloatValue);
-                //BigDecimal decimalResult = BigFunctions
-
-                //opLeft.value = Numeric.floatToString(floatResult);
+                double leftFloatToDoubleValue = Numeric.floatToDouble(leftFloatValue);
+                double rightFloatToDoubleValue = Numeric.floatToDouble(rightFloatValue);
+                double doubleResult = Math.pow(leftFloatToDoubleValue, rightFloatToDoubleValue);
+                float floatResult = (float) doubleResult;
+                opLeft.value = Numeric.floatToString(floatResult);
                 break;
             case INTEGER:
-                //int resultInt = Numeric.convertToInt(opLeft);
+                int leftIntValue = Numeric.toInt(opLeft);
+                int rightIntValue = Numeric.toInt(opRight);
+                int intResult = (int) Math.pow(leftIntValue, rightIntValue);
+                opLeft.value = Numeric.intToString(intResult);
                 break;
             default:
                 throw new ParserException(iSourceLineNr

@@ -26,4 +26,11 @@ public class Numeric {
         return value;
     }
 
+    public static double floatToDouble(float floatValue) {
+        //return Double.valueOf(Float.valueOf(value).toString()).doubleValue();
+        String floatString = Float.valueOf(floatValue).toString();
+        double doubleValue = Double.valueOf(floatString);
+        return doubleValue;
+    }
+
 }
