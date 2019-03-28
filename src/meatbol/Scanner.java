@@ -1,6 +1,7 @@
 package meatbol;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import static meatbol.Classif.CONTROL;
 import static meatbol.Classif.FUNCTION;
@@ -45,6 +46,8 @@ public class Scanner {
 
     private static Boolean newLineDetected = false;
 
+    public HashMap<String, Boolean> debugOptionsMap;
+
     /** Constructor
      * <p>
      * Creates the Scanner object, loads it with the line data from the file,
@@ -66,6 +69,7 @@ public class Scanner {
     public Scanner(String fileName, SymbolTable symbolTable) throws Exception
     {
         this.symbolTable = symbolTable;
+        initDebugOptions();
         try
         {
             // loads each line into the line array list
@@ -270,6 +274,7 @@ public class Scanner {
      * @author Mason Pohler
      * @author Riley Marfin (modified 17-2-2019)
      * @author Mason Pohler (modified 25-2-2019)
+     * @author Mason Pohler (modified 28-3-2019)
      */
     private int createOperand(String substring, int lineNum, int index) throws Exception {
         int i = 0; // loop counter
@@ -334,7 +339,7 @@ public class Scanner {
                             nextToken.subClassif = SubClassif.IDENTIFIER;
                             break;
                         default:
-                            // operator
+                            // operator or debug
                             break;
                     }
                 }
@@ -397,6 +402,15 @@ public class Scanner {
         }
 
         return index + i - 1;
+    }
+
+    private void initDebugOptions()
+    {
+        debugOptionsMap = new HashMap<String, Boolean>();
+        debugOptionsMap.put("Token", false);
+        debugOptionsMap.put("Expr", false);
+        debugOptionsMap.put("Assign", false);
+        debugOptionsMap.put("Stmt", false);
     }
 
     /** Checks if a string is a valid float.

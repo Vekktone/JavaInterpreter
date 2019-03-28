@@ -10,45 +10,56 @@ public class Parser
 
 	}
 
+	/**
+	 * @author Mason Pohler (modified 28-3-2019)
+	 * @param scan
+	 * @param symbolTable
+	 * @param bExec
+	 * @throws Exception
+	 */
 	public void stmt(Scanner scan, SymbolTable symbolTable, Boolean bExec) throws Exception{
 		//System.out.println("\n***start statement***");
 		//scan.currentToken.printToken();
 		switch(scan.currentToken.primClassif)
 		{
-		//shouldn't see this, but if it occurs skip it
-		case EMPTY:
-			System.out.println("***Warning: empty token detected***");
-			break;
-			//shouldn't see this, but if it occurs skip it
-		case EOF:
-			System.out.println("***Warning: EOF token detected***");
-			break;
-			//control statement
-		case CONTROL:
-			//System.out.println("***Control Statement***");
-			conStmt(scan, symbolTable, bExec);
-			break;
-			//function statement
-		case FUNCTION:
-			//System.out.println("***Function Statement***");
-			funcStmt(scan, symbolTable, bExec);
-			break;
-			//assignment statement
-		case OPERAND:
-			//System.out.println("***Assignment Statement***");
-			assignStmt(scan, symbolTable, bExec);
-			break;
-			//statements can't begin with these, throw error
-		case OPERATOR:
-		case SEPARATOR:
-			throw new ParserException(scan.currentToken.iSourceLineNr
-					,"***Error: Illegal start to statement***"
-					, Meatbol.filename);
-			//Unknown state, throw error
-		default:
-			throw new ParserException(scan.currentToken.iSourceLineNr
-					,"***Error: unknown state***"
-					, Meatbol.filename);
+			// shouldn't see this, but if it occurs skip it
+			case EMPTY:
+				System.out.println("***Warning: empty token detected***");
+				break;
+			// shouldn't see this, but if it occurs skip it
+			case EOF:
+				System.out.println("***Warning: EOF token detected***");
+				break;
+			// control statement
+			case CONTROL:
+				// System.out.println("***Control Statement***");
+				conStmt(scan, symbolTable, bExec);
+				break;
+			// function statement
+			case FUNCTION:
+				// System.out.println("***Function Statement***");
+				funcStmt(scan, symbolTable, bExec);
+				break;
+			// assignment statement
+			case OPERAND:
+				//System.out.println("***Assignment Statement***");
+				assignStmt(scan, symbolTable, bExec);
+				break;
+			// debug statement
+			case DEBUG:
+				debugStmt(scan, symbolTable, bExec);
+				break;
+			// statements can't begin with these, throw error
+			case OPERATOR:
+			case SEPARATOR:
+				throw new ParserException(scan.currentToken.iSourceLineNr
+						,"***Error: Illegal start to statement***"
+						, Meatbol.filename);
+				// Unknown state, throw error
+			default:
+				throw new ParserException(scan.currentToken.iSourceLineNr
+						,"***Error: unknown state***"
+						, Meatbol.filename);
 		}
 	}
 
@@ -536,6 +547,32 @@ public class Parser
 		{
 			skipTo(";", scan);
 		}
+	}
+
+	public void debugStmt(Scanner scan, SymbolTable symbolTable, boolean bExec) throws Exception {
+		if (scan.nextToken.primClassif != Classif.DEBUG)
+		{
+			// TODO: ERROR
+		}
+
+		String debugType = scan.getNext();
+
+		if (scan.nextToken.primClassif != Classif.DEBUG)
+		{
+			// TODO: ERROR
+		}
+
+		String onOrOffString = scan.getNext();
+
+		if (scan.nextToken.primClassif != Classif.SEPARATOR)
+		{
+			// TODO: ERROR
+		}
+		// clear semicolon token
+		scan.getNext();
+
+		boolean setValue = onOrOffString.equals("on");
+		scan.debugOptionsMap.put(debugType, setValue);
 	}
 
 	public ResultValue expression(Scanner scan, SymbolTable symbolTable) throws Exception
