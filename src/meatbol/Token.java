@@ -35,7 +35,7 @@ public class Token
     public void copyToken(Token other)
     {
         if (other != null) {
-            this.tokenStr.equals(other.tokenStr);
+            this.tokenStr = String.valueOf(other.tokenStr);
             this.primClassif = other.primClassif;
             this.subClassif = other.subClassif;
             this.iColPos = other.iColPos;
@@ -123,6 +123,64 @@ public class Token
                 System.out.printf("%02X", (int) ch);
         }
         System.out.printf("\n");
+    }
+
+    public int prec() throws ParserException {
+        switch(this.tokenStr)
+        {
+            case "(":
+                return 15;
+            case "U-":
+                return 12;
+            case "^":
+                return 11;
+            case "*": case "/":
+                return 9;
+            case "+": case "-":
+                return 8;
+            case "#":
+                return 7;
+            case "<": case ">": case "<=": case ">=": case "==":
+            case "!=": case "in": case "notin":
+                return 6;
+            case "not":
+                return 5;
+            case "and": case "or":
+                return 4;
+            default:
+                throw new ParserException(this.iSourceLineNr
+                        ,"***Error: Unable to determine precedence***"
+                        , Meatbol.filename);
+        }
+    }
+
+    public int stackPrec() throws ParserException {
+        switch(this.tokenStr)
+        {
+            case "(":
+                return 2;
+            case "U-":
+                return 12;
+            case "^":
+                return 10;
+            case "*": case "/":
+                return 9;
+            case "+": case "-":
+                return 8;
+            case "#":
+                return 7;
+            case "<": case ">": case "<=": case ">=": case "==":
+            case "!=": case "in": case "notin":
+                return 6;
+            case "not":
+                return 5;
+            case "and": case "or":
+                return 4;
+            default:
+                throw new ParserException(this.iSourceLineNr
+                        ,"***Error: Unable to determine precedence***"
+                        , Meatbol.filename);
+        }
     }
 
 }

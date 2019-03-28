@@ -47,7 +47,7 @@ public class Meatbol
             while (!scan.getNext().isEmpty())
             {
                 //scan.currentToken.printToken();
-                parse.stmt(scan, symbolTable);
+                parse.stmt(scan, symbolTable, true);
 
             }
             // print EOF token so user knows we got there
@@ -60,7 +60,10 @@ public class Meatbol
                 System.out.println("Output restored to console");
             }
         }
-
+        catch(ScannerException e){
+            e.toString();
+            e.printStackTrace();
+        }
         catch(ParserException e){
             e.toString();
             e.printStackTrace();
@@ -68,23 +71,16 @@ public class Meatbol
         // expected if user fails to provide filename in command arguments
         catch (ArrayIndexOutOfBoundsException e)
         {
-            System.out.println("Invalid usage: input filename required./n"
-                    + "Usage: $ ./ [source filemane] <-f>"
-                    + "source filename is name of file containg source code"
-                    + "-f option redirects output to file, by default, 'p#Input*' becomes 'p#Out*"
-                    + "do not use if filename is not in 'p#Input*' form; use command line aurgument");
+            System.out.println("Invalid usage: input filename required.\n"
+                    + "Usage: $ ./ [source filemane] <-f>\n"
+                    + "\tsource filename is name of file containg source code\n"
+                    + "\t-f option redirects output to file, by default, 'p#Input*' becomes 'p#Out*'\n"
+                    + "\tdo not use if filename is not in 'p#Input*' form; use command line aurgument\n");
             e.printStackTrace();
         }
 
         // expected on a syntax errors in meatbol code
         catch (IllegalArgumentException e)
-        {
-            System.out.println(e.getMessage());
-            e.printStackTrace();
-        }
-
-        // expected if error occurs reading or writing files
-        catch (IOException e)
         {
             System.out.println(e.getMessage());
             e.printStackTrace();

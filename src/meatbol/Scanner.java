@@ -117,10 +117,10 @@ public class Scanner {
         boolean validToken = false;
 
         // if this is first Token in line
-        if (columnIndex == 0)
+        //if (columnIndex == 0)
             // print source line
-            System.out.printf("%3d %s\n", (this.lineIndex + 1)
-                    , this.lineList.get(this.lineIndex));
+            //System.out.printf("%3d %s\n", (this.lineIndex + 1)
+            //        , this.lineList.get(this.lineIndex));
         // iterate through line from last position
         for (; columnIndex < lineData.length; columnIndex++)
         {
@@ -142,7 +142,7 @@ public class Scanner {
                     // otherwise this must be a division operator
                     else
                     {
-            //create token
+                        //create token
                         this.nextToken = setToken(String.valueOf(lineData[columnIndex])
                                 , Classif.OPERATOR
                                 , SubClassif.EMPTY
@@ -153,12 +153,23 @@ public class Scanner {
                     break;
                 //create operator for valid operator not inside quotes
                 case '+': case '-': case '*': case '<': case '>': case '!': case '=': case '#': case '^':
+                    if(lineData[columnIndex] == '-' && currentToken.primClassif != Classif.OPERAND)
+                    {
+                        this.nextToken = setToken("u-"
+                                , Classif.OPERATOR
+                                , SubClassif.EMPTY
+                                , lineIndex
+                                , columnIndex);
+                    }
+                    else
+                    {
                     //create token
                     this.nextToken = setToken(String.valueOf(lineData[columnIndex])
                             , Classif.OPERATOR
                             , SubClassif.EMPTY
                             , lineIndex
                             , columnIndex);
+                    }
                     validToken = true;
                     break;
                 // create separator for valid separator not inside quotes

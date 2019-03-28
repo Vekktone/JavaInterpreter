@@ -888,6 +888,7 @@ public class Parser
                     }
                     catch (EmptyStackException e)
                     {
+                        e.printStackTrace();
                         throw new ParserException(token.iSourceLineNr
                                 ,"***Error: Missing left paranthesis***"
                                 , Meatbol.filename);
