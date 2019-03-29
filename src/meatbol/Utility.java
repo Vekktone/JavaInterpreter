@@ -80,27 +80,36 @@ public class Utility {
     }
 
     /** doUnaryMinus flips the sign of an operand.
+     * <p>
+     * This function keeps the type of the operand, and flips its sign.
+     * @param opLeft The ResultValue with the value to flip.
+     * @param iSourceLineNr The line number of the token.
+     * @return a ResultValue that contains the value to flip.
+     * @throws ParserException if something bad happens.
      *
-     * @param opLeft
-     * @param iSourceLineNr
-     * @return
-     * @throws ParserException
+     * @author Gregory Pugh
+     * @author Mason Pohler (modified 28-3-2019)
      */
-    public static ResultValue doUnaryMinus(ResultValue opLeft, int iSourceLineNr) throws ParserException {
+    public static ResultValue doUnaryMinus(ResultValue opLeft, int iSourceLineNr) throws ParserException
+    {
+        // Switch on the type of the left operator
         switch (opLeft.type)
         {
+            // How to convert if the left operator is a float
             case FLOAT:
                 // opLeft.value = "-".concat(opLeft.value);
                 float originalFloat = Numeric.toFloat(opLeft);
                 float flippedFloat = -1 * originalFloat;
                 opLeft.value = Numeric.floatToString(flippedFloat);
                 break;
+            // How to convert if the left operator is an int
             case INTEGER:
                 // opLeft.value = "-".concat(opLeft.value);
                 int originalInt = Numeric.toInt(opLeft);
                 int flippedInt = -1 * originalInt;
                 opLeft.value = Numeric.intToString(flippedInt);
                 break;
+            // Non-numbers cannot be used for this operator
             default:
                 throw new ParserException(iSourceLineNr
                         ,"***Error: Illegal operation with type***"
@@ -109,9 +118,25 @@ public class Utility {
         return opLeft;
     }
 
-    public static ResultValue doExponent(ResultValue opLeft, ResultValue opRight, int iSourceLineNr) throws ParserException {
+    /** Calculates an exponet of x ^ y where x is the left operand and y is the
+     * right operand.
+     * <p>
+     * Calculates an exponet of x ^ y where x is the left operand and y is the
+     * right operand.
+     * @param opLeft The ResultValue containing the left operand.
+     * @param opRight The ResultValue containing the right operand.
+     * @param iSourceLineNr The line number of the Token.
+     * @return A ResultValue containing the result of the operation.
+     * @throws ParserException if something goes wrong.
+     *
+     * @author Mason Pohler
+     */
+    public static ResultValue doExponent(ResultValue opLeft, ResultValue opRight, int iSourceLineNr) throws ParserException
+    {
+        // switch on left operand type
         switch (opLeft.type)
         {
+            // how to perform the operation if the left operand is a float.
             case FLOAT:
                 float leftFloatValue = Numeric.toFloat(opLeft);
                 float rightFloatValue = Numeric.toFloat(opRight);
@@ -121,128 +146,207 @@ public class Utility {
                 float floatResult = (float) doubleResult;
                 opLeft.value = Numeric.floatToString(floatResult);
                 break;
+            // how to perform the operation if the left operand is an int.
             case INTEGER:
                 int leftIntValue = Numeric.toInt(opLeft);
                 int rightIntValue = Numeric.toInt(opRight);
                 int intResult = (int) Math.pow(leftIntValue, rightIntValue);
                 opLeft.value = Numeric.intToString(intResult);
                 break;
+            // non-numerics cannot use this operator.
             default:
                 throw new ParserException(iSourceLineNr
                         ,"***Error: Illegal operation with type***"
                         , Meatbol.filename);
         }
-
         return opLeft;
-
     }
-    public static ResultValue doMultiply(ResultValue opLeft, ResultValue opRight, int iSourceLineNr) throws ParserException {
+
+    /** Multiplies 2 numbers.
+     * <p>
+     * Multiplies the left operand and right operand. The result keeps the type
+     * of the left operand.
+     * @param opLeft The ResultValue containing the left operand.
+     * @param opRight The ResultValue containing the right operand.
+     * @param iSourceLineNr The line number of the Token.
+     * @return A ResultValue containing the result of the operation.
+     * @throws ParserException if something goes wrong.
+     *
+     * @author Mason Pohler
+     */
+    public static ResultValue doMultiply(ResultValue opLeft, ResultValue opRight, int iSourceLineNr) throws ParserException
+    {
+        // switch on left operand type
         switch (opLeft.type)
         {
+            // how to perform the operation if the left operand is a float.
             case FLOAT:
                 float leftFloatValue = Numeric.toFloat(opLeft);
                 float rightFloatValue = Numeric.toFloat(opRight);
                 float floatResult = leftFloatValue * rightFloatValue;
                 opLeft.value = Numeric.floatToString(floatResult);
                 break;
+            // how to perform the operation if the left operand is an int.
             case INTEGER:
                 int leftIntValue = Numeric.toInt(opLeft);
                 int rightIntValue = Numeric.toInt(opRight);
                 int intResult = leftIntValue * rightIntValue;
                 opLeft.value = Numeric.intToString(intResult);
                 break;
+            // non-numerics cannot use this operator.
             default:
                 throw new ParserException(iSourceLineNr
                         ,"***Error: Illegal operation with type***"
                         , Meatbol.filename);
         }
         return opLeft;
-
     }
-    public static ResultValue doDivision(ResultValue opLeft, ResultValue opRight, int iSourceLineNr) throws ParserException {
+
+    /** Divides 2 numbers.
+     * <p>
+     * Divides the left operand by the right operand. The result keeps the type
+     * of the left operand.
+     * @param opLeft The ResultValue containing the left operand.
+     * @param opRight The ResultValue containing the right operand.
+     * @param iSourceLineNr The line number of the Token.
+     * @return A ResultValue containing the result of the operation.
+     * @throws ParserException if something goes wrong.
+     *
+     * @author Mason Pohler
+     */
+    public static ResultValue doDivision(ResultValue opLeft, ResultValue opRight, int iSourceLineNr) throws ParserException
+    {
+        // switch on left operand type
         switch (opLeft.type)
         {
+            // how to perform the operation if the left operand is a float.
             case FLOAT:
                 float leftFloatValue = Numeric.toFloat(opLeft);
                 float rightFloatValue = Numeric.toFloat(opRight);
                 float floatResult = leftFloatValue / rightFloatValue;
                 opLeft.value = Numeric.floatToString(floatResult);
                 break;
+            // how to perform the operation if the left operand is an int.
             case INTEGER:
                 int leftIntValue = Numeric.toInt(opLeft);
                 int rightIntValue = Numeric.toInt(opRight);
                 int intResult = leftIntValue / rightIntValue;
                 opLeft.value = Numeric.intToString(intResult);
                 break;
+            // non-numerics cannot use this operator.
             default:
                 throw new ParserException(iSourceLineNr
                         ,"***Error: Illegal operation with type***"
                         , Meatbol.filename);
         }
         return opLeft;
-
     }
-    public static ResultValue doAddition(ResultValue opLeft, ResultValue opRight, int iSourceLineNr) throws ParserException {
+
+    /** Adds 2 numbers.
+     * <p>
+     * Adds the right operand to the left operand. The result keeps the type
+     * of the left operand.
+     * @param opLeft The ResultValue containing the left operand.
+     * @param opRight The ResultValue containing the right operand.
+     * @param iSourceLineNr The line number of the Token.
+     * @return A ResultValue containing the result of the operation.
+     * @throws ParserException if something goes wrong.
+     *
+     * @author Mason Pohler
+     */
+    public static ResultValue doAddition(ResultValue opLeft, ResultValue opRight, int iSourceLineNr) throws ParserException
+    {
+        // switch on left operand type
         switch (opLeft.type)
         {
+            // how to perform the operation if the left operand is a float.
             case FLOAT:
                 float leftFloatValue = Numeric.toFloat(opLeft);
                 float rightFloatValue = Numeric.toFloat(opRight);
                 float floatResult = leftFloatValue + rightFloatValue;
                 opLeft.value = Numeric.floatToString(floatResult);
                 break;
+            // how to perform the operation if the left operand is an int.
             case INTEGER:
                 int leftIntValue = Numeric.toInt(opLeft);
                 int rightIntValue = Numeric.toInt(opRight);
                 int intResult = leftIntValue + rightIntValue;
                 opLeft.value = Numeric.intToString(intResult);
                 break;
+            // non-numerics cannot use this operator.
             default:
                 throw new ParserException(iSourceLineNr
                         ,"***Error: Illegal operation with type***"
                         , Meatbol.filename);
         }
         return opLeft;
-
     }
 
-    public static ResultValue doSubtraction(ResultValue opLeft, ResultValue opRight, int iSourceLineNr) throws ParserException {
+    /** Subtracts 1 number from the other.
+     * <p>
+     * Subtracts the right operand from the left operand. The result keeps the type
+     * of the left operand.
+     * @param opLeft The ResultValue containing the left operand.
+     * @param opRight The ResultValue containing the right operand.
+     * @param iSourceLineNr The line number of the Token.
+     * @return A ResultValue containing the result of the operation.
+     * @throws ParserException if something goes wrong.
+     *
+     * @author Mason Pohler
+     */
+    public static ResultValue doSubtraction(ResultValue opLeft, ResultValue opRight, int iSourceLineNr) throws ParserException
+    {
+        // switch on left operand type
         switch (opLeft.type)
         {
+            // how to perform the operation if the left operand is a float.
             case FLOAT:
                 float leftFloatValue = Numeric.toFloat(opLeft);
                 float rightFloatValue = Numeric.toFloat(opRight);
                 float floatResult = leftFloatValue - rightFloatValue;
                 opLeft.value = Numeric.floatToString(floatResult);
                 break;
+            // how to perform the operation if the left operand is an int.
             case INTEGER:
                 int leftIntValue = Numeric.toInt(opLeft);
                 int rightIntValue = Numeric.toInt(opRight);
                 int intResult = leftIntValue - rightIntValue;
                 opLeft.value = Numeric.intToString(intResult);
                 break;
+            // non-numerics cannot use this operator.
             default:
                 throw new ParserException(iSourceLineNr
                         ,"***Error: Illegal operation with type***"
                         , Meatbol.filename);
         }
         return opLeft;
-
     }
 
-    public static ResultValue doConcatonate(ResultValue opLeft, ResultValue opRight, int iSourceLineNr) throws ParserException {
+    /** Concatenates two strings.
+     * Appends the right operand to the end of the left operand. This
+     * can only be done when the left operand is a string.
+     * @param opLeft
+     * @param opRight
+     * @param iSourceLineNr
+     * @return
+     * @throws ParserException
+     */
+    public static ResultValue doConcatonate(ResultValue opLeft, ResultValue opRight, int iSourceLineNr) throws ParserException
+    {
+        // switch on left operand type
         switch (opLeft.type)
         {
+            // how to concatenate if the left operand is a String
             case STRING:
                 opLeft.value += opRight.value;
                 break;
+            // this operator cannot be done if the left operand is a String
             default:
                 throw new ParserException(iSourceLineNr
                         ,"***Error: Illegal operation with type***"
                         , Meatbol.filename);
         }
         return opLeft;
-
     }
 
     /**
