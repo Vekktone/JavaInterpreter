@@ -1,10 +1,30 @@
 package meatbol;
 
+/** Utility holds all the functions used to alter operands with an operator.
+ * <p>
+ * Utility holds all the operator math and logic for Meatbol. Some operators
+ * are binary, which need to operands to evaluate. Some are unaray and only
+ * need one operand. There are also builtin functions included in Utility.
+ *
+ * @author Riley Marfin
+ * @author Gregory Pugh (modified 25-3-2019)
+ * @author Mason Pohler (modified 27-3-2019)
+ */
 public class Utility {
 
-        //U-, *, /, ^, ==, <=, >=, <, >, !=, #
+    /** Print prints the value passed to the Meatbol print function.
+     * <p>
+     * Converts arguments to the correct value, then prints the value.
+     * @param parser the Parser object calling this function.
+     * @param scan the Scanner that belongs to the Parser object.
+     * @param symbolTable the SymbolTable belonging to the Scanner.
+     * @throws Exception if anyhting goes wrong.
+     *
+     * @author Gregory Pugh
+     */
     public static void print(Parser parser, Scanner scan, SymbolTable symbolTable) throws Exception
-    {
+    { //U-, *, /, ^, ==, <=, >=, <, >, !=, #
+
         int startLine, startCol, endLine, endCol;
         ResultValue res;
 
@@ -59,14 +79,27 @@ public class Utility {
 
     }
 
+    /** doUnaryMinus flips the sign of an operand.
+     *
+     * @param opLeft
+     * @param iSourceLineNr
+     * @return
+     * @throws ParserException
+     */
     public static ResultValue doUnaryMinus(ResultValue opLeft, int iSourceLineNr) throws ParserException {
         switch (opLeft.type)
         {
             case FLOAT:
-                opLeft.value = "-".concat(opLeft.value);
+                // opLeft.value = "-".concat(opLeft.value);
+                float originalFloat = Numeric.toFloat(opLeft);
+                float flippedFloat = -1 * originalFloat;
+                opLeft.value = Numeric.floatToString(flippedFloat);
                 break;
             case INTEGER:
-                opLeft.value = "-".concat(opLeft.value);
+                // opLeft.value = "-".concat(opLeft.value);
+                int originalInt = Numeric.toInt(opLeft);
+                int flippedInt = -1 * originalInt;
+                opLeft.value = Numeric.intToString(flippedInt);
                 break;
             default:
                 throw new ParserException(iSourceLineNr
