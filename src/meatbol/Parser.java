@@ -97,10 +97,12 @@ public class Parser
         //print until we reach end of file or ';'
         while(lineNumber < scan.lineList.size() && !scan.lineList.get(lineNumber).contains(";"))
         {
-            System.out.println(scan.lineList.get(lineNumber));
+            System.out.printf("%3d %s\n", (lineNumber + 1)
+                    , scan.lineList.get(lineNumber));
             lineNumber++;
         }
-        System.out.println(scan.lineList.get(lineNumber));
+        System.out.printf("%3d %s\n", (lineNumber + 1)
+                , scan.lineList.get(lineNumber));
     }
 
     /** Determines what type of control statement we have.
@@ -699,7 +701,7 @@ public class Parser
         //scan.currentToken.printToken();
         token.copyToken(scan.currentToken);
 
-        //boolean atLeastOneOperator = false;
+        boolean atLeastOneBinaryOperator = false;
 
         //build infix
         while(token.tokenStr != ";" && token.tokenStr != ":" && endExpression == false)
@@ -732,8 +734,23 @@ public class Parser
                     STIdentifier variable = (STIdentifier)symbolTable.getSymbol(scan.currentToken.tokenStr);
                     token.subClassif = variable.declareType;
                 }
+                infix.add(token);
+                try
+                {
+                    scan.getNext();
+                    token = new Token();
+                    token.copyToken(scan.currentToken);
+                }
+                catch (Exception e)
+                {
+                    throw e;
+                }
+                break;
             case OPERATOR:
-                //atLeastOneOperator = true;
+
+                if (!token.tokenStr.equals("u-"))
+                    atLeastOneBinaryOperator = true;
+
                 infix.add(token);
                 try
                 {
@@ -760,9 +777,9 @@ public class Parser
         ResultValue resultValue = infixToPostfix(infix);
 
         // Debugging for Expr
-        if (scan.debugOptionsMap.get(DebuggerTypes.EXPRESSION) )//&& atLeastOneOperator)
+        if (scan.debugOptionsMap.get(DebuggerTypes.EXPRESSION) && atLeastOneBinaryOperator)
         {
-            System.out.println("... " + resultValue.value);
+            printExpression(infix, resultValue);
         }
 
         return resultValue;
@@ -857,6 +874,28 @@ public class Parser
         return evalPostfix(postfix);
     }
 
+    private void printExpression(ArrayList<Token> infixExpression, ResultValue resultValue)
+    {
+        StringBuffer expressionDebugStringBuffer = new StringBuffer();
+        expressionDebugStringBuffer.append("... ");
+        for (Token token : infixExpression)
+        {
+            expressionDebugStringBuffer.append(token.tokenStr);
+            expressionDebugStringBuffer.append(" ");
+        }
+        expressionDebugStringBuffer.append(" is ");
+        if (resultValue.type == SubClassif.STRING)
+        {
+            expressionDebugStringBuffer.append("'");
+            expressionDebugStringBuffer.append(resultValue.value);
+            expressionDebugStringBuffer.append("'");
+        }
+        else
+            expressionDebugStringBuffer.append(resultValue.value);
+
+        System.out.println(expressionDebugStringBuffer.toString());
+    }
+
     /** Performs arithmatic and logical operations on postfix expression.
      * <p>
      * Postfix expression is an ordered array list of Tokens with each token
@@ -905,7 +944,7 @@ public class Parser
                 //get the current value of identifiers
                 if(token.subClassif == SubClassif.IDENTIFIER)
                 {
-                    System.out.println(StorageManager.values.get(token.tokenStr));
+//                    System.out.println(StorageManager.values.get(token.tokenStr));
                 }
                 value = Numeric.convertToken(token);
                 stack.push(value);

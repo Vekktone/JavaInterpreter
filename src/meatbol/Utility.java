@@ -53,7 +53,7 @@ public class Utility {
                 System.out.print(res.value + " ");
                 //scan.getNext();
             }
-            System.out.println();
+            System.out.print("\n");
 
 
         }
