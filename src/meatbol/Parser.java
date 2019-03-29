@@ -377,6 +377,19 @@ public class Parser
 
     }
 
+    /** This method executes statements in between an if or while loop based on a boolean for execution.
+     * @param scan
+     * 			Scanner providing tokens
+     * @param symbolTable
+     * 			Contains additional token information
+     * @param bExec
+     * 			Boolean for execution decision
+     * @return
+     * 			ResultValue of the ending string from the loop (else, endif, endwhile)
+     * @throws Exception
+     * 
+     * @author Riley Marfin
+     */
     private ResultValue executeStatements(Scanner scan, SymbolTable symbolTable, boolean bExec) throws Exception
     {
         // set position to first line in if
@@ -405,7 +418,7 @@ public class Parser
     }
 
     /**
-     *
+     * This method processes a while statement
      * @param scan
      * 			Scanner object providing tokens to be executed
      * @param symbolTable
@@ -414,6 +427,8 @@ public class Parser
      * 			Determines whether or not each statement is executed during
      * 			certain control statements
      * @throws Exception
+     * 
+     * @author Riley Marfin
      */
     private void whileStmt(Scanner scan, SymbolTable symbolTable, Boolean bExec) throws Exception
     {
@@ -543,6 +558,19 @@ public class Parser
 
     }
 
+    /**
+     * This method processes a function statement
+     * @param scan
+     * 			Scanner object providing tokens to be executed
+     * @param symbolTable
+     * 			Contains additional token information
+     * @param bExec
+     * 			Determines whether or not each statement is executed during
+     * 			certain function statements
+     * @throws Exception
+     * 
+     * @author Gregory Pugh
+     */
     public void funcStmt(Scanner scan, SymbolTable symbolTable, Boolean bExec) throws Exception
     {
         if (bExec)
@@ -591,10 +619,26 @@ public class Parser
             scan.getNext();
             //scan.currentToken.printToken();
         }
-        else {
+        else
+        {
+        	// we are not executing the statement, so skip to end
             skipTo(";", scan);
         }
     }
+    
+    /**
+     * This method processes an assignment statement
+     * @param scan
+     * 			Scanner object providing tokens to be executed
+     * @param symbolTable
+     * 			Contains additional token information
+     * @param bExec
+     * 			Determines whether or not each statement is executed during
+     * 			certain assignment statements
+     * @throws Exception
+     * 
+     * @author Gregory Pugh
+     */
     public void assignStmt(Scanner scan, SymbolTable symbolTable, Boolean bExec) throws Exception
     {
         if (bExec)
@@ -662,10 +706,24 @@ public class Parser
         }
         else
         {
+        	// we are not executing the statement, so skip to end
             skipTo(";", scan);
         }
     }
 
+    /**
+     * This method processes a debug statement
+     * @param scan
+     * 			Scanner object providing tokens to be executed
+     * @param symbolTable
+     * 			Contains additional token information
+     * @param bExec
+     * 			Determines whether or not each statement is executed during
+     * 			certain assignment statements
+     * @throws Exception
+     * 
+     * @author Mason Pohler
+     */
     public void debugStmt(Scanner scan, SymbolTable symbolTable, boolean bExec) throws Exception {
         if (scan.currentToken.primClassif != Classif.DEBUG || scan.nextToken.primClassif != Classif.DEBUG)
         {
@@ -689,7 +747,17 @@ public class Parser
         boolean setValue = onOrOffString.equals("on");
         scan.debugOptionsMap.put(debugType, setValue);
     }
-
+    
+    /**
+     * This method processes an expression by converting it from infix to postfix, and then evaluating it
+     * @param scan
+     * 			Scanner object providing tokens to be executed
+     * @param symbolTable
+     * 			Contains additional token information
+     * @throws Exception
+     * 
+     * @author Gregory Pugh
+     */
     public ResultValue expression(Scanner scan, SymbolTable symbolTable) throws Exception
     {
         //collect tokens for expression
@@ -785,6 +853,17 @@ public class Parser
         return resultValue;
     }
 
+    /**
+     * This methods converts an expression from infix to postfix, and then calls the evaluation function
+     * @param 
+     * 		infix ArrayList of tokens from expression
+     * @return 
+     * 		Result value 
+     * @throws 
+     * 		ParserException
+     * 
+     * @author Gregory Pugh
+     */
     public ResultValue infixToPostfix(ArrayList<Token> infix) throws ParserException{
         //stack for holding operands while advancing to next operator
         Stack<Token> stack = new Stack<Token>();
@@ -874,6 +953,15 @@ public class Parser
         return evalPostfix(postfix);
     }
 
+    /**
+     * This method prints an expression for debugging purposes
+     * @param infixExpression
+     * 			ArrayList of tokens from expression
+     * @param resultValue
+     * 			ResultValue from evaluation
+     * 
+     * @author Mason Pohler
+     */
     private void printExpression(ArrayList<Token> infixExpression, ResultValue resultValue)
     {
         StringBuffer expressionDebugStringBuffer = new StringBuffer();
