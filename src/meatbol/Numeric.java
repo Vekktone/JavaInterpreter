@@ -83,6 +83,8 @@ public class Numeric {
      * the String using Double.valueOf(String).
      * @param floatValue a float value to convert to a double with the same precision.
      * @return a double value with the same precision as the original float value.
+     *
+     * @author Mason Pohler
      */
     public static double floatToDouble(float floatValue) {
         //return Double.valueOf(Float.valueOf(value).toString()).doubleValue();
@@ -90,5 +92,4 @@ public class Numeric {
         double doubleValue = Double.valueOf(floatString);
         return doubleValue;
     }
-
 }
