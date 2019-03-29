@@ -8,5 +8,6 @@ public enum Classif
     SEPARATOR, // ( ) , : ; [ ]
     FUNCTION, // TBD
     CONTROL, // TBD
+    DEBUG, // debugger tokens
     EOF // EOF encountered
 }

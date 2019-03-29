@@ -40,8 +40,9 @@ public class FileHandler
      *             file.
      *
      * @author Gregory Pugh
+     * @throws ScannerException
      */
-    public static ArrayList<String> readFile(String fileName) throws IOException
+    public static ArrayList<String> readFile(String fileName) throws ScannerException
     {
         // array list for lines
         ArrayList<String> lineList = new ArrayList<String>();
@@ -57,7 +58,7 @@ public class FileHandler
             DataInputStream in = new DataInputStream(fileStream);
             BufferedReader bufferRead = new BufferedReader(new InputStreamReader(in));
 
-            // Read all lines from File
+            // Read all lines from input file
             while ((lineData = bufferRead.readLine()) != null)
             {
                 lineList.add(lineData);
@@ -68,10 +69,11 @@ public class FileHandler
             in.close();
             fileStream.close();
         }
-        // Catch exception if any.
+
+        // Catch exceptions
         catch (Exception e)
         {
-            throw new IllegalArgumentException("Error reading file: " + fileName + "; Line " + i);
+            throw new ScannerException(i, 0, "Error reading file or file does not exist", Meatbol.filename);
         }
         return lineList;
     }
@@ -95,11 +97,12 @@ public class FileHandler
             File outputFile = new File(fileName);
             ps_File = new PrintStream(outputFile);
         }
-        // catch system errors
+        // catch exceptions
         catch (Exception e)
         {
             e.printStackTrace();
         }
+
         // switch output
         System.setOut(ps_File);
     }

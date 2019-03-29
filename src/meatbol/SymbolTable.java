@@ -67,6 +67,7 @@ public class SymbolTable
      * the SymbolTable.
      *
      * @author Mason Pohler
+     * @author Mason Pohler (modified 28-3-2019)
      */
     private void initGlobal()
     {
@@ -105,6 +106,15 @@ public class SymbolTable
         table.put("not", new STEntry("not", Classif.OPERATOR));
         table.put("in", new STEntry("in", Classif.OPERATOR));
         table.put("notin", new STEntry("notin", Classif.OPERATOR));
+
+        // Debug
+        table.put("debug", new STEntry("debug", Classif.DEBUG));
+        table.put(DebuggerTypes.TOKEN, new STEntry(DebuggerTypes.TOKEN, Classif.DEBUG));
+        table.put(DebuggerTypes.EXPRESSION, new STEntry(DebuggerTypes.EXPRESSION, Classif.DEBUG));
+        table.put(DebuggerTypes.ASSIGNMENT, new STEntry(DebuggerTypes.ASSIGNMENT, Classif.DEBUG));
+        table.put(DebuggerTypes.STATEMENT, new STEntry(DebuggerTypes.STATEMENT, Classif.DEBUG));
+        table.put("on", new STEntry("on", Classif.DEBUG));
+        table.put("off", new STEntry("off", Classif.DEBUG));
     }
 }
 
