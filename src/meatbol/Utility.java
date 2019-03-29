@@ -241,8 +241,8 @@ public class Utility {
             break;
         case FLOAT:
         	// use float variables for comparison
-        	Float fOpLeft = Float.parseFloat(opLeft.value);
-        	Float fOpRight = Float.parseFloat(opRight.value);
+        	Float fOpLeft = Numeric.toFloat(opLeft);
+        	Float fOpRight = Numeric.toFloat(opRight);
         	
         	// do comparison
         	if (fOpLeft < fOpRight)
@@ -256,8 +256,8 @@ public class Utility {
             break;
         case INTEGER:
         	// use integer variables for comparison
-        	Integer iOpLeft = Integer.parseInt(opLeft.value);
-        	Integer iOpRight = Integer.parseInt(opRight.value);
+        	Integer iOpLeft = Numeric.toInt(opLeft);
+        	Integer iOpRight = Numeric.toInt(opRight);
         	
         	// do comparison
         	if (iOpLeft < iOpRight)
@@ -316,8 +316,8 @@ public class Utility {
             break;
         case FLOAT:
         	// use float variables for comparison
-        	Float fOpLeft = Float.parseFloat(opLeft.value);
-        	Float fOpRight = Float.parseFloat(opRight.value);
+        	Float fOpLeft = Numeric.toFloat(opLeft);
+        	Float fOpRight = Numeric.toFloat(opRight);
         	
         	// do comparison
         	if (fOpLeft > fOpRight)
@@ -331,8 +331,8 @@ public class Utility {
             break;
         case INTEGER:
         	// use integer variables for comparison
-        	Integer iOpLeft = Integer.parseInt(opLeft.value);
-        	Integer iOpRight = Integer.parseInt(opRight.value);
+        	Integer iOpLeft = Numeric.toInt(opLeft);
+        	Integer iOpRight = Numeric.toInt(opRight);
         	
         	// do comparison
         	if (iOpLeft > iOpRight)
@@ -392,8 +392,8 @@ public class Utility {
             break;
         case FLOAT:
         	// use floats
-        	Float fOpLeft = Float.parseFloat(opLeft.value);
-        	Float fOpRight = Float.parseFloat(opRight.value);
+        	Float fOpLeft = Numeric.toFloat(opLeft);
+        	Float fOpRight = Numeric.toFloat(opRight);
         	
         	// do comparison
         	if (fOpLeft <= fOpRight)
@@ -407,8 +407,8 @@ public class Utility {
             break;
         case INTEGER:
         	// use integers
-        	Integer iOpLeft = Integer.parseInt(opLeft.value);
-        	Integer iOpRight = Integer.parseInt(opRight.value);
+        	Integer iOpLeft = Numeric.toInt(opLeft);
+        	Integer iOpRight = Numeric.toInt(opRight);
         	
         	// do comparison
         	if (iOpLeft <= iOpRight)
@@ -468,8 +468,8 @@ public class Utility {
             break;
         case FLOAT:
         	// use floats
-        	Float fOpLeft = Float.parseFloat(opLeft.value);
-        	Float fOpRight = Float.parseFloat(opRight.value);
+        	Float fOpLeft = Numeric.toFloat(opLeft);
+        	Float fOpRight = Numeric.toFloat(opRight);
         	
         	// do comparison
         	if (fOpLeft >= fOpRight)
@@ -483,8 +483,8 @@ public class Utility {
             break;
         case INTEGER:
         	// use ints
-        	Integer iOpLeft = Integer.parseInt(opLeft.value);
-        	Integer iOpRight = Integer.parseInt(opRight.value);
+        	Integer iOpLeft = Numeric.toInt(opLeft);
+        	Integer iOpRight = Numeric.toInt(opRight);
         	
         	// do comparison
         	if (iOpLeft >= iOpRight)
@@ -544,8 +544,8 @@ public class Utility {
             break;
         case FLOAT:
         	// use floats
-        	Float fOpLeft = Float.parseFloat(opLeft.value);
-        	Float fOpRight = Float.parseFloat(opRight.value);
+        	Float fOpLeft = Numeric.toFloat(opLeft);
+        	Float fOpRight = Numeric.toFloat(opRight);
         	
         	// do comparison
         	if (fOpLeft == fOpRight)
@@ -559,8 +559,8 @@ public class Utility {
             break;
         case INTEGER:
         	// use ints
-        	Integer iOpLeft = Integer.parseInt(opLeft.value);
-        	Integer iOpRight = Integer.parseInt(opRight.value);
+        	Integer iOpLeft = Numeric.toInt(opLeft);
+        	Integer iOpRight = Numeric.toInt(opRight);
         	
         	// do comparison
         	if (iOpLeft == iOpRight)
@@ -620,8 +620,8 @@ public class Utility {
             break;
         case FLOAT:
         	// use floats
-        	Float fOpLeft = Float.parseFloat(opLeft.value);
-        	Float fOpRight = Float.parseFloat(opRight.value);
+        	Float fOpLeft = Numeric.toFloat(opLeft);
+        	Float fOpRight = Numeric.toFloat(opRight);
         	
         	// do comparison
         	if (fOpLeft != fOpRight)
@@ -635,8 +635,8 @@ public class Utility {
             break;
         case INTEGER:
         	// use ints
-        	Integer iOpLeft = Integer.parseInt(opLeft.value);
-        	Integer iOpRight = Integer.parseInt(opRight.value);
+        	Integer iOpLeft = Numeric.toInt(opLeft);
+        	Integer iOpRight = Numeric.toInt(opRight);
         	
         	// do comparison
         	if (iOpLeft != iOpRight)
