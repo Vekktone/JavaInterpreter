@@ -1,9 +1,5 @@
 package meatbol;
 
-import sun.misc.FloatingDecimal;
-
-import java.math.BigDecimal;
-
 public class Utility {
 
         //U-, *, /, ^, ==, <=, >=, <, >, !=, #
