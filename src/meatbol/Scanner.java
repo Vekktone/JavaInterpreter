@@ -243,7 +243,7 @@ public class Scanner {
                 // Debugging for printing the current token
                 if (debugOptionsMap.get(DebuggerTypes.TOKEN))
                 {
-                    System.out.println("...");
+                    System.out.print("... ");
                     currentToken.printToken();
                 }
 
