@@ -525,7 +525,8 @@ public class Parser
     }
 
     /** Placeholder: def statements not part of p3 */
-    private void defStmt(Scanner scan, SymbolTable symbolTable) throws Exception {
+    private void defStmt(Scanner scan, SymbolTable symbolTable) throws Exception
+    {
         while(!scan.nextToken.tokenStr.equals(";"))
         {
             try
@@ -542,7 +543,8 @@ public class Parser
     }
 
     /** Placeholder: def statements not part of p3 */
-    private void forStmt(Scanner scan, SymbolTable symbolTable) throws Exception {
+    private void forStmt(Scanner scan, SymbolTable symbolTable) throws Exception
+    {
         while(!scan.nextToken.tokenStr.equals(";"))
         {
             try
@@ -726,7 +728,9 @@ public class Parser
      * 
      * @author Mason Pohler
      */
-    public void debugStmt(Scanner scan, SymbolTable symbolTable, boolean bExec) throws Exception {
+    public void debugStmt(Scanner scan, SymbolTable symbolTable, boolean bExec) throws Exception
+    {
+        // make sure the debug statement is made of at least two debug Tokens
         if (scan.currentToken.primClassif != Classif.DEBUG || scan.nextToken.primClassif != Classif.DEBUG)
         {
             // TODO: ERROR
@@ -739,6 +743,7 @@ public class Parser
 
         scan.getNext();
 
+        // make sure the semicolon is included
         if (scan.nextToken.primClassif != Classif.SEPARATOR)
         {
             // TODO: ERROR
@@ -968,18 +973,23 @@ public class Parser
     {
         StringBuffer expressionDebugStringBuffer = new StringBuffer();
         expressionDebugStringBuffer.append("... ");
+
+        // add each token's tokenstr in the infix representation to the StringBuffer
         for (Token token : infixExpression)
         {
             expressionDebugStringBuffer.append(token.tokenStr);
             expressionDebugStringBuffer.append(" ");
         }
         expressionDebugStringBuffer.append(" is ");
+
+        // If the result is a String, wrap it in quotes for readability
         if (resultValue.type == SubClassif.STRING)
         {
             expressionDebugStringBuffer.append("'");
             expressionDebugStringBuffer.append(resultValue.value);
             expressionDebugStringBuffer.append("'");
         }
+        // otherwise append the result on its own
         else
             expressionDebugStringBuffer.append(resultValue.value);
 
