@@ -212,15 +212,39 @@ public class Utility {
 
     }
 
-    public static ResultValue doLess(ResultValue opLeft, ResultValue opRight, int iSourceLineNr) throws ParserException {
+    /**
+     * This method evaluates a less than (<) condition and returns a boolean ResultValue based on the left
+     * operand being less than the right operand
+     * 
+     * @param opLeft
+     * 			ResultValue for left operand
+     * @param opRight
+     * 			ResultValue for right operand
+     * @param iSourceLineNr
+     * 			Source line from Scanner
+     * @return
+     * 			Boolean ResultValue representing conditional result
+     * @throws ParserException
+     * 			For Illegal Operation
+     * 
+     * @author Riley Marfin
+     */
+    public static ResultValue doLess(ResultValue opLeft, ResultValue opRight, int iSourceLineNr) throws ParserException
+    {
+    	// initialize our resCond for the returned result
     	ResultValue resCond = new ResultValue();
+    	
+    	// check type for left operand
         switch (opLeft.type)
         {
         case DATE:
             break;
         case FLOAT:
-        	Float fOpLeft = Float.parseFloat(opLeft.value);
-        	Float fOpRight = Float.parseFloat(opRight.value);
+        	// use float variables for comparison
+        	Float fOpLeft = Numeric.toFloat(opLeft);
+        	Float fOpRight = Numeric.toFloat(opRight);
+        	
+        	// do comparison
         	if (fOpLeft < fOpRight)
         	{
         		resCond = new ResultValue(SubClassif.BOOLEAN, "T", 0, null);
@@ -231,8 +255,11 @@ public class Utility {
 			}
             break;
         case INTEGER:
-        	Integer iOpLeft = Integer.parseInt(opLeft.value);
-        	Integer iOpRight = Integer.parseInt(opRight.value);
+        	// use integer variables for comparison
+        	Integer iOpLeft = Numeric.toInt(opLeft);
+        	Integer iOpRight = Numeric.toInt(opRight);
+        	
+        	// do comparison
         	if (iOpLeft < iOpRight)
         	{
         		resCond = new ResultValue(SubClassif.BOOLEAN, "T", 0, null);
@@ -243,6 +270,7 @@ public class Utility {
 			}
             break;
         case STRING:
+        	// just use the ResultValues for comparison, no need to convert, but use compareTo function for strings
         	if (opLeft.value.compareTo(opRight.value) < 0)
         	{
         		resCond = new ResultValue(SubClassif.BOOLEAN, "T", 0, null);
@@ -260,15 +288,38 @@ public class Utility {
         return resCond;
     }
 
-    public static ResultValue doGreater(ResultValue opLeft, ResultValue opRight, int iSourceLineNr) throws ParserException {
+    /**
+     * This method evaluates a greater than (>) condition and returns a boolean ResultValue based on the left
+     * operand being greater than the right operand
+     * @param opLeft
+     * 			ResultValue for left operand
+     * @param opRight
+     * 			ResultValue for right operand
+     * @param iSourceLineNr
+     * 			Source line from Scanner
+     * @return
+     * 			Boolean ResultValue representing conditional result
+     * @throws ParserException
+     * 			For Illegal Operation
+     * 
+     * @author Riley Marfin
+     */
+    public static ResultValue doGreater(ResultValue opLeft, ResultValue opRight, int iSourceLineNr) throws ParserException
+    {
+    	// initialize our resCond for the returned result
     	ResultValue resCond = new ResultValue();
+    	
+    	// check type for left operand
         switch (opLeft.type)
         {
         case DATE:
             break;
         case FLOAT:
-        	Float fOpLeft = Float.parseFloat(opLeft.value);
-        	Float fOpRight = Float.parseFloat(opRight.value);
+        	// use float variables for comparison
+        	Float fOpLeft = Numeric.toFloat(opLeft);
+        	Float fOpRight = Numeric.toFloat(opRight);
+        	
+        	// do comparison
         	if (fOpLeft > fOpRight)
         	{
         		resCond = new ResultValue(SubClassif.BOOLEAN, "T", 0, null);
@@ -279,8 +330,11 @@ public class Utility {
 			}
             break;
         case INTEGER:
-        	Integer iOpLeft = Integer.parseInt(opLeft.value);
-        	Integer iOpRight = Integer.parseInt(opRight.value);
+        	// use integer variables for comparison
+        	Integer iOpLeft = Numeric.toInt(opLeft);
+        	Integer iOpRight = Numeric.toInt(opRight);
+        	
+        	// do comparison
         	if (iOpLeft > iOpRight)
         	{
         		resCond = new ResultValue(SubClassif.BOOLEAN, "T", 0, null);
@@ -291,6 +345,7 @@ public class Utility {
 			}
             break;
         case STRING:
+        	// no need to convert, but use compareTo function for strings
         	if (opLeft.value.compareTo(opRight.value) > 0)
         	{
         		resCond = new ResultValue(SubClassif.BOOLEAN, "T", 0, null);
@@ -308,15 +363,39 @@ public class Utility {
         return resCond;
     }
 
-    public static ResultValue doLessEqual(ResultValue opLeft, ResultValue opRight, int iSourceLineNr) throws ParserException {
+    /**
+     * This method evaluates a less than or equal to (<=) condition and returns a boolean ResultValue based on the left
+     * operand being less than or equal to the right operand
+     * 
+     * @param opLeft
+     * 			ResultValue for left operand
+     * @param opRight
+     * 			ResultValue for right operand
+     * @param iSourceLineNr
+     * 			Source line from Scanner
+     * @return
+     * 			Boolean ResultValue representing conditional result
+     * @throws ParserException
+     * 			For Illegal Operation
+     * 
+     * @author Riley Marfin
+     */
+    public static ResultValue doLessEqual(ResultValue opLeft, ResultValue opRight, int iSourceLineNr) throws ParserException
+    {
+    	// initialize our resCond for the returned result
     	ResultValue resCond = new ResultValue();
+    	
+    	// check type for left operand
         switch (opLeft.type)
         {
         case DATE:
             break;
         case FLOAT:
-        	Float fOpLeft = Float.parseFloat(opLeft.value);
-        	Float fOpRight = Float.parseFloat(opRight.value);
+        	// use floats
+        	Float fOpLeft = Numeric.toFloat(opLeft);
+        	Float fOpRight = Numeric.toFloat(opRight);
+        	
+        	// do comparison
         	if (fOpLeft <= fOpRight)
         	{
         		resCond = new ResultValue(SubClassif.BOOLEAN, "T", 0, null);
@@ -327,8 +406,11 @@ public class Utility {
 			}
             break;
         case INTEGER:
-        	Integer iOpLeft = Integer.parseInt(opLeft.value);
-        	Integer iOpRight = Integer.parseInt(opRight.value);
+        	// use integers
+        	Integer iOpLeft = Numeric.toInt(opLeft);
+        	Integer iOpRight = Numeric.toInt(opRight);
+        	
+        	// do comparison
         	if (iOpLeft <= iOpRight)
         	{
         		resCond = new ResultValue(SubClassif.BOOLEAN, "T", 0, null);
@@ -339,6 +421,7 @@ public class Utility {
 			}
             break;
         case STRING:
+        	// no need to convert, but use compareTo method for strings
         	if (opLeft.value.compareTo(opRight.value) <= 0)
         	{
         		resCond = new ResultValue(SubClassif.BOOLEAN, "T", 0, null);
@@ -355,16 +438,40 @@ public class Utility {
         }
         return resCond;
     }
-
-    public static ResultValue doGreaterEqual(ResultValue opLeft, ResultValue opRight, int iSourceLineNr) throws ParserException {
+    
+    /**
+     * This method evaluates a greater than or equal to (>=) condition and returns a boolean ResultValue based on the left
+     * operand being greater than or equal to the right operand
+     * 
+     * @param opLeft
+     * 			ResultValue for left operand
+     * @param opRight
+     * 			ResultValue for right operand
+     * @param iSourceLineNr
+     * 			Source line from Scanner
+     * @return
+     * 			Boolean ResultValue representing conditional result
+     * @throws ParserException
+     * 			For Illegal Operation
+     * 
+     * @author Riley Marfin
+     */
+    public static ResultValue doGreaterEqual(ResultValue opLeft, ResultValue opRight, int iSourceLineNr) throws ParserException
+    {
+    	// init return variable
     	ResultValue resCond = new ResultValue();
+    	
+    	// check left operand type
         switch (opLeft.type)
         {
         case DATE:
             break;
         case FLOAT:
-        	Float fOpLeft = Float.parseFloat(opLeft.value);
-        	Float fOpRight = Float.parseFloat(opRight.value);
+        	// use floats
+        	Float fOpLeft = Numeric.toFloat(opLeft);
+        	Float fOpRight = Numeric.toFloat(opRight);
+        	
+        	// do comparison
         	if (fOpLeft >= fOpRight)
         	{
         		resCond = new ResultValue(SubClassif.BOOLEAN, "T", 0, null);
@@ -375,8 +482,11 @@ public class Utility {
 			}
             break;
         case INTEGER:
-        	Integer iOpLeft = Integer.parseInt(opLeft.value);
-        	Integer iOpRight = Integer.parseInt(opRight.value);
+        	// use ints
+        	Integer iOpLeft = Numeric.toInt(opLeft);
+        	Integer iOpRight = Numeric.toInt(opRight);
+        	
+        	// do comparison
         	if (iOpLeft >= iOpRight)
         	{
         		resCond = new ResultValue(SubClassif.BOOLEAN, "T", 0, null);
@@ -387,6 +497,7 @@ public class Utility {
 			}
             break;
         case STRING:
+        	// no need to convert, use compareTo for strings
         	if (opLeft.value.compareTo(opRight.value) >= 0)
         	{
         		resCond = new ResultValue(SubClassif.BOOLEAN, "T", 0, null);
@@ -404,15 +515,39 @@ public class Utility {
         return resCond;
     }
 
-    public static ResultValue doEqual(ResultValue opLeft, ResultValue opRight, int iSourceLineNr) throws ParserException {
+    /**
+     * This method evaluates an equal to (==) condition and returns a boolean ResultValue based on the left
+     * operand being equal to the right operand
+     * 
+     * @param opLeft
+     * 			ResultValue for left operand
+     * @param opRight
+     * 			ResultValue for right operand
+     * @param iSourceLineNr
+     * 			Source line from Scanner
+     * @return
+     * 			Boolean ResultValue representing conditional result
+     * @throws ParserException
+     * 			For Illegal Operation
+     * 
+     * @author Riley Marfin
+     */
+    public static ResultValue doEqual(ResultValue opLeft, ResultValue opRight, int iSourceLineNr) throws ParserException
+    {
+    	// init return condition
     	ResultValue resCond = new ResultValue();
+    	
+    	// check left operand
         switch (opLeft.type)
         {
         case DATE:
             break;
         case FLOAT:
-        	Float fOpLeft = Float.parseFloat(opLeft.value);
-        	Float fOpRight = Float.parseFloat(opRight.value);
+        	// use floats
+        	Float fOpLeft = Numeric.toFloat(opLeft);
+        	Float fOpRight = Numeric.toFloat(opRight);
+        	
+        	// do comparison
         	if (fOpLeft == fOpRight)
         	{
         		resCond = new ResultValue(SubClassif.BOOLEAN, "T", 0, null);
@@ -423,8 +558,11 @@ public class Utility {
 			}
             break;
         case INTEGER:
-        	Integer iOpLeft = Integer.parseInt(opLeft.value);
-        	Integer iOpRight = Integer.parseInt(opRight.value);
+        	// use ints
+        	Integer iOpLeft = Numeric.toInt(opLeft);
+        	Integer iOpRight = Numeric.toInt(opRight);
+        	
+        	// do comparison
         	if (iOpLeft == iOpRight)
         	{
         		resCond = new ResultValue(SubClassif.BOOLEAN, "T", 0, null);
@@ -435,6 +573,7 @@ public class Utility {
 			}
             break;
         case STRING:
+        	// no need to convert, but use compareTo for strings
         	if (opLeft.value == opRight.value)
         	{
         		resCond = new ResultValue(SubClassif.BOOLEAN, "T", 0, null);
@@ -452,15 +591,39 @@ public class Utility {
         return resCond;
     }
 
-    public static ResultValue doNotEqual(ResultValue opLeft, ResultValue opRight, int iSourceLineNr) throws ParserException {
+    /**
+     * This method evaluates a not equal to (!=) condition and returns a boolean ResultValue based on the left
+     * operand being not equal to the right operand
+     * 
+     * @param opLeft
+     * 			ResultValue for left operand
+     * @param opRight
+     * 			ResultValue for right operand
+     * @param iSourceLineNr
+     * 			Source line from Scanner
+     * @return
+     * 			Boolean ResultValue representing conditional result
+     * @throws ParserException
+     * 			For Illegal Operation
+     * 
+     * @author Riley Marfin
+     */
+    public static ResultValue doNotEqual(ResultValue opLeft, ResultValue opRight, int iSourceLineNr) throws ParserException
+    {
+    	// init return condition
     	ResultValue resCond = new ResultValue();
+    	
+    	// check left operand type
         switch (opLeft.type)
         {
         case DATE:
             break;
         case FLOAT:
-        	Float fOpLeft = Float.parseFloat(opLeft.value);
-        	Float fOpRight = Float.parseFloat(opRight.value);
+        	// use floats
+        	Float fOpLeft = Numeric.toFloat(opLeft);
+        	Float fOpRight = Numeric.toFloat(opRight);
+        	
+        	// do comparison
         	if (fOpLeft != fOpRight)
         	{
         		resCond = new ResultValue(SubClassif.BOOLEAN, "T", 0, null);
@@ -471,8 +634,11 @@ public class Utility {
 			}
             break;
         case INTEGER:
-        	Integer iOpLeft = Integer.parseInt(opLeft.value);
-        	Integer iOpRight = Integer.parseInt(opRight.value);
+        	// use ints
+        	Integer iOpLeft = Numeric.toInt(opLeft);
+        	Integer iOpRight = Numeric.toInt(opRight);
+        	
+        	// do comparison
         	if (iOpLeft != iOpRight)
         	{
         		resCond = new ResultValue(SubClassif.BOOLEAN, "T", 0, null);
@@ -483,6 +649,7 @@ public class Utility {
 			}
             break;
         case STRING:
+        	// no need to convert, but use compareTo for strings
         	if (opLeft.value != opRight.value)
         	{
         		resCond = new ResultValue(SubClassif.BOOLEAN, "T", 0, null);
@@ -500,12 +667,35 @@ public class Utility {
         return resCond;
     }
 
-    public static ResultValue doNot(ResultValue opLeft, int iSourceLineNr) throws ParserException {
+    /**
+     * This method evaluates a conditional not (!) and returns a boolean ResultValue based on the left
+     * operand being false
+     * 
+     * @param opLeft
+     * 			ResultValue for left operand
+     * @param iSourceLineNr
+     * 			Source line from Scanner
+     * @return
+     * 			Boolean ResultValue representing conditional result
+     * @throws ParserException
+     * 			For Illegal Operation
+     * 
+     * @author Riley Marfin
+     */
+    public static ResultValue doNot(ResultValue opLeft, int iSourceLineNr) throws ParserException
+    {
+    	// init return condition
     	ResultValue resCond = new ResultValue();
+    	
+    	// check left operand type
         switch (opLeft.type)
         {
+        // only case is boolean
         case BOOLEAN:
+        	// use boolean
         	Boolean bOpLeft = Boolean.parseBoolean(opLeft.value);
+        	
+        	// do comparison
         	if (!bOpLeft)
         	{
 				resCond = new ResultValue(SubClassif.BOOLEAN, "T", 0, null);
@@ -523,13 +713,38 @@ public class Utility {
         return resCond;
     }
 
-    public static ResultValue doAnd(ResultValue opLeft, ResultValue opRight, int iSourceLineNr) throws ParserException {
+    /**
+     * This method evaluates a conditional and (&&) and returns a boolean ResultValue based on the left
+     * operand being and right operand being true
+     * 
+     * @param opLeft
+     * 			ResultValue for left operand
+     * @param opRight
+     * 			ResultValue for right operand
+     * @param iSourceLineNr
+     * 			Source line from Scanner
+     * @return
+     * 			Boolean ResultValue representing conditional result
+     * @throws ParserException
+     * 			For Illegal Operation
+     * 
+     * @author Riley Marfin
+     */
+    public static ResultValue doAnd(ResultValue opLeft, ResultValue opRight, int iSourceLineNr) throws ParserException
+    {
+    	// init return condition
     	ResultValue resCond = new ResultValue();
+    	
+    	// check left operand
         switch (opLeft.type)
         {
+        // only case should be boolean
         case BOOLEAN:
+        	// use booleans
         	Boolean bOpLeft = Boolean.parseBoolean(opLeft.value);
         	Boolean bOpRight = Boolean.parseBoolean(opRight.value);
+        	
+        	// do comparison
         	if (bOpLeft && bOpRight)
         	{
 				resCond = new ResultValue(SubClassif.BOOLEAN, "T", 0, null);
@@ -547,13 +762,37 @@ public class Utility {
         return resCond;
     }
 
-    public static ResultValue doOr(ResultValue opLeft, ResultValue opRight, int iSourceLineNr) throws ParserException {
+    /**
+     * This method evaluates a conditional or (||) and returns a boolean ResultValue based on the left
+     * operand being or right operand being true
+     * 
+     * @param opLeft
+     * 			ResultValue for left operand
+     * @param opRight
+     * 			ResultValue for right operand
+     * @param iSourceLineNr
+     * 			Source line from Scanner
+     * @return
+     * 			Boolean ResultValue representing conditional result
+     * @throws ParserException
+     * 			For Illegal Operation
+     * 
+     * @author Riley Marfin
+     */
+    public static ResultValue doOr(ResultValue opLeft, ResultValue opRight, int iSourceLineNr) throws ParserException
+    {
+    	// init return condition
     	ResultValue resCond = new ResultValue();
+    	
+    	// check left operand
         switch (opLeft.type)
         {
         case BOOLEAN:
+        	// use booleans
         	Boolean bOpLeft = Boolean.parseBoolean(opLeft.value);
         	Boolean bOpRight = Boolean.parseBoolean(opRight.value);
+        	
+        	// do comparison
         	if (bOpLeft || bOpRight)
         	{
 				resCond = new ResultValue(SubClassif.BOOLEAN, "T", 0, null);
