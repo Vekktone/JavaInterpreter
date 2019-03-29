@@ -370,7 +370,7 @@ public class Scanner {
                     {
                         throw new ScannerException(lineNum
                                 , index
-                                , "Syntax error: Undeclared identifier" + substring
+                                , "Syntax error: Undeclared identifier " + substring
                                 , Meatbol.filename);
                     }
                     // if the delimiter is a '(' then this must be a user function.

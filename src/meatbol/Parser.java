@@ -10,23 +10,32 @@ public class Parser
 
     }
 
-    /**
-     * @author Mason Pohler (modified 28-3-2019)
+    /** Parser reads tokens from Scanner and executes the source file.
+     *
+     *
      * @param scan
+     * 			Scanner object providing tokens to be executed
      * @param symbolTable
+     * 			Contains additional token information
      * @param bExec
+     * 			Determines whether or not each statement is executed during
+     * 			certain control statements
+     *
      * @throws Exception
+     *
+     * @author Gregory Pugh
+     * @author Riley Marfin (modified 27-3-2019)
+     * @author Mason Pohler (modified 28-3-2019)
      */
     public void stmt(Scanner scan, SymbolTable symbolTable, Boolean bExec) throws Exception
     {
-
+        //print current source file line being process
         if (scan.debugOptionsMap.get(DebuggerTypes.STATEMENT))
         {
             printStatement(scan, scan.currentToken.iSourceLineNr);
         }
 
-        //System.out.println("\n***start statement***");
-        //scan.currentToken.printToken();
+        //Determine type of token
         switch(scan.currentToken.primClassif)
         {
             // shouldn't see this, but if it occurs skip it
@@ -62,7 +71,7 @@ public class Parser
                 throw new ParserException(scan.currentToken.iSourceLineNr
                         ,"***Error: Illegal start to statement***"
                         , Meatbol.filename);
-                // Unknown state, throw error
+            // Unknown state, throw error
             default:
                 throw new ParserException(scan.currentToken.iSourceLineNr
                         ,"***Error: unknown state***"
@@ -70,8 +79,22 @@ public class Parser
         }
     }
 
+    /** Advanced print function. - DEPRICATED
+     * <p>
+     * Prints entire code line even if the line spans multiple lines in the
+     * source file. Never implemented and tested, as sample indicated this was
+     * not the desired method.
+     *
+     * @param scan
+     * 			Scanner object with source file lines
+     * @param lineNumber
+     * 			index of the current print location (avoids duplicate printing)
+     *
+     * @author Mason Pohler
+     */
     private void printStatement(Scanner scan, int lineNumber)
     {
+        //print until we reach end of file or ';'
         while(lineNumber < scan.lineList.size() && !scan.lineList.get(lineNumber).contains(";"))
         {
             System.out.println(scan.lineList.get(lineNumber));
@@ -81,11 +104,18 @@ public class Parser
     }
 
     /** Determines what type of control statement we have.
+     * <p>
+     * Currently allows DECLARE, IF, and WHILE.
+     * FOR and DEF not yet implemented.
      *
      * @param scan
+     * 			Scanner object containing providing source file tokens
      * @param symbolTable
+     *			Contains additional token information
      *
      * @throws Exception
+     *
+     * @author Gregory Pugh
      */
     public void conStmt(Scanner scan, SymbolTable symbolTable, Boolean bExec) throws Exception
     {
@@ -123,7 +153,7 @@ public class Parser
                         , Meatbol.filename);
             }
             break;
-            //if we are here, then we are missing matching FLOW
+        //if we are here, then we are missing matching FLOW
         case END:
             switch(scan.currentToken.tokenStr)
             {
@@ -152,7 +182,7 @@ public class Parser
                         ,"***Error: unknown state***"
                         , Meatbol.filename);
             }
-            //begin new control statement
+        //begin new control statement
         case FLOW:
             switch(scan.currentToken.tokenStr)
             {
@@ -172,7 +202,7 @@ public class Parser
                 break;
             }
             break;
-            //something went wrong
+        //something went wrong
         default:
             throw new ParserException(scan.currentToken.iSourceLineNr
                     ,"***Error: Unknown state***"
@@ -180,20 +210,44 @@ public class Parser
         }
     }
 
+    /** Process for 'if'/'if-else'.
+     *
+     * @param scan
+     * 			Scanner object providing tokens to be executed
+     * @param symbolTable
+     * 			Contains additional token information
+     * @param bExec
+     * 			Determines whether or not each statement is executed during
+     * 			certain control statements
+     *
+     * @throws Exception
+     *
+     * @author Riley Marfin
+     */
     private void ifStmt(Scanner scan, SymbolTable symbolTable, Boolean bExec) throws Exception {
 
         if (bExec) {
             // we are executing, not ignoring
             ResultValue resCond = expression(scan, symbolTable);
-            // Did the condition return True?
+
+            // Check for ending ':'
+            if (!scan.currentToken.tokenStr.equals(":"))
+            {
+                throw new ParserException(scan.currentToken.iSourceLineNr
+                        ,"***Error: expected ':' after 'if'***"
+                        , Meatbol.filename);
+            }
+
+            // Condition is true, execute true part
             if (resCond.value.equals("T"))
             {
-                // Cond returned True, continue executing
                 ResultValue resTemp = executeStatements(scan, symbolTable, true);
-                // what ended the statements after the true part? else: or endif;
+
+                // end expected: else
                 if (resTemp.terminatingStr.equals("else"))
                 {
                     scan.getNext();
+                    // Check for ending ':'
                     if (!scan.currentToken.tokenStr.equals(":"))
                     {
                         throw new ParserException(scan.currentToken.iSourceLineNr
@@ -201,48 +255,54 @@ public class Parser
                                 , Meatbol.filename);
                     }
 
-                    resTemp = executeStatements(scan, symbolTable, false); //since cond was true, ignore else part
+                    //since cond was true, ignore else part
+                    resTemp = executeStatements(scan, symbolTable, false);
                 }
 
+                // end expected: endif (not optional)
                 if (!resTemp.terminatingStr.equals("endif"))
                 {
                     throw new ParserException(scan.currentToken.iSourceLineNr
                             ,"***Error: expected 'endif' for an 'if'***"
                             , Meatbol.filename);
                 }
-
                 scan.getNext();
+               /* // check for ';'
                 if (!scan.currentToken.tokenStr.equals(";"))
                 {
                     throw new ParserException(scan.currentToken.iSourceLineNr
                             ,"***Error: expected ';' after 'endif'***"
                             , Meatbol.filename);
-                }
+                }*/
             }
+
             else
             {
-                // Cond returned False, ignore execution
-                ResultValue resTemp = executeStatements(scan, symbolTable, false); //not exec'ing true part
+                // Condition false, ignore true part
+                ResultValue resTemp = executeStatements(scan, symbolTable, false);
                 if (resTemp.terminatingStr.equals("else"))
                 {
                     scan.getNext();
+                    // Check for ending ':'
                     if (!scan.currentToken.tokenStr.equals(":"))
                     {
                         throw new ParserException(scan.currentToken.iSourceLineNr
                                 ,"***Error: expected ':' after 'else'***"
                                 , Meatbol.filename);
                     }
-                    resTemp = executeStatements(scan, symbolTable, true); //since cond was false, exec else part
+                    //since cond was false, execute else part (optional)
+                    resTemp = executeStatements(scan, symbolTable, true);
                 }
-
+                /*
                 if (!resTemp.terminatingStr.equals("endif"))
                 {
                     throw new ParserException(scan.currentToken.iSourceLineNr
                             ,"***Error: expected 'endif' for an 'if'***"
                             , Meatbol.filename);
-                }
+                }*/
 
                 scan.getNext();
+                // check for ';'
                 if (!scan.currentToken.tokenStr.equals(";"))
                 {
                     throw new ParserException(scan.currentToken.iSourceLineNr
@@ -251,33 +311,37 @@ public class Parser
                 }
             }
         }
+        // we are ignoring execution
         else
         {
-            // we are ignoring execution
-            // we want to ignore the conditional, true part, and false part
-            // should we execute evalCond?
+            // ignore the conditional
             skipTo(":", scan);
+            // we ignoring
             ResultValue resTemp = executeStatements(scan, symbolTable, false);
             if (resTemp.terminatingStr.equals("else"))
             {
+
                 scan.getNext();
+                // Check for ending ':'
                 if (!scan.currentToken.tokenStr.equals(":"))
                 {
                     throw new ParserException(scan.currentToken.iSourceLineNr
                             ,"***Error: expected ':' after 'else'***"
                             , Meatbol.filename);
                 }
+                // we are still ignoring
                 resTemp = executeStatements(scan, symbolTable, false);
             }
-
+            /*
             if (!resTemp.terminatingStr.equals("endif"))
             {
                 throw new ParserException(scan.currentToken.iSourceLineNr
                         ,"***Error: expected 'endif' for an 'if'***"
                         , Meatbol.filename);
             }
-
+            */
             scan.getNext();
+         // Check for ending ';'
             if (!scan.currentToken.tokenStr.equals(";"))
             {
                 throw new ParserException(scan.currentToken.iSourceLineNr
@@ -287,7 +351,23 @@ public class Parser
         }
     }
 
-    private void skipTo(String skip, Scanner scan) throws Exception {
+    /** Convenience function to skip to specific token.
+     * <p>
+     * Parses through each token until it finds one that matches the value
+     * provided.
+     *
+     * @param skip
+     * 			Token string to match
+     * @param scan
+     * 			Scanner providing Tokens
+     *
+     * @throws Exception
+     *
+     * @author Riley Marfin
+     */
+    private void skipTo(String skip, Scanner scan) throws Exception
+    {
+        //
         while (!scan.currentToken.tokenStr.equals(skip))
         {
             scan.getNext();
@@ -322,6 +402,17 @@ public class Parser
         }
     }
 
+    /**
+     *
+     * @param scan
+     * 			Scanner object providing tokens to be executed
+     * @param symbolTable
+     * 			Contains additional token information
+     * @param bExec
+     * 			Determines whether or not each statement is executed during
+     * 			certain control statements
+     * @throws Exception
+     */
     private void whileStmt(Scanner scan, SymbolTable symbolTable, Boolean bExec) throws Exception
     {
         ResultValue resTemp, resCond;
@@ -414,6 +505,7 @@ public class Parser
         }
     }
 
+    /** Placeholder: def statements not part of p3 */
     private void defStmt(Scanner scan, SymbolTable symbolTable) throws Exception {
         while(!scan.nextToken.tokenStr.equals(";"))
         {
@@ -428,10 +520,9 @@ public class Parser
             }
         }
         scan.getNext();
-        //scan.currentToken.printToken();
-
     }
 
+    /** Placeholder: def statements not part of p3 */
     private void forStmt(Scanner scan, SymbolTable symbolTable) throws Exception {
         while(!scan.nextToken.tokenStr.equals(";"))
         {
@@ -608,7 +699,7 @@ public class Parser
         //scan.currentToken.printToken();
         token.copyToken(scan.currentToken);
 
-        boolean atLeastOneOperator = false;
+        //boolean atLeastOneOperator = false;
 
         //build infix
         while(token.tokenStr != ";" && token.tokenStr != ":" && endExpression == false)
@@ -633,11 +724,16 @@ public class Parser
                 //if this is an identifier, we need to retrieve its value and type
                 if(token.subClassif == SubClassif.IDENTIFIER){
                     token.tokenStr = StorageManager.values.get(scan.currentToken.tokenStr);
+                    if(token.tokenStr == null){
+                        throw new ParserException(token.iSourceLineNr
+                                ,"***Error: Uninitialized variable - '" + scan.currentToken.tokenStr + "' ***"
+                                , Meatbol.filename);
+                    }
                     STIdentifier variable = (STIdentifier)symbolTable.getSymbol(scan.currentToken.tokenStr);
                     token.subClassif = variable.declareType;
                 }
             case OPERATOR:
-                atLeastOneOperator = true;
+                //atLeastOneOperator = true;
                 infix.add(token);
                 try
                 {
@@ -664,7 +760,7 @@ public class Parser
         ResultValue resultValue = infixToPostfix(infix);
 
         // Debugging for Expr
-        if (scan.debugOptionsMap.get(DebuggerTypes.EXPRESSION) && atLeastOneOperator)
+        if (scan.debugOptionsMap.get(DebuggerTypes.EXPRESSION) )//&& atLeastOneOperator)
         {
             System.out.println("... " + resultValue.value);
         }
