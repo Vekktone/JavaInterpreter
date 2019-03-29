@@ -262,20 +262,21 @@ public class Parser
                 }
 
                 // end expected: endif (not optional)
-                if (!resTemp.terminatingStr.equals("endif"))
-                {
-                    throw new ParserException(scan.currentToken.iSourceLineNr
-                            ,"***Error: expected 'endif' for an 'if'***"
-                            , Meatbol.filename);
-                }
+//                if (!resTemp.terminatingStr.equals("endif"))
+//                {
+//                    throw new ParserException(scan.currentToken.iSourceLineNr
+//                            ,"***Error: expected 'endif' for an 'if'***"
+//                            , Meatbol.filename);
+//                }
                 scan.getNext();
-               /* // check for ';'
+                
+                // check for ';'
                 if (!scan.currentToken.tokenStr.equals(";"))
                 {
                     throw new ParserException(scan.currentToken.iSourceLineNr
                             ,"***Error: expected ';' after 'endif'***"
                             , Meatbol.filename);
-                }*/
+                }
             }
 
             else
@@ -343,7 +344,8 @@ public class Parser
             }
             */
             scan.getNext();
-         // Check for ending ';'
+            
+            // Check for ending ';'
             if (!scan.currentToken.tokenStr.equals(";"))
             {
                 throw new ParserException(scan.currentToken.iSourceLineNr
