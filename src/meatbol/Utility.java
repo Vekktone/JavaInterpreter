@@ -685,7 +685,7 @@ public class Utility {
         	Float fOpRight = Numeric.toFloat(opRight);
         	
         	// do comparison
-        	if (fOpLeft == fOpRight)
+        	if (fOpLeft.equals(fOpRight))
         	{
         		resCond = new ResultValue(SubClassif.BOOLEAN, "T", 0, null);
 			}
@@ -700,7 +700,7 @@ public class Utility {
         	Integer iOpRight = Numeric.toInt(opRight);
         	
         	// do comparison
-        	if (iOpLeft == iOpRight)
+        	if (iOpLeft.equals(iOpRight))
         	{
         		resCond = new ResultValue(SubClassif.BOOLEAN, "T", 0, null);
 			}
@@ -711,7 +711,7 @@ public class Utility {
             break;
         case STRING:
         	// no need to convert, but use compareTo for strings
-        	if (opLeft.value == opRight.value)
+        	if (opLeft.value.equals(opRight.value))
         	{
         		resCond = new ResultValue(SubClassif.BOOLEAN, "T", 0, null);
 			}
@@ -761,7 +761,7 @@ public class Utility {
         	Float fOpRight = Numeric.toFloat(opRight);
         	
         	// do comparison
-        	if (fOpLeft != fOpRight)
+        	if (!fOpLeft.equals(fOpRight))
         	{
         		resCond = new ResultValue(SubClassif.BOOLEAN, "T", 0, null);
 			}
@@ -776,7 +776,7 @@ public class Utility {
         	Integer iOpRight = Numeric.toInt(opRight);
         	
         	// do comparison
-        	if (iOpLeft != iOpRight)
+        	if (!iOpLeft.equals(iOpRight))
         	{
         		resCond = new ResultValue(SubClassif.BOOLEAN, "T", 0, null);
 			}
@@ -787,7 +787,7 @@ public class Utility {
             break;
         case STRING:
         	// no need to convert, but use compareTo for strings
-        	if (opLeft.value != opRight.value)
+        	if (!opLeft.value.equals(opRight.value))
         	{
         		resCond = new ResultValue(SubClassif.BOOLEAN, "T", 0, null);
 			}

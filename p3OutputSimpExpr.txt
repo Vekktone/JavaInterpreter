@@ -1,0 +1,11 @@
+p3SimpExpr.txt
+variables: 2 * 3 = 6
+constants: 2 * 3 = 6
+right: 12 > 3
+right: 12 >= 3.0
+right: string 12 > 3 is F
+Line 35 ***Error: expected ';' after 'endif'***, File: null
+	at meatbol.Parser.ifStmt(Parser.java:310)
+	at meatbol.Parser.conStmt(Parser.java:192)
+	at meatbol.Parser.stmt(Parser.java:52)
+	at meatbol.Meatbol.main(Meatbol.java:61)
