@@ -773,8 +773,8 @@ public class Parser
     public void handleBasicForStatement(Scanner scan, SymbolTable symbolTable) throws Exception {
         // current should be k, next should be =
 
-        Token incrementVariableToken = new Token();
-        incrementVariableToken.copyToken(scan.currentToken);
+        Token controlVariableToken = new Token();
+        controlVariableToken.copyToken(scan.currentToken);
 
         // TODO: VERIFY EXPRESSION ENDS AT "to"
         assignStmt(scan, symbolTable, true);
@@ -808,7 +808,7 @@ public class Parser
         }
 
         scan.getNext();
-        // current token should be start of the next line
+        // current token should be start of the line right after the For Statement
 
         // save state of the scanner so we can loop back
         int columnIndex = scan.columnIndex;
@@ -818,14 +818,17 @@ public class Parser
         Token nextToken = new Token();
         nextToken.copyToken(scan.nextToken);
 
+        String controlVariableValue = StorageManager.values.get(controlVariableToken.tokenStr);
+
         // loop while increment value is less than termination value
-        while (incrementValue.makeSimlifiedValue().compareTo(terminationValue.makeSimlifiedValue()) < 0)
+        while (controlVariableValue.compareTo(terminationValue.makeSimlifiedValue()) < 0)
         {
             executeStatements(scan, symbolTable, true);
             scan.columnIndex = columnIndex;
             scan.lineIndex = lineIndex;
             scan.currentToken.copyToken(currentToken);
             scan.nextToken.copyToken(nextToken);
+            controlVariableValue = StorageManager.values.get(controlVariableToken.tokenStr);
         }
 
         // Get scanner aligned to the end of the For statement without executing it
