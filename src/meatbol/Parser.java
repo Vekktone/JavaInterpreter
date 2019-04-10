@@ -543,21 +543,37 @@ public class Parser
     /** Placeholder: def statements not part of p3 */
     private void forStmt(Scanner scan, SymbolTable symbolTable) throws Exception
     {
-        while(!scan.nextToken.tokenStr.equals(";"))
-        {
-            try
-            {
-                scan.getNext();
-                //scan.currentToken.printToken();
-            }
-            catch (Exception e)
-            {
-                throw e;
-            }
-        }
         scan.getNext();
-        //scan.currentToken.printToken();
 
+        // verify structure of For Statement is correct
+        if (scan.currentToken.primClassif != Classif.OPERAND || scan.nextToken.primClassif != Classif.OPERATOR)
+        {
+            // TODO: ERROR
+        }
+
+        // determine what kind of for statement this is and call the function for it
+        switch (scan.nextToken.tokenStr)
+        {
+            // This is a basic For Statement
+            case "=":
+                handleBasicForStatement(scan, symbolTable);
+                break;
+
+            // This is the Meatbol equivalent of a For Each Statement
+            case "in":
+                handleForEachStatement(scan, symbolTable);
+                break;
+
+            // This is a String For Statement
+            case "from":
+                handleStringForStatement(scan, symbolTable);
+                break;
+
+            // This is an error.
+            default:
+                // TODO: ERROR
+                break;
+        }
     }
 
     /**
@@ -751,6 +767,92 @@ public class Parser
 
         boolean setValue = onOrOffString.equals("on");
         scan.debugOptionsMap.put(debugType, setValue);
+    }
+
+    // for k = 0 to ELEM(iCM) by 2:
+    public void handleBasicForStatement(Scanner scan, SymbolTable symbolTable) throws Exception {
+        // current should be k, next should be =
+
+        Token incrementVariableToken = new Token();
+        incrementVariableToken.copyToken(scan.currentToken);
+
+        // TODO: VERIFY EXPRESSION ENDS AT "to"
+        assignStmt(scan, symbolTable, true);
+
+        // current should be to, next should be ELEM(iCM)
+        // TODO: VERIFY EXPRESSION ENDS AT "by"
+        ResultValue terminationValue = expression(scan, symbolTable);
+
+        // current is either by or :
+        ResultValue incrementValue = new ResultValue();
+
+        // Determine the value for the increment value
+        switch (scan.currentToken.tokenStr)
+        {
+            // The increment value is specified
+            case "by":
+                scan.getNext();
+                // TODO: VERIFY EXPRESSION ENDS AT ":"
+                incrementValue = expression(scan, symbolTable);
+                break;
+
+            // The increment value is defaulted to 1
+            case ":":
+                incrementValue = new ResultValue(SubClassif.INTEGER, "1", 0, null);
+                break;
+
+            // Incomplete For Statement
+            default:
+                // TODO: ERROR
+                break;
+        }
+
+        scan.getNext();
+        // current token should be start of the next line
+
+        // save state of the scanner so we can loop back
+        int columnIndex = scan.columnIndex;
+        int lineIndex = scan.lineIndex;
+        Token currentToken = new Token();
+        currentToken.copyToken(scan.currentToken);
+        Token nextToken = new Token();
+        nextToken.copyToken(scan.nextToken);
+
+        // loop while increment value is less than termination value
+        while (incrementValue.makeSimlifiedValue().compareTo(terminationValue.makeSimlifiedValue()) < 0)
+        {
+            executeStatements(scan, symbolTable, true);
+            scan.columnIndex = columnIndex;
+            scan.lineIndex = lineIndex;
+            scan.currentToken.copyToken(currentToken);
+            scan.nextToken.copyToken(nextToken);
+        }
+
+        // Get scanner aligned to the end of the For statement without executing it
+        executeStatements(scan, symbolTable, false);
+    }
+
+    public void handleForEachStatement(Scanner scan, SymbolTable symbolTable)
+    {
+
+    }
+
+    // for stringCV from string by delimiter:
+    public void handleStringForStatement(Scanner scan, SymbolTable symbolTable)
+    {
+
+    }
+
+    // for char in string:
+    private void handleForCharInStringStatement(Scanner scan, SymbolTable symbolTable)
+    {
+
+    }
+
+    // for item in array:
+    private void handleForItemInArrayStatement(Scanner scan, SymbolTable symbolTable)
+    {
+
     }
     
     /**

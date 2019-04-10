@@ -365,8 +365,8 @@ public class Scanner {
                 {
                     // if the symbol is not within the table, then it is either a variable
                     // or a user function and needs to be declared. If the previous token
-                    // was not a control declare, then this is an error.
-                    if (currentToken.subClassif != SubClassif.DECLARE)
+                    // was not a control declare (and it is not in a for statement), then this is an error.
+                    if (currentToken.subClassif != SubClassif.DECLARE && !currentToken.tokenStr.equals("for"))
                     {
                         throw new ScannerException(lineNum
                                 , index
