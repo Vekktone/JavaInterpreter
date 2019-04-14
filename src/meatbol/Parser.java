@@ -826,11 +826,19 @@ public class Parser
                 {
                     //check precedence with stack
                     if(token.prec() < stack.peek().stackPrec())
+                    {
                         //pop and out higher precedence operators
                         postfix.add(stack.pop());
+                    }
+                    else
+                    {
+                        break;
+                    }
                 }
                 //push operator to stack
                 stack.push(token);
+
+                //stack.elements());
                 break;
                 //try to put on stack
             case FUNCTION:
@@ -841,6 +849,10 @@ public class Parser
                     {
                         //pop and out higher precedence operators
                         postfix.add(stack.pop());
+                    }
+                    else
+                    {
+                        break;
                     }
                 }
                 //push operator to stack
