@@ -39,6 +39,7 @@ public class Meatbol
         // Print a column heading - LEGACY
         //System.out.printf("%-11s %-12s %s\n", "primClassif", "subClassif", "tokenStr");
         try {
+            filename = args[0];
             // Create the SymbolTable
             SymbolTable symbolTable = new SymbolTable();
             // Create scanner (reads file on creation)

@@ -134,6 +134,10 @@ public class Token
      * @author Gregory Pugh
      */
     public int prec() throws ParserException {
+        if(this.primClassif == Classif.FUNCTION)
+        {
+            return 16;
+        }
         //lookup the tokenStr
         switch(this.tokenStr)
         {
@@ -172,6 +176,10 @@ public class Token
      * @author Gregory Pugh
      */
     public int stackPrec() throws ParserException {
+        if(this.primClassif == Classif.FUNCTION)
+        {
+            return 2;
+        }
         //lookup the tokenStr
         switch(this.tokenStr)
         {
