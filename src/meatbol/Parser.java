@@ -197,7 +197,6 @@ public class Parser
      */
     private void ifStmt(Scanner scan, SymbolTable symbolTable, Boolean bExec) throws Exception {
 
-        System.out.println("at ifStmt");
         if (bExec) {
             // we are executing, not ignoring
             ResultValue resCond = expression(scan, symbolTable);
@@ -773,8 +772,8 @@ public class Parser
             token.copyToken(scan.currentToken);
         }
 
-        //for (Token test: infix)
-        //{
+       // for (Token test: infix)
+       // {
         //    System.out.print(test.tokenStr + ",");
         //}
         //System.out.println();
@@ -811,7 +810,7 @@ public class Parser
         //iterate through infix expression
         for(Token token : infix)
         {
-            //token.printToken();
+
             //based on what next token is
             switch(token.primClassif)
             {
@@ -857,6 +856,7 @@ public class Parser
                 }
                 //push operator to stack
                 stack.push(token);
+                postfix.add(new Token("PARM"));
                 break;
 
             case SEPARATOR:
@@ -913,49 +913,14 @@ public class Parser
             }
             postfix.add(stack.pop());
         }
-        //for (Token test: postfix)
-        //{
-        //    System.out.print(test.tokenStr + ",");
-        //}
-        //System.out.println();
+        System.out.print("postfix: ");
+        for (Token test: postfix)
+        {
+            System.out.print(test.tokenStr + ",");
+        }
+        System.out.println();
 
         return evalPostfix(postfix);
-    }
-
-    /**
-     * This method prints an expression for debugging purposes
-     * @param infixExpression
-     * 			ArrayList of tokens from expression
-     * @param resultValue
-     * 			ResultValue from evaluation
-     *
-     * @author Mason Pohler
-     */
-    private void printExpression(ArrayList<Token> infixExpression, ResultValue resultValue)
-    {
-        StringBuffer expressionDebugStringBuffer = new StringBuffer();
-        expressionDebugStringBuffer.append("... ");
-
-        // add each token's tokenstr in the infix representation to the StringBuffer
-        for (Token token : infixExpression)
-        {
-            expressionDebugStringBuffer.append(token.tokenStr);
-            expressionDebugStringBuffer.append(" ");
-        }
-        expressionDebugStringBuffer.append(" is ");
-
-        // If the result is a String, wrap it in quotes for readability
-        if (resultValue.type == SubClassif.STRING)
-        {
-            expressionDebugStringBuffer.append("'");
-            expressionDebugStringBuffer.append(resultValue.value);
-            expressionDebugStringBuffer.append("'");
-        }
-        // otherwise append the result on its own
-        else
-            expressionDebugStringBuffer.append(resultValue.value);
-
-        System.out.println(expressionDebugStringBuffer.toString());
     }
 
     /** Performs arithmatic and logical operations on postfix expression.
@@ -993,6 +958,12 @@ public class Parser
         //iterate through postfix expression
         for(Token token : postfix)
         {
+            //token.printToken();
+            if(token.tokenStr.equals("PARM"))
+            {
+                stack.push(new ResultValue(SubClassif.EMPTY,"PARM",0,null));
+                continue;
+            }
             //determine what to do with next token
             switch (token.primClassif)
             {
@@ -1085,12 +1056,20 @@ public class Parser
                 }
                 stack.push(value);
                 break;
+
             case FUNCTION:
                 parmList = new ArrayList<ResultValue>();
-                while (!stack.empty() && ! (stack.peek().value.equals("PARM")))
-                {
-                    parmList.add(stack.pop());
-                }
+
+                while (! stack.empty())
+                    if(stack.peek().value.equals("PARM"))
+                    {
+                        stack.pop();
+                        break;
+                    }
+                    else
+                    {
+                        parmList.add(stack.pop());
+                    }
                 switch(token.tokenStr)
                 {
                 case "print":
@@ -1098,20 +1077,16 @@ public class Parser
                     stack.push(new ResultValue());
                     break;
                 case "MAXELEM":
-                    Utility.maxElement(parmList);
-                    stack.push(new ResultValue());
+                    stack.push(Utility.maxElement(parmList));
                     break;
                 case "LENGTH":
-                    Utility.length(parmList);
-                    stack.push(new ResultValue());
+                    stack.push(Utility.length(parmList));
                     break;
                 case "SPACES":
-                    Utility.spaces(parmList);
-                    stack.push(new ResultValue());
+                    stack.push(Utility.spaces(parmList));
                     break;
                 case "ELEM":
-                    Utility.element(parmList);
-                    stack.push(new ResultValue());
+                    stack.push(Utility.element(parmList));
                     break;
                 default:
                     throw new ParserException(token.iSourceLineNr
@@ -1187,5 +1162,41 @@ public class Parser
         {
             scan.getNext();
         }
+    }
+
+    /**
+     * This method prints an expression for debugging purposes
+     * @param infixExpression
+     * 			ArrayList of tokens from expression
+     * @param resultValue
+     * 			ResultValue from evaluation
+     *
+     * @author Mason Pohler
+     */
+    private void printExpression(ArrayList<Token> infixExpression, ResultValue resultValue)
+    {
+        StringBuffer expressionDebugStringBuffer = new StringBuffer();
+        expressionDebugStringBuffer.append("... ");
+
+        // add each token's tokenstr in the infix representation to the StringBuffer
+        for (Token token : infixExpression)
+        {
+            expressionDebugStringBuffer.append(token.tokenStr);
+            expressionDebugStringBuffer.append(" ");
+        }
+        expressionDebugStringBuffer.append(" is ");
+
+        // If the result is a String, wrap it in quotes for readability
+        if (resultValue.type == SubClassif.STRING)
+        {
+            expressionDebugStringBuffer.append("'");
+            expressionDebugStringBuffer.append(resultValue.value);
+            expressionDebugStringBuffer.append("'");
+        }
+        // otherwise append the result on its own
+        else
+            expressionDebugStringBuffer.append(resultValue.value);
+
+        System.out.println(expressionDebugStringBuffer.toString());
     }
 }

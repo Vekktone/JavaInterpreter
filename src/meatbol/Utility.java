@@ -951,6 +951,7 @@ public class Utility {
     }
 
     public static void print(ArrayList<ResultValue> parmList) {
+        System.out.println("doing print");
         Stack<ResultValue> stack = new Stack<ResultValue>();
         //need to reverse the list
         for(ResultValue parameter : parmList)
@@ -965,23 +966,31 @@ public class Utility {
         System.out.println();
     }
 
-    public static void maxElement(ArrayList<ResultValue> parmList) {
-        // TODO Auto-generated method stub
+    public static ResultValue maxElement(ArrayList<ResultValue> parmList) {
+        System.out.println("doing MAXELEM");
+        return new ResultValue(SubClassif.INTEGER,"5",0,null);
 
     }
 
-    public static void length(ArrayList<ResultValue> parmList) {
-        // TODO Auto-generated method stub
+    public static ResultValue length(ArrayList<ResultValue> parmList) {
+        System.out.println("doing LENGTH");
+        for(ResultValue parm : parmList)
+        {
+            System.out.print(parm.value + ", ");
+        }
+        System.out.println();
+        return new ResultValue(SubClassif.INTEGER,"5",0,null);
 
     }
 
-    public static void spaces(ArrayList<ResultValue> parmList) {
-        // TODO Auto-generated method stub
-
+    public static ResultValue spaces(ArrayList<ResultValue> parmList) {
+        System.out.println("doing SPACES");
+        return new ResultValue(SubClassif.BOOLEAN,"T",0,null);
     }
 
-    public static void element(ArrayList<ResultValue> parmList) {
-        // TODO Auto-generated method stub
+    public static ResultValue element(ArrayList<ResultValue> parmList) {
+        System.out.println("doing ELEM");
+        return new ResultValue(SubClassif.INTEGER,"5",0,null);
 
     }
 }
