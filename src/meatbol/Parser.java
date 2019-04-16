@@ -835,9 +835,31 @@ public class Parser
         executeStatements(scan, symbolTable, false);
     }
 
-    public void handleForEachStatement(Scanner scan, SymbolTable symbolTable)
+    public void handleForEachStatement(Scanner scan, SymbolTable symbolTable) throws Exception
     {
+        Token controlVariableToken = new Token();
+        controlVariableToken.copyToken(scan.currentToken);
 
+        scan.getNext();
+        // current = in, next = array or string
+
+        Token structureToken = new Token();
+        structureToken.copyToken(scan.nextToken);
+
+        switch (structureToken.subClassif)
+        {
+            case IDENTIFIER:
+                handleForItemInArrayStatement(scan, symbolTable, controlVariableToken, structureToken);
+                break;
+
+            case STRING:
+                handleForCharInStringStatement(scan, symbolTable, controlVariableToken, structureToken);
+                break;
+
+            default:
+                // TODO: ERROR
+                break;
+        }
     }
 
     // for stringCV from string by delimiter:
@@ -847,15 +869,21 @@ public class Parser
     }
 
     // for char in string:
-    private void handleForCharInStringStatement(Scanner scan, SymbolTable symbolTable)
+    private void handleForCharInStringStatement(Scanner scan, SymbolTable symbolTable, Token controlVariableToken
+            , Token stringToken)
     {
 
     }
 
     // for item in array:
-    private void handleForItemInArrayStatement(Scanner scan, SymbolTable symbolTable)
+    private void handleForItemInArrayStatement(Scanner scan, SymbolTable symbolTable, Token controlVariableToken
+            , Token arrayToken)
     {
-
+        String arrayValue = StorageManager.values.get(arrayToken.tokenStr);
+        if (!arrayValue.startsWith("[") || !arrayValue.endsWith("]"))
+        {
+            // TODO: ERROR
+        }
     }
     
     /**
