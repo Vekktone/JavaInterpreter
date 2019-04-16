@@ -1,8 +1,7 @@
 package meatbol;
 
-import java.util.ArrayList;
-import java.util.EmptyStackException;
-import java.util.Stack;
+import java.lang.reflect.Array;
+import java.util.*;
 
 public class Parser
 {
@@ -147,6 +146,53 @@ public class Parser
                 scan.getNext();
 
             }
+            else if(scan.nextToken.tokenStr.equals("["))
+            {
+                // this is an array declaration
+//                System.out.println("ARRAY DETECTED BEEP BOOP");
+                String arrayIdentifier = scan.currentToken.tokenStr;
+                scan.getNext();
+                // case 1: if it is an array declaration with empty set of brackets
+                if (scan.nextToken.tokenStr.equals("]"))
+                {
+                    System.out.println("case 1: if it is an array declaration with empty set of brackets");
+                    scan.getNext();
+                    // there must be an equals after the brackets or we have an error
+                    if (scan.nextToken.tokenStr.equals("="))
+                    {
+                        assignArray(scan, symbolTable, bExec, arrayIdentifier, null, 1);
+                    }
+                    else
+                    {
+                        //anything else is a syntax error
+                        throw new ParserException(scan.currentToken.iSourceLineNr
+                                ,"***Error: Expected list of values after array declaration with empty brackets***"
+                                , Meatbol.filename);
+                    }
+
+                }
+                else
+                {
+                    // evaluate condition inside array brackets
+                    ResultValue resultValue = expression(scan, symbolTable);
+//                    System.out.println("The value of array size is " + resCond.value);
+//                    System.out.println("The scanner is now on " + scan.currentToken.tokenStr);
+//                    System.out.println("The scanner next is now on " + scan.nextToken.tokenStr);
+                    // case 2: if it is an array declaration with a valid size and no valueList
+                    if (scan.nextToken.tokenStr.equals(";"))
+                    {
+                        System.out.println("case 2: if it is an array declaration with a valid size and no valueList");
+                        System.out.println(scan.currentToken.tokenStr);
+                        // assignment with no valueList
+                        assignArray(scan, symbolTable, bExec, arrayIdentifier, resultValue, 2);
+                    } else if (scan.nextToken.tokenStr.equals("="))
+                    {
+                        // case 3: if it is an array declaration with a valid size and a valueList
+                        System.out.println("case 3: if it is an array declaration with a valid size and a valueList");
+                        assignArray(scan, symbolTable, bExec, arrayIdentifier, resultValue, 3);
+                    }
+                }
+            }
             else
             {
                 //anything else is a syntax error
@@ -212,6 +258,109 @@ public class Parser
         }
     }
 
+    private void assignArray(Scanner scan, SymbolTable symbolTable, Boolean bExec, String arrayIdentifier, ResultValue arraySize, int declarationType) throws Exception {
+        int i;
+        StringBuilder sb;
+
+        if (bExec)
+        {
+
+            ArrayList<ResultValue> arrayValues;
+
+            // use storage manager to put array values in
+            switch (declarationType) {
+                case 1:
+                    // set position to first value in value list
+                    scan.getNext();
+                    scan.getNext();
+                    // case 1: if it is an array declaration with empty set of brackets
+                    arrayValues = new ArrayList<>();
+                    while (!scan.currentToken.tokenStr.equals(";")) {
+                        if (scan.currentToken.tokenStr.equals(",")) {
+                            scan.getNext();
+                        } else {
+                            ResultValue arrayElement = new ResultValue(SubClassif.INTEGER, scan.currentToken.tokenStr, 0, null);
+                            arrayValues.add(arrayElement);
+                            scan.getNext();
+                        }
+                    }
+                    sb = new StringBuilder();
+                    for (i = 0; i < arrayValues.size(); i++) {
+                        sb.append(arrayValues.get(i).value);
+                        if (i != arrayValues.size() - 1) {
+                            sb.append(", ");
+                        }
+                        System.out.println("Array[" + i + "]: " + arrayValues.get(i).value);
+                    }
+                    StorageManager.values.put(arrayIdentifier, sb.toString());
+                    break;
+                case 2:
+                    // set position to first value in value list
+                    scan.getNext();
+                    // case 2: if it is an array declaration with a valid size and no valueList
+                    arrayValues = new ArrayList<>(Integer.parseInt(arraySize.value));
+                    i = 0;
+                    while(i != Integer.parseInt(arraySize.value)) {
+                        ResultValue arrayElement = new ResultValue(SubClassif.INTEGER, null, 0, null);
+                        arrayValues.add(arrayElement);
+                        i++;
+                    }
+
+                    sb = new StringBuilder();
+                    for (i = 0; i < arrayValues.size(); i++) {
+                        sb.append(arrayValues.get(i).value);
+                        if (i != arrayValues.size() - 1) {
+                            sb.append(", ");
+                        }
+                        System.out.println("Array[" + i + "]: " + arrayValues.get(i).value);
+                    }
+
+                    StorageManager.values.put(arrayIdentifier, arrayValues.toString());
+                    break;
+                case 3:
+                    // set position to first value in value list
+                    scan.getNext();
+                    scan.getNext();
+                    // case 3: if it is an array declaration with a valid size and a valueList
+                    arrayValues = new ArrayList<>(Integer.parseInt(arraySize.value));
+                    i = 0;
+                    while (!scan.currentToken.tokenStr.equals(";")) {
+                        if (scan.currentToken.tokenStr.equals(",")) {
+                            scan.getNext();
+                        } else {
+                            ResultValue arrayElement = new ResultValue(SubClassif.INTEGER, scan.currentToken.tokenStr, 0, null);
+                            arrayValues.add(arrayElement);
+                            i++;
+                            scan.getNext();
+                        }
+
+                    }
+                    while(i != Integer.parseInt(arraySize.value)) {
+                        ResultValue arrayElement = new ResultValue(SubClassif.INTEGER, null, 0, null);
+                        arrayValues.add(arrayElement);
+                        i++;
+                    }
+
+                    sb = new StringBuilder();
+                    for (i = 0; i < arrayValues.size(); i++) {
+                        sb.append(arrayValues.get(i).value);
+                        if (i != arrayValues.size() - 1) {
+                            sb.append(", ");
+                        }
+                        System.out.println("Array[" + i + "]: " + arrayValues.get(i).value);
+                    }
+                    StorageManager.values.put(arrayIdentifier, sb.toString());
+                    break;
+                default:
+                    break;
+            }
+
+        } else
+        {
+            skipTo(";", scan);
+        }
+    }
+
     /** Process for 'if'/'if-else'.
      *
      * @param scan
@@ -262,20 +411,21 @@ public class Parser
                 }
 
                 // end expected: endif (not optional)
-                if (!resTemp.terminatingStr.equals("endif"))
-                {
-                    throw new ParserException(scan.currentToken.iSourceLineNr
-                            ,"***Error: expected 'endif' for an 'if'***"
-                            , Meatbol.filename);
-                }
+//                if (!resTemp.terminatingStr.equals("endif"))
+//                {
+//                    throw new ParserException(scan.currentToken.iSourceLineNr
+//                            ,"***Error: expected 'endif' for an 'if'***"
+//                            , Meatbol.filename);
+//                }
                 scan.getNext();
-               /* // check for ';'
+                
+                // check for ';'
                 if (!scan.currentToken.tokenStr.equals(";"))
                 {
                     throw new ParserException(scan.currentToken.iSourceLineNr
                             ,"***Error: expected ';' after 'endif'***"
                             , Meatbol.filename);
-                }*/
+                }
             }
 
             else
@@ -343,7 +493,8 @@ public class Parser
             }
             */
             scan.getNext();
-         // Check for ending ';'
+            
+            // Check for ending ';'
             if (!scan.currentToken.tokenStr.equals(";"))
             {
                 throw new ParserException(scan.currentToken.iSourceLineNr
@@ -672,47 +823,83 @@ public class Parser
             Token variable = scan.currentToken;
             ResultValue Op1;
             ResultValue Op2;
+            Boolean arrayAssignment = false;
+            ResultValue arrayIndex = null;
+            String arrayIdentifier = null;
+            String arrayAsString;
+            String str[];
+            List<String> array = null;
 
-            scan.getNext();
-
-            switch(scan.currentToken.tokenStr)
-            {
-            case "=":
-                res = expression(scan, symbolTable);
-                break;
-            case "-=":
+            if (scan.nextToken.tokenStr.equals("[")) {
+                arrayAssignment = true;
                 if(!StorageManager.values.containsKey(variable.tokenStr))
                 {
                     throw new ParserException(variable.iSourceLineNr
                             ,"***Error: Illegal assignment: " + variable + " not initialized***"
                             , Meatbol.filename);
                 }
-                Op1 = new ResultValue(variable.subClassif
-                        , StorageManager.values.get(variable.tokenStr)
-                        , 0, null);
-                Op2 = expression(scan, symbolTable);
-                res = Utility.doSubtraction(Op1, Op2, variable.iSourceLineNr);
-                break;
-            case "+=":
-                if(!StorageManager.values.containsKey(variable))
-                {
-                    throw new ParserException(scan.currentToken.iSourceLineNr
-                            ,"***Error: Illegal assignment: " + variable + " not initialized***"
-                            , Meatbol.filename);
-                }
-                Op1 = new ResultValue(variable.subClassif
-                        , StorageManager.values.get(variable.tokenStr)
-                        , 0, null);
+                scan.getNext();
 
-                Op2 = expression(scan, symbolTable);
-                res = Utility.doAddition(Op1, Op2, variable.iSourceLineNr);
-                break;
-            default:
-                throw new ParserException(scan.currentToken.iSourceLineNr
-                        ,"***Error: Expected valid assignment operator***"
-                        , Meatbol.filename);
+                arrayIndex = expression(scan, symbolTable);
+                arrayIdentifier = variable.tokenStr;
+                arrayAsString = StorageManager.values.get(arrayIdentifier);
+                str = arrayAsString.split("\\s*,\\s*");
+                array = Arrays.asList(str);
             }
-            StorageManager.values.put(variable.tokenStr, res.value);
+
+            scan.getNext();
+
+            switch(scan.currentToken.tokenStr)
+            {
+                case "=":
+                    res = expression(scan, symbolTable);
+                    break;
+                case "-=":
+                    if(!StorageManager.values.containsKey(variable.tokenStr))
+                    {
+                        throw new ParserException(variable.iSourceLineNr
+                                ,"***Error: Illegal assignment: " + variable + " not initialized***"
+                                , Meatbol.filename);
+                    }
+                    Op1 = new ResultValue(variable.subClassif
+                            , StorageManager.values.get(variable.tokenStr)
+                            , 0, null);
+                    Op2 = expression(scan, symbolTable);
+                    res = Utility.doSubtraction(Op1, Op2, variable.iSourceLineNr);
+                    break;
+                case "+=":
+                    if(!StorageManager.values.containsKey(variable))
+                    {
+                        throw new ParserException(scan.currentToken.iSourceLineNr
+                                ,"***Error: Illegal assignment: " + variable + " not initialized***"
+                                , Meatbol.filename);
+                    }
+                    Op1 = new ResultValue(variable.subClassif
+                            , StorageManager.values.get(variable.tokenStr)
+                            , 0, null);
+
+                    Op2 = expression(scan, symbolTable);
+                    res = Utility.doAddition(Op1, Op2, variable.iSourceLineNr);
+                    break;
+                default:
+                    throw new ParserException(scan.currentToken.iSourceLineNr
+                            ,"***Error: Expected valid assignment operator***"
+                            , Meatbol.filename);
+            }
+            if (arrayAssignment){
+                array.set(Integer.parseInt(arrayIndex.value), res.value);
+                StringBuilder sb = new StringBuilder();
+                for (int i = 0; i < array.size(); i++) {
+                    sb.append(array.get(i));
+                    if (i != array.size() - 1) {
+                        sb.append(", ");
+                    }
+                    System.out.println("Array[" + i + "]: " + array.get(i));
+                }
+                StorageManager.values.put(arrayIdentifier, sb.toString());
+            } else {
+                StorageManager.values.put(variable.tokenStr, res.value);
+            }
 
             // Debugging for Assign
             if (scan.debugOptionsMap.get(DebuggerTypes.ASSIGNMENT))
@@ -824,11 +1011,20 @@ public class Parser
         while (controlVariableValue.compareTo(terminationValue.makeSimlifiedValue()) < 0)
         {
             executeStatements(scan, symbolTable, true);
+
+            // return to top of statements
             scan.columnIndex = columnIndex;
             scan.lineIndex = lineIndex;
             scan.currentToken.copyToken(currentToken);
             scan.nextToken.copyToken(nextToken);
+
+            // increase the current value of the control variable by the increment value and store it
             controlVariableValue = StorageManager.values.get(controlVariableToken.tokenStr);
+            ResultValue controlResultValue = new ResultValue(SubClassif.INTEGER, controlVariableValue, 0
+                    , null);
+            controlResultValue = Utility.doAddition(controlResultValue, incrementValue, scan.lineIndex);
+            controlVariableValue = controlResultValue.value;
+            StorageManager.values.put(controlVariableToken.tokenStr, controlVariableValue);
         }
 
         // Get scanner aligned to the end of the For statement without executing it
@@ -841,10 +1037,15 @@ public class Parser
         controlVariableToken.copyToken(scan.currentToken);
 
         scan.getNext();
-        // current = in, next = array or string
+        scan.getNext();
+        // current = array or string, next = :
 
         Token structureToken = new Token();
         structureToken.copyToken(scan.nextToken);
+
+        scan.getNext();
+        scan.getNext();
+        // current = start of execute statements
 
         switch (structureToken.subClassif)
         {
@@ -877,13 +1078,47 @@ public class Parser
 
     // for item in array:
     private void handleForItemInArrayStatement(Scanner scan, SymbolTable symbolTable, Token controlVariableToken
-            , Token arrayToken)
+            , Token arrayToken) throws Exception
     {
         String arrayValue = StorageManager.values.get(arrayToken.tokenStr);
         if (!arrayValue.startsWith("[") || !arrayValue.endsWith("]"))
         {
             // TODO: ERROR
         }
+
+        // create entry for control variable so it can be accessed
+        STIdentifier arrayIdentifier = (STIdentifier) symbolTable.getSymbol(arrayToken.tokenStr);
+        STIdentifier controlVariableIdentifier = new STIdentifier(controlVariableToken.tokenStr, Classif.OPERAND
+                , arrayIdentifier.declareType, null, null, 1);
+        symbolTable.putSymbol(controlVariableIdentifier);
+
+        // remove [ and ]
+        arrayValue = arrayValue.substring(1, arrayValue.length());
+        String[] stringArray = arrayValue.split(",");
+
+        // save state of the scanner so we can loop back
+        int columnIndex = scan.columnIndex;
+        int lineIndex = scan.lineIndex;
+        Token currentToken = new Token();
+        currentToken.copyToken(scan.currentToken);
+        Token nextToken = new Token();
+        nextToken.copyToken(scan.nextToken);
+
+        // The core of the for each loop
+        for (String string : stringArray)
+        {
+            StorageManager.values.put(controlVariableToken.tokenStr, string);
+            executeStatements(scan, symbolTable, true);
+
+            // return to top of statements
+            scan.columnIndex = columnIndex;
+            scan.lineIndex = lineIndex;
+            scan.currentToken.copyToken(currentToken);
+            scan.nextToken.copyToken(nextToken);
+        }
+
+        // Get scanner aligned to the end of the For statement without executing it
+        executeStatements(scan, symbolTable, false);
     }
     
     /**
@@ -910,7 +1145,7 @@ public class Parser
         boolean atLeastOneBinaryOperator = false;
 
         //build infix
-        while(token.tokenStr != ";" && token.tokenStr != ":" && endExpression == false)
+        while(!token.tokenStr.equals(";") && !token.tokenStr.equals(":") && !token.tokenStr.equals("]") && !endExpression)
         {
             switch(token.primClassif)
             {
@@ -923,7 +1158,7 @@ public class Parser
 
             case SEPARATOR:
                 //only parenthesis allowed in infix expression
-                if (! (token.tokenStr == "(" || scan.currentToken.tokenStr == ")"))
+                if (! (token.tokenStr == "(" || token.tokenStr == ")"))
                 {
                     endExpression = true;
                     break;
@@ -931,14 +1166,32 @@ public class Parser
             case OPERAND:
                 //if this is an identifier, we need to retrieve its value and type
                 if(token.subClassif == SubClassif.IDENTIFIER){
-                    token.tokenStr = StorageManager.values.get(scan.currentToken.tokenStr);
-                    if(token.tokenStr == null){
-                        throw new ParserException(token.iSourceLineNr
-                                ,"***Error: Uninitialized variable - '" + scan.currentToken.tokenStr + "' ***"
-                                , Meatbol.filename);
+                    // we have an array reference
+                    if (scan.nextToken.tokenStr.equals("[")) {
+                        scan.getNext();
+                        ResultValue arrayIndex = expression(scan, symbolTable);
+                        String arrayIdentifier = token.tokenStr;
+                        String arrayAsString = StorageManager.values.get(arrayIdentifier);
+                        String str[] = arrayAsString.split("\\s*,\\s*");
+                        List<String> array = Arrays.asList(str);
+                        token.tokenStr = array.get(Integer.parseInt(arrayIndex.value));
+                        if (token.tokenStr == null) {
+                            throw new ParserException(token.iSourceLineNr
+                                    , "***Error: Uninitialized array element - '" + scan.currentToken.tokenStr + "' ***"
+                                    , Meatbol.filename);
+                        }
+                        STIdentifier variable = (STIdentifier) symbolTable.getSymbol(arrayIdentifier);
+                        token.subClassif = variable.declareType;
+                    } else {
+                        token.tokenStr = StorageManager.values.get(scan.currentToken.tokenStr);
+                        if (token.tokenStr == null) {
+                            throw new ParserException(token.iSourceLineNr
+                                    , "***Error: Uninitialized variable - '" + scan.currentToken.tokenStr + "' ***"
+                                    , Meatbol.filename);
+                        }
+                        STIdentifier variable = (STIdentifier) symbolTable.getSymbol(scan.currentToken.tokenStr);
+                        token.subClassif = variable.declareType;
                     }
-                    STIdentifier variable = (STIdentifier)symbolTable.getSymbol(scan.currentToken.tokenStr);
-                    token.subClassif = variable.declareType;
                 }
                 infix.add(token);
                 try
@@ -1027,6 +1280,10 @@ public class Parser
                     if(token.prec() < stack.peek().stackPrec())
                         //pop and out higher precedence operators
                         postfix.add(stack.pop());
+                    else
+                    {
+                        break;
+                    }
                 }
                 //push operator to stack
                 stack.push(token);
