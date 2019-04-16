@@ -1071,9 +1071,37 @@ public class Parser
 
     // for char in string:
     private void handleForCharInStringStatement(Scanner scan, SymbolTable symbolTable, Token controlVariableToken
-            , Token stringToken)
+            , Token stringToken) throws Exception
     {
+        // create entry for control variable so it can be accessed
+        STIdentifier controlVariableIdentifier = new STIdentifier(controlVariableToken.tokenStr, Classif.OPERAND
+                , SubClassif.STRING, null, null, 1);
+        symbolTable.putSymbol(controlVariableIdentifier);
 
+        String stringValue = StorageManager.values.get(stringToken.tokenStr);
+
+        // save state of the scanner so we can loop back
+        int columnIndex = scan.columnIndex;
+        int lineIndex = scan.lineIndex;
+        Token currentToken = new Token();
+        currentToken.copyToken(scan.currentToken);
+        Token nextToken = new Token();
+        nextToken.copyToken(scan.nextToken);
+
+        for (char item : stringValue.toCharArray())
+        {
+            StorageManager.values.put(controlVariableToken.tokenStr, "" + item);
+            executeStatements(scan, symbolTable, true);
+
+            // return to top of statements
+            scan.columnIndex = columnIndex;
+            scan.lineIndex = lineIndex;
+            scan.currentToken.copyToken(currentToken);
+            scan.nextToken.copyToken(nextToken);
+        }
+
+        // Get scanner aligned to the end of the For statement without executing it
+        executeStatements(scan, symbolTable, false);
     }
 
     // for item in array:
