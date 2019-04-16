@@ -47,17 +47,14 @@ public class Parser
                 break;
             // control statement
             case CONTROL:
-                // System.out.println("***Control Statement***");
                 conStmt(scan, symbolTable, bExec);
                 break;
             // function statement
             case FUNCTION:
-                // System.out.println("***Function Statement***");
                 funcStmt(scan, symbolTable, bExec);
                 break;
             // assignment statement
             case OPERAND:
-                //System.out.println("***Assignment Statement***");
                 assignStmt(scan, symbolTable, bExec);
                 break;
             // debug statement
@@ -67,41 +64,15 @@ public class Parser
             // statements can't begin with these, throw error
             case OPERATOR:
             case SEPARATOR:
-                throw new ParserException(scan.currentToken.iSourceLineNr
+                throw new ParserException(scan.currentToken.iSourceLineNr + 1
                         ,"***Error: Illegal start to statement***"
                         , Meatbol.filename);
             // Unknown state, throw error
             default:
-                throw new ParserException(scan.currentToken.iSourceLineNr
+                throw new ParserException(scan.currentToken.iSourceLineNr + 1
                         ,"***Error: unknown state***"
                         , Meatbol.filename);
         }
-    }
-
-    /** Advanced print function. - DEPRICATED
-     * <p>
-     * Prints entire code line even if the line spans multiple lines in the
-     * source file. Never implemented and tested, as sample indicated this was
-     * not the desired method.
-     *
-     * @param scan
-     * 			Scanner object with source file lines
-     * @param lineNumber
-     * 			index of the current print location (avoids duplicate printing)
-     *
-     * @author Mason Pohler
-     */
-    private void printStatement(Scanner scan, int lineNumber)
-    {
-        //print until we reach end of file or ';'
-        while(lineNumber < scan.lineList.size() && !scan.lineList.get(lineNumber).contains(";"))
-        {
-            System.out.printf("%3d %s\n", (lineNumber + 1)
-                    , scan.lineList.get(lineNumber));
-            lineNumber++;
-        }
-        System.out.printf("%3d %s\n", (lineNumber + 1)
-                , scan.lineList.get(lineNumber));
     }
 
     /** Determines what type of control statement we have.
@@ -128,7 +99,7 @@ public class Parser
             //Verify scanner added it to symbolTable
             if(symbolTable.getSymbol(scan.nextToken.tokenStr) == null)
             {
-                throw new ParserException(scan.currentToken.iSourceLineNr
+                throw new ParserException(scan.currentToken.iSourceLineNr + 1
                         ,"***Error: unknown identifier***"
                         , Meatbol.filename);
             }
@@ -141,7 +112,6 @@ public class Parser
             }
             else if(scan.nextToken.tokenStr.equals(";"))
             {
-                //System.out.println("***Empty declare of: "+scan.currentToken.tokenStr+"***");
                 //declared only, we are done
                 scan.getNext();
 
@@ -196,7 +166,7 @@ public class Parser
             else
             {
                 //anything else is a syntax error
-                throw new ParserException(scan.currentToken.iSourceLineNr
+                throw new ParserException(scan.currentToken.iSourceLineNr + 1
                         ,"***Error: Expected end of statement or assignment***"
                         , Meatbol.filename);
             }
@@ -206,27 +176,27 @@ public class Parser
             switch(scan.currentToken.tokenStr)
             {
             case "enddef":
-                throw new ParserException(scan.currentToken.iSourceLineNr
+                throw new ParserException(scan.currentToken.iSourceLineNr + 1
                         ,"***Error: enddef without def***"
                         , Meatbol.filename);
             case "endif":
-                throw new ParserException(scan.currentToken.iSourceLineNr
+                throw new ParserException(scan.currentToken.iSourceLineNr + 1
                         ,"***Error: endif without if***"
                         , Meatbol.filename);
             case "else":
-                throw new ParserException(scan.currentToken.iSourceLineNr
+                throw new ParserException(scan.currentToken.iSourceLineNr + 1
                         ,"***Error: else without if***"
                         , Meatbol.filename);
             case "endfor":
-                throw new ParserException(scan.currentToken.iSourceLineNr
+                throw new ParserException(scan.currentToken.iSourceLineNr + 1
                         ,"***Error: endfor without for***"
                         , Meatbol.filename);
             case "endwhile":
-                throw new ParserException(scan.currentToken.iSourceLineNr
+                throw new ParserException(scan.currentToken.iSourceLineNr + 1
                         ,"***Error: endwhile without while***"
                         , Meatbol.filename);
             default:
-                throw new ParserException(scan.currentToken.iSourceLineNr
+                throw new ParserException(scan.currentToken.iSourceLineNr + 1
                         ,"***Error: unknown state***"
                         , Meatbol.filename);
             }
@@ -252,7 +222,7 @@ public class Parser
             break;
         //something went wrong
         default:
-            throw new ParserException(scan.currentToken.iSourceLineNr
+            throw new ParserException(scan.currentToken.iSourceLineNr + 1
                     ,"***Error: Unknown state***"
                     , Meatbol.filename);
         }
@@ -370,7 +340,12 @@ public class Parser
                         ,"***Error: expected ':' after 'if'***"
                         , Meatbol.filename);
             }
-
+            else if (scan.currentToken.tokenStr.equals(";"))
+            {
+                throw new ParserException(scan.currentToken.iSourceLineNr
+                        ,"***Error: expected ':' after 'if'***"
+                        , Meatbol.filename);
+            }
             // Condition is true, execute true part
             if (resCond.value.equals("T"))
             {
@@ -400,7 +375,7 @@ public class Parser
 //                            , Meatbol.filename);
 //                }
                 scan.getNext();
-                
+
                 // check for ';'
                 if (!scan.currentToken.tokenStr.equals(";"))
                 {
@@ -475,7 +450,7 @@ public class Parser
             }
             */
             scan.getNext();
-            
+
             // Check for ending ';'
             if (!scan.currentToken.tokenStr.equals(";"))
             {
@@ -486,29 +461,7 @@ public class Parser
         }
     }
 
-    /** Convenience function to skip to specific token.
-     * <p>
-     * Parses through each token until it finds one that matches the value
-     * provided.
-     *
-     * @param skip
-     * 			Token string to match
-     * @param scan
-     * 			Scanner providing Tokens
-     *
-     * @throws Exception
-     *
-     * @author Riley Marfin
-     */
-    private void skipTo(String skip, Scanner scan) throws Exception
-    {
-        //
-        while (!scan.currentToken.tokenStr.equals(skip))
-        {
-            scan.getNext();
-        }
 
-    }
 
     /** This method executes statements in between an if or while loop based on a boolean for execution.
      * @param scan
@@ -520,7 +473,7 @@ public class Parser
      * @return
      * 			ResultValue of the ending string from the loop (else, endif, endwhile)
      * @throws Exception
-     * 
+     *
      * @author Riley Marfin
      */
     private ResultValue executeStatements(Scanner scan, SymbolTable symbolTable, boolean bExec) throws Exception
@@ -560,7 +513,7 @@ public class Parser
      * 			Determines whether or not each statement is executed during
      * 			certain control statements
      * @throws Exception
-     * 
+     *
      * @author Riley Marfin
      */
     private void whileStmt(Scanner scan, SymbolTable symbolTable, Boolean bExec) throws Exception
@@ -576,6 +529,7 @@ public class Parser
         if (bExec) {
             // we are executing, not ignoring
             resCond = expression(scan, symbolTable);
+            //System.out.println("Evaluated while condition");
             // Did the condition return True?
             if (resCond.value.equals("T"))
             {
@@ -655,7 +609,7 @@ public class Parser
         }
     }
 
-    /** Placeholder: def statements not part of p3 */
+    /** Placeholder: def statements not part of p4 */
     private void defStmt(Scanner scan, SymbolTable symbolTable) throws Exception
     {
         while(!scan.nextToken.tokenStr.equals(";"))
@@ -673,7 +627,7 @@ public class Parser
         scan.getNext();
     }
 
-    /** Placeholder: def statements not part of p3 */
+    /** Placeholder: for statements not part of p3 */
     private void forStmt(Scanner scan, SymbolTable symbolTable) throws Exception
     {
         while(!scan.nextToken.tokenStr.equals(";"))
@@ -703,64 +657,29 @@ public class Parser
      * 			Determines whether or not each statement is executed during
      * 			certain function statements
      * @throws Exception
-     * 
+     *
      * @author Gregory Pugh
      */
     public void funcStmt(Scanner scan, SymbolTable symbolTable, Boolean bExec) throws Exception
     {
         if (bExec)
         {
+            expression(scan, symbolTable);
 
-            switch(scan.currentToken.subClassif)
+            if(! (scan.currentToken.tokenStr.equals(";") || scan.currentToken.tokenStr.equals(":")))
             {
-            //use the utility function
-            case BUILTIN:
-                switch(scan.currentToken.tokenStr)
-                {
-                case "print":
-                    //System.out.println("***Do print function***");
-                    Utility.print(this,scan,symbolTable);
-                    break;
-                default:
-                    throw new ParserException(scan.currentToken.iSourceLineNr
-                            ,"***Error: Undefined built-in function***"
-                            , Meatbol.filename);
-                }
-                break;
-                //not handling user functions yet, so this is an error
-            case USER:
-                throw new ParserException(scan.currentToken.iSourceLineNr
-                        ,"***Error: Undefined user function***"
-                        , Meatbol.filename);
-                //break;
-                //something went wrong
-            default:
-                throw new ParserException(scan.currentToken.iSourceLineNr
-                        ,"***Error: Unknown state***"
+                throw new ParserException(scan.currentToken.iSourceLineNr + 1
+                        ,"***Error: Missing end of statement: ';'***"
                         , Meatbol.filename);
             }
-            while(!scan.nextToken.tokenStr.equals(";"))
-            {
-                try
-                {
-                    scan.getNext();
-                    //scan.currentToken.printToken();
-                }
-                catch (Exception e)
-                {
-                    throw e;
-                }
-            }
-            scan.getNext();
-            //scan.currentToken.printToken();
         }
         else
         {
-        	// we are not executing the statement, so skip to end
+            // we are not executing the statement, so skip to end
             skipTo(";", scan);
         }
     }
-    
+
     /**
      * This method processes an assignment statement
      * @param scan
@@ -771,14 +690,13 @@ public class Parser
      * 			Determines whether or not each statement is executed during
      * 			certain assignment statements
      * @throws Exception
-     * 
+     *
      * @author Gregory Pugh
      */
     public void assignStmt(Scanner scan, SymbolTable symbolTable, Boolean bExec) throws Exception
     {
         if (bExec)
         {
-            //System.out.println("***Do assignment to "+scan.currentToken.tokenStr+"***");
             ResultValue res;
             if(scan.currentToken.subClassif != SubClassif.IDENTIFIER)
             {
@@ -814,43 +732,43 @@ public class Parser
             }
 
             scan.getNext();
-
+            //scan.currentToken.printToken();
             switch(scan.currentToken.tokenStr)
             {
-                case "=":
-                    res = expression(scan, symbolTable);
-                    break;
-                case "-=":
-                    if(!StorageManager.values.containsKey(variable.tokenStr))
-                    {
-                        throw new ParserException(variable.iSourceLineNr
-                                ,"***Error: Illegal assignment: " + variable + " not initialized***"
-                                , Meatbol.filename);
-                    }
-                    Op1 = new ResultValue(variable.subClassif
-                            , StorageManager.values.get(variable.tokenStr)
-                            , 0, null);
-                    Op2 = expression(scan, symbolTable);
-                    res = Utility.doSubtraction(Op1, Op2, variable.iSourceLineNr);
-                    break;
-                case "+=":
-                    if(!StorageManager.values.containsKey(variable))
-                    {
-                        throw new ParserException(scan.currentToken.iSourceLineNr
-                                ,"***Error: Illegal assignment: " + variable + " not initialized***"
-                                , Meatbol.filename);
-                    }
-                    Op1 = new ResultValue(variable.subClassif
-                            , StorageManager.values.get(variable.tokenStr)
-                            , 0, null);
-
-                    Op2 = expression(scan, symbolTable);
-                    res = Utility.doAddition(Op1, Op2, variable.iSourceLineNr);
-                    break;
-                default:
-                    throw new ParserException(scan.currentToken.iSourceLineNr
-                            ,"***Error: Expected valid assignment operator***"
+            case "=":
+                res = expression(scan, symbolTable);
+                break;
+            case "-=":
+                if(!StorageManager.values.containsKey(variable.tokenStr))
+                {
+                    throw new ParserException(variable.iSourceLineNr + 1
+                            ,"***Error: Illegal assignment: " + variable + " not initialized***"
                             , Meatbol.filename);
+                }
+                Op1 = new ResultValue(variable.subClassif
+                        , StorageManager.values.get(variable.tokenStr)
+                        , 0, null);
+                Op2 = expression(scan, symbolTable);
+                res = Utility.doSubtraction(Op1, Op2, variable.iSourceLineNr);
+                break;
+            case "+=":
+                if(!StorageManager.values.containsKey(variable))
+                {
+                    throw new ParserException(scan.currentToken.iSourceLineNr + 1
+                            ,"***Error: Illegal assignment: " + variable + " not initialized***"
+                            , Meatbol.filename);
+                }
+                Op1 = new ResultValue(variable.subClassif
+                        , StorageManager.values.get(variable.tokenStr)
+                        , 0, null);
+
+                Op2 = expression(scan, symbolTable);
+                res = Utility.doAddition(Op1, Op2, variable.iSourceLineNr);
+                break;
+            default:
+                throw new ParserException(scan.currentToken.iSourceLineNr + 1
+                        ,"***Error: Expected valid assignment operator***"
+                        , Meatbol.filename);
             }
             if (arrayAssignment){
                 array.set(Integer.parseInt(arrayIndex.value), res.value);
@@ -872,12 +790,10 @@ public class Parser
             {
                 System.out.println("... Assign result into '" + variable.tokenStr + "' is '" + res.value + "'");
             }
-
-            //System.out.println(variable.tokenStr +" = " + res.value);
         }
         else
         {
-        	// we are not executing the statement, so skip to end
+            // we are not executing the statement, so skip to end
             skipTo(";", scan);
         }
     }
@@ -892,7 +808,7 @@ public class Parser
      * 			Determines whether or not each statement is executed during
      * 			certain assignment statements
      * @throws Exception
-     * 
+     *
      * @author Mason Pohler
      */
     public void debugStmt(Scanner scan, SymbolTable symbolTable, boolean bExec) throws Exception
@@ -921,7 +837,7 @@ public class Parser
         boolean setValue = onOrOffString.equals("on");
         scan.debugOptionsMap.put(debugType, setValue);
     }
-    
+
     /**
      * This method processes an expression by converting it from infix to postfix, and then evaluating it
      * @param scan
@@ -929,41 +845,81 @@ public class Parser
      * @param symbolTable
      * 			Contains additional token information
      * @throws Exception
-     * 
+     *
      * @author Gregory Pugh
      */
     public ResultValue expression(Scanner scan, SymbolTable symbolTable) throws Exception
     {
         //collect tokens for expression
         ArrayList<Token> infix = new ArrayList<Token>();
-        Boolean endExpression = false;
-        Token token = new Token();
+        boolean atLeastOneBinaryOperator = false;
+        boolean endExpression = false;
 
-        scan.getNext();
-        //scan.currentToken.printToken();
+        //new token for infix expression
+        Token token = new Token();
         token.copyToken(scan.currentToken);
 
-        boolean atLeastOneBinaryOperator = false;
+        //scan.currentToken.printToken();
+        //if we are executing from stmt, first token is function
+        if(token.primClassif == Classif.FUNCTION)
+        {
+            if(! scan.nextToken.tokenStr.equals("("))
+            {
+                throw new ParserException(token.iSourceLineNr
+                        ,"***Error: Function missing open parenthesis - '" + scan.currentToken.tokenStr + "' ***"
+                        , Meatbol.filename);
+            }
+            infix.add(token);
+            scan.getNext();
+        }
+        scan.getNext();
+
+        //should be on first token of expression
+        //scan.currentToken.printToken();
+        token = new Token();
+        token.copyToken(scan.currentToken);
 
         //build infix
         while(!token.tokenStr.equals(";") && !token.tokenStr.equals(":") && !token.tokenStr.equals("]") && !endExpression)
         {
             switch(token.primClassif)
             {
-            //not handling functions yet, throw error
-            //the result of function will be treated as an operand later
+            //for functions
             case FUNCTION:
-                throw new ParserException(token.iSourceLineNr
-                        ,"***Error: Functions not possible yet***"
-                        , Meatbol.filename);
-
-            case SEPARATOR:
-                //only parenthesis allowed in infix expression
-                if (! (token.tokenStr == "(" || token.tokenStr == ")"))
+                //check opening paren
+                if(! scan.nextToken.tokenStr.equals("("))
                 {
-                    endExpression = true;
-                    break;
+                    throw new ParserException(token.iSourceLineNr
+                            ,"***Error: Function missing open parenthesis - '" + scan.currentToken.tokenStr + "' ***"
+                            , Meatbol.filename);
                 }
+                //push function
+                infix.add(token);
+                scan.getNext();
+                break;
+            case SEPARATOR:
+                //skip comma
+                if (token.tokenStr.equals(","))
+                {
+                    infix.add(token);
+                    token = new Token();
+                    token.copyToken(scan.currentToken);
+                }
+                //only parenthesis allowed in infix expression
+                else if (token.tokenStr.equals("(") || token.tokenStr.equals(")"))
+                {
+                    infix.add(token);
+                    token = new Token();
+                    token.copyToken(scan.currentToken);
+                }
+                //shouldn't be anything else
+                else
+                {
+                    throw new ParserException(token.iSourceLineNr
+                            ,"***Error: Invalid symbol - '" + scan.currentToken.tokenStr + "' ***"
+                            , Meatbol.filename);
+                }
+                break;
             case OPERAND:
                 //if this is an identifier, we need to retrieve its value and type
                 if(token.subClassif == SubClassif.IDENTIFIER){
@@ -977,7 +933,7 @@ public class Parser
                         List<String> array = Arrays.asList(str);
                         token.tokenStr = array.get(Integer.parseInt(arrayIndex.value));
                         if (token.tokenStr == null) {
-                            throw new ParserException(token.iSourceLineNr
+                            throw new ParserException(token.iSourceLineNr + 1
                                     , "***Error: Uninitialized array element - '" + scan.currentToken.tokenStr + "' ***"
                                     , Meatbol.filename);
                         }
@@ -986,7 +942,7 @@ public class Parser
                     } else {
                         token.tokenStr = StorageManager.values.get(scan.currentToken.tokenStr);
                         if (token.tokenStr == null) {
-                            throw new ParserException(token.iSourceLineNr
+                            throw new ParserException(token.iSourceLineNr + 1
                                     , "***Error: Uninitialized variable - '" + scan.currentToken.tokenStr + "' ***"
                                     , Meatbol.filename);
                         }
@@ -1012,28 +968,21 @@ public class Parser
                     atLeastOneBinaryOperator = true;
 
                 infix.add(token);
-                try
-                {
-                    scan.getNext();
-                    token = new Token();
-                    token.copyToken(scan.currentToken);
-                }
-                catch (Exception e)
-                {
-                    throw e;
-                }
                 break;
             default:
-                //anything else is the end of the expression
-                endExpression = true;
                 break;
             }
+            scan.getNext();
+            token = new Token();
+            token.copyToken(scan.currentToken);
         }
-        /*for (Token test: infix)
+
+        for (Token test: infix)
         {
-            System.out.print(test.tokenStr + ",");
+            System.out.print("\"" + test.tokenStr + "\" ");
         }
-        System.out.println();*/
+        System.out.println();
+
         ResultValue resultValue = infixToPostfix(infix);
 
         // Debugging for Expr
@@ -1042,18 +991,19 @@ public class Parser
             printExpression(infix, resultValue);
         }
 
+        //scan.currentToken.printToken();
         return resultValue;
     }
 
     /**
      * This methods converts an expression from infix to postfix, and then calls the evaluation function
-     * @param 
+     * @param
      * 		infix ArrayList of tokens from expression
-     * @return 
-     * 		Result value 
-     * @throws 
+     * @return
+     * 		Result value
+     * @throws
      * 		ParserException
-     * 
+     *
      * @author Gregory Pugh
      */
     public ResultValue infixToPostfix(ArrayList<Token> infix) throws ParserException{
@@ -1065,6 +1015,7 @@ public class Parser
         //iterate through infix expression
         for(Token token : infix)
         {
+
             //based on what next token is
             switch(token.primClassif)
             {
@@ -1079,8 +1030,10 @@ public class Parser
                 {
                     //check precedence with stack
                     if(token.prec() < stack.peek().stackPrec())
+                    {
                         //pop and out higher precedence operators
                         postfix.add(stack.pop());
+                    }
                     else
                     {
                         break;
@@ -1090,37 +1043,67 @@ public class Parser
                 stack.push(token);
                 break;
                 //try to put on stack
+            case FUNCTION:
+                while(! stack.empty())
+                {
+                    //check precedence with stack
+                    if(token.prec() < stack.peek().stackPrec())
+                    {
+                        //pop and out higher precedence operators
+                        postfix.add(stack.pop());
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
+                //push operator to stack
+                stack.push(token);
+                postfix.add(new Token("PARM"));
+                break;
+
             case SEPARATOR:
+
                 //left parens, always push
-                if(token.tokenStr == "(")
+                if(token.tokenStr.equals("("))
                 {
                     stack.push(token);
                 }
+                else if (token.tokenStr.equals(","))
+                {
+                    while(! stack.empty() && stack.peek().primClassif != Classif.FUNCTION)
+                    {
+                        postfix.add(stack.pop());
+                    }
+                }
                 //right paren
-                else if(token.tokenStr == ")")
+                else if(token.tokenStr.equals(")"))
                 {
                     try
                     {
-                        //pop and out until we reach a right paren
-                        while(stack.peek().tokenStr != "(")
+                        //pop and out until we reach a right paren or function
+                        while(! (stack.peek().tokenStr.equals("(")) && stack.peek().primClassif != Classif.FUNCTION)
                         {
                             postfix.add(stack.pop());
-                            //stack cannot be empty
                         }
                     }
+                    //stack cannot be empty
                     catch (EmptyStackException e)
                     {
-                        throw new ParserException(token.iSourceLineNr
+                        throw new ParserException(token.iSourceLineNr + 1
                                 ,"***Error: Missing left paranthesis***"
                                 , Meatbol.filename);
                     }
                     //discard left paren
-                    stack.pop();
+                    if(stack.peek().tokenStr.equals("("))
+                        stack.pop();
+                    else
+                        postfix.add(stack.pop());
                 }
                 //we should only have parenthesis here
                 else
                 {
-                    throw new ParserException(token.iSourceLineNr
+                    throw new ParserException(token.iSourceLineNr + 1
                             ,"***Error: Invalid token - only paranthesis allowed***"
                             , Meatbol.filename);
                 }
@@ -1141,48 +1124,15 @@ public class Parser
             }
             postfix.add(stack.pop());
         }
-        /*for (Token test: postfix)
-        {
-            System.out.print(test.tokenStr + ",");
-        }
-        System.out.println();*/
+//        System.out.print("postfix: ");
+//        for (Token test: postfix)
+//        {
+//            System.out.print("\"" + test.tokenStr + "\" ");
+//            //System.out.print(test.primClassif + ",");
+//        }
+//        System.out.println();
+
         return evalPostfix(postfix);
-    }
-
-    /**
-     * This method prints an expression for debugging purposes
-     * @param infixExpression
-     * 			ArrayList of tokens from expression
-     * @param resultValue
-     * 			ResultValue from evaluation
-     * 
-     * @author Mason Pohler
-     */
-    private void printExpression(ArrayList<Token> infixExpression, ResultValue resultValue)
-    {
-        StringBuffer expressionDebugStringBuffer = new StringBuffer();
-        expressionDebugStringBuffer.append("... ");
-
-        // add each token's tokenstr in the infix representation to the StringBuffer
-        for (Token token : infixExpression)
-        {
-            expressionDebugStringBuffer.append(token.tokenStr);
-            expressionDebugStringBuffer.append(" ");
-        }
-        expressionDebugStringBuffer.append(" is ");
-
-        // If the result is a String, wrap it in quotes for readability
-        if (resultValue.type == SubClassif.STRING)
-        {
-            expressionDebugStringBuffer.append("'");
-            expressionDebugStringBuffer.append(resultValue.value);
-            expressionDebugStringBuffer.append("'");
-        }
-        // otherwise append the result on its own
-        else
-            expressionDebugStringBuffer.append(resultValue.value);
-
-        System.out.println(expressionDebugStringBuffer.toString());
     }
 
     /** Performs arithmatic and logical operations on postfix expression.
@@ -1206,25 +1156,28 @@ public class Parser
      */
     public ResultValue evalPostfix(ArrayList<Token> postfix) throws ParserException
     {
-        /*
-        for (Token test: postfix)
-        {
-            System.out.print(test.tokenStr + ",");
-        }
-        System.out.println();*/
         //stack for holding operands while advancing to next operator
         Stack<ResultValue> stack = new Stack<ResultValue>();
         //operands for operation and result
         ResultValue value, opLeft = new ResultValue(), opRight;
+        ArrayList<ResultValue> parmList;
 
         if(postfix.isEmpty()){
             throw new ParserException(00
                     ,"***Error: Invalid expression - postfix empty***"
                     , Meatbol.filename);
         }
+
+
         //iterate through postfix expression
         for(Token token : postfix)
         {
+            //token.printToken();
+            if(token.tokenStr.equals("PARM"))
+            {
+                stack.push(new ResultValue(SubClassif.EMPTY,"PARM",0,null));
+                continue;
+            }
             //determine what to do with next token
             switch (token.primClassif)
             {
@@ -1317,9 +1270,48 @@ public class Parser
                 }
                 stack.push(value);
                 break;
-                //if token is not operand or operator, something went wrong
+
+            case FUNCTION:
+                parmList = new ArrayList<ResultValue>();
+
+                while (! stack.empty())
+                    if(stack.peek().value.equals("PARM"))
+                    {
+                        stack.pop();
+                        break;
+                    }
+                    else
+                    {
+                        parmList.add(stack.pop());
+                    }
+                switch(token.tokenStr)
+                {
+                case "print":
+                    Utility.print(parmList);
+                    stack.push(new ResultValue());
+                    break;
+                case "MAXELEM":
+                    stack.push(Utility.maxElement(parmList));
+                    break;
+                case "LENGTH":
+                    stack.push(Utility.length(parmList));
+                    break;
+                case "SPACES":
+                    stack.push(Utility.spaces(parmList));
+                    break;
+                case "ELEM":
+                    stack.push(Utility.element(parmList));
+                    break;
+                default:
+                    throw new ParserException(token.iSourceLineNr
+                            ,"***Error: Undefined function - " + token.tokenStr + "***"
+                            , Meatbol.filename);
+                }
+
+                break;
+            //if token is not operand or operator, something went wrong
             default:
-                throw new ParserException(token.iSourceLineNr
+                throw new ParserException(token.iSourceLineNr + 1
                         ,"***Error: Invalid expression - contains invalid operand or operator***"
                         , Meatbol.filename);
             }
@@ -1334,9 +1326,91 @@ public class Parser
                     ,"***Error: Invalid expression - Unhandled operand in expression***"
                     , Meatbol.filename);
         }
-        //return new ResultValue(SubClassif.BOOLEAN, "F", 0, null);
         return value;
     }
 
+    /** Advanced print function. - DEPRICATED
+     * <p>
+     * Prints entire code line even if the line spans multiple lines in the
+     * source file. Never implemented and tested, as sample indicated this was
+     * not the desired method.
+     *
+     * @param scan
+     * 			Scanner object with source file lines
+     * @param lineNumber
+     * 			index of the current print location (avoids duplicate printing)
+     *
+     * @author Mason Pohler
+     */
+    private void printStatement(Scanner scan, int lineNumber)
+    {
+        //print until we reach end of file or ';'
+        while(lineNumber < scan.lineList.size() && !scan.lineList.get(lineNumber).contains(";"))
+        {
+            System.out.printf("%3d %s\n", (lineNumber + 1)
+                    , scan.lineList.get(lineNumber));
+            lineNumber++;
+        }
+        System.out.printf("%3d %s\n", (lineNumber + 1)
+                , scan.lineList.get(lineNumber));
+    }
 
+    /** Convenience function to skip to specific token.
+     * <p>
+     * Parses through each token until it finds one that matches the value
+     * provided.
+     *
+     * @param skip
+     * 			Token string to match
+     * @param scan
+     * 			Scanner providing Tokens
+     *
+     * @throws Exception
+     *
+     * @author Riley Marfin
+     */
+    private void skipTo(String skip, Scanner scan) throws Exception
+    {
+        //Skip tokens until we hit end of line
+        while (!scan.currentToken.tokenStr.equals(skip))
+        {
+            scan.getNext();
+        }
+    }
+
+    /**
+     * This method prints an expression for debugging purposes
+     * @param infixExpression
+     * 			ArrayList of tokens from expression
+     * @param resultValue
+     * 			ResultValue from evaluation
+     *
+     * @author Mason Pohler
+     */
+    private void printExpression(ArrayList<Token> infixExpression, ResultValue resultValue)
+    {
+        StringBuffer expressionDebugStringBuffer = new StringBuffer();
+        expressionDebugStringBuffer.append("... ");
+
+        // add each token's tokenstr in the infix representation to the StringBuffer
+        for (Token token : infixExpression)
+        {
+            expressionDebugStringBuffer.append(token.tokenStr);
+            expressionDebugStringBuffer.append(" ");
+        }
+        expressionDebugStringBuffer.append(" is ");
+
+        // If the result is a String, wrap it in quotes for readability
+        if (resultValue.type == SubClassif.STRING)
+        {
+            expressionDebugStringBuffer.append("'");
+            expressionDebugStringBuffer.append(resultValue.value);
+            expressionDebugStringBuffer.append("'");
+        }
+        // otherwise append the result on its own
+        else
+            expressionDebugStringBuffer.append(resultValue.value);
+
+        System.out.println(expressionDebugStringBuffer.toString());
+    }
 }

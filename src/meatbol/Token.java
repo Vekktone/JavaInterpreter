@@ -134,12 +134,16 @@ public class Token
      * @author Gregory Pugh
      */
     public int prec() throws ParserException {
+        if(this.primClassif == Classif.FUNCTION)
+        {
+            return 17;
+        }
         //lookup the tokenStr
         switch(this.tokenStr)
         {
             case "(":
                 return 15;
-            case "U-":
+            case "u-":
                 return 12;
             case "^":
                 return 11;
@@ -172,12 +176,16 @@ public class Token
      * @author Gregory Pugh
      */
     public int stackPrec() throws ParserException {
+        if(this.primClassif == Classif.FUNCTION)
+        {
+            return 1;
+        }
         //lookup the tokenStr
         switch(this.tokenStr)
         {
             case "(":
                 return 2;
-            case "U-":
+            case "u-":
                 return 12;
             case "^":
                 return 10;

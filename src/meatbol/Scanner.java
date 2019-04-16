@@ -120,13 +120,6 @@ public class Scanner {
         this.nextToken = new Token();
         boolean validToken = false;
 
-        /* LEGACY, has been moved to work more accurately with Debugger
-        // if this is first Token in line
-        if (columnIndex == 0 && debugOptionsMap.get(DebuggerTypes.STATEMENT))
-              System.out.printf("%3d %s\n", (this.lineIndex + 1)
-                    , this.lineList.get(this.lineIndex));
-        */
-
         // iterate through line from last position
         for (; columnIndex < lineData.length; columnIndex++)
         {
@@ -160,7 +153,7 @@ public class Scanner {
                 //create operator for valid operator not inside quotes
                 case '+': case '-': case '*': case '<': case '>': case '!': case '=': case '#': case '^':
                     //if we have a minus and it doesn't follow an operand, it must be a unary
-                    if(lineData[columnIndex] == '-' && currentToken.primClassif != Classif.OPERAND)
+                    if(lineData[columnIndex] == '-' && !(currentToken.primClassif == Classif.OPERAND || currentToken.tokenStr.equals(")")))
                     {
                         this.nextToken = setToken("u-"
                                 , Classif.OPERATOR
@@ -368,7 +361,7 @@ public class Scanner {
                     // was not a control declare, then this is an error.
                     if (currentToken.subClassif != SubClassif.DECLARE)
                     {
-                        throw new ScannerException(lineNum
+                        throw new ScannerException(lineNum + 1
                                 , index
                                 , "Syntax error: Undeclared identifier " + substring
                                 , Meatbol.filename);
