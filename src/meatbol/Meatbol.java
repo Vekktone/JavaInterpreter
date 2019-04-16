@@ -93,6 +93,7 @@ public class Meatbol
                     + "\tsource filename is name of file containg source code\n"
                     + "\t-f option redirects output to file, by default, 'p#Input*' becomes 'p#Out*'\n"
                     + "\tdo not use if filename is not in 'p#Input*' form; use command line aurgument\n");
+            e.printStackTrace();
         }
 
         // expected on a syntax errors in meatbol code
