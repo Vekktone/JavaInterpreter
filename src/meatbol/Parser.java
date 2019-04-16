@@ -285,13 +285,7 @@ public class Parser
                         }
                     }
                     sb = new StringBuilder();
-                    for (i = 0; i < arrayValues.size(); i++) {
-                        sb.append(arrayValues.get(i).value);
-                        if (i != arrayValues.size() - 1) {
-                            sb.append(", ");
-                        }
-                        System.out.println("Array[" + i + "]: " + arrayValues.get(i).value);
-                    }
+                    Utility.buildStringFromArray(sb, arrayValues);
                     StorageManager.values.put(arrayIdentifier, sb.toString());
                     break;
                 case 2:
@@ -307,13 +301,7 @@ public class Parser
                     }
 
                     sb = new StringBuilder();
-                    for (i = 0; i < arrayValues.size(); i++) {
-                        sb.append(arrayValues.get(i).value);
-                        if (i != arrayValues.size() - 1) {
-                            sb.append(", ");
-                        }
-                        System.out.println("Array[" + i + "]: " + arrayValues.get(i).value);
-                    }
+                    Utility.buildStringFromArray(sb, arrayValues);
 
                     StorageManager.values.put(arrayIdentifier, arrayValues.toString());
                     break;
@@ -342,13 +330,7 @@ public class Parser
                     }
 
                     sb = new StringBuilder();
-                    for (i = 0; i < arrayValues.size(); i++) {
-                        sb.append(arrayValues.get(i).value);
-                        if (i != arrayValues.size() - 1) {
-                            sb.append(", ");
-                        }
-                        System.out.println("Array[" + i + "]: " + arrayValues.get(i).value);
-                    }
+                    Utility.buildStringFromArray(sb, arrayValues);
                     StorageManager.values.put(arrayIdentifier, sb.toString());
                     break;
                 default:

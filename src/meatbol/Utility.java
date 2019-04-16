@@ -1,5 +1,7 @@
 package meatbol;
 
+import java.util.ArrayList;
+
 /** Utility holds all the functions used to alter operands with an operator.
  * <p>
  * Utility holds all the operator math and logic for Meatbol. Some operators
@@ -945,5 +947,16 @@ public class Utility {
                     , Meatbol.filename);
         }
         return resCond;
+    }
+
+    public static void buildStringFromArray(StringBuilder sb, ArrayList<ResultValue> arrayValues) {
+        int i;
+        for (i = 0; i < arrayValues.size(); i++) {
+            sb.append(arrayValues.get(i).value);
+            if (i != arrayValues.size() - 1) {
+                sb.append(", ");
+            }
+            System.out.println("Array[" + i + "]: " + arrayValues.get(i).value);
+        }
     }
 }
