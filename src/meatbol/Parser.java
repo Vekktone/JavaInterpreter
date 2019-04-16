@@ -1041,7 +1041,7 @@ public class Parser
         // current = array or string, next = :
 
         Token structureToken = new Token();
-        structureToken.copyToken(scan.nextToken);
+        structureToken.copyToken(scan.currentToken);
 
         scan.getNext();
         scan.getNext();
