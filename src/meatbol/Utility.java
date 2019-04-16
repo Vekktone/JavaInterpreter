@@ -368,6 +368,7 @@ public class Utility {
                         ,"***Error: Illegal operation with type***"
                         , Meatbol.filename);
         }
+        System.out.println(opLeft.value);
         return opLeft;
     }
 
@@ -987,7 +988,6 @@ public class Utility {
     public static ResultValue maxElement(ArrayList<ResultValue> parmList) {
         System.out.println("doing MAXELEM");
         return new ResultValue(SubClassif.INTEGER,"5",0,null);
-
     }
 
     public static ResultValue length(ArrayList<ResultValue> parmList) {
@@ -998,7 +998,6 @@ public class Utility {
         }
         System.out.println();
         return new ResultValue(SubClassif.INTEGER,"5",0,null);
-
     }
 
     public static ResultValue spaces(ArrayList<ResultValue> parmList) {
@@ -1009,6 +1008,5 @@ public class Utility {
     public static ResultValue element(ArrayList<ResultValue> parmList) {
         System.out.println("doing ELEM");
         return new ResultValue(SubClassif.INTEGER,"5",0,null);
-
     }
 }

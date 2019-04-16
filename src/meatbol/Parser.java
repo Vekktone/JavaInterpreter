@@ -577,7 +577,7 @@ public class Parser
             ResultValue Op2;
 
             scan.getNext();
-            scan.currentToken.printToken();
+            //scan.currentToken.printToken();
             switch(scan.currentToken.tokenStr)
             {
             case "=":
@@ -691,6 +691,7 @@ public class Parser
         Token token = new Token();
         token.copyToken(scan.currentToken);
 
+        //scan.currentToken.printToken();
         //if we are executing from stmt, first token is function
         if(token.primClassif == Classif.FUNCTION)
         {
@@ -779,13 +780,13 @@ public class Parser
             token = new Token();
             token.copyToken(scan.currentToken);
         }
-/*
+
         for (Token test: infix)
         {
             System.out.print("\"" + test.tokenStr + "\" ");
         }
         System.out.println();
-*/
+
         ResultValue resultValue = infixToPostfix(infix);
 
         // Debugging for Expr
@@ -929,14 +930,14 @@ public class Parser
             }
             postfix.add(stack.pop());
         }
-        /*System.out.print("postfix: ");
+        System.out.print("postfix: ");
         for (Token test: postfix)
         {
             System.out.print("\"" + test.tokenStr + "\" ");
             //System.out.print(test.primClassif + ",");
         }
         System.out.println();
-*/
+
         return evalPostfix(postfix);
     }
 

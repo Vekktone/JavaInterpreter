@@ -153,7 +153,7 @@ public class Scanner {
                 //create operator for valid operator not inside quotes
                 case '+': case '-': case '*': case '<': case '>': case '!': case '=': case '#': case '^':
                     //if we have a minus and it doesn't follow an operand, it must be a unary
-                    if(lineData[columnIndex] == '-' && currentToken.primClassif != Classif.OPERAND)
+                    if(lineData[columnIndex] == '-' && !(currentToken.primClassif == Classif.OPERAND || currentToken.tokenStr.equals(")")))
                     {
                         this.nextToken = setToken("u-"
                                 , Classif.OPERATOR
