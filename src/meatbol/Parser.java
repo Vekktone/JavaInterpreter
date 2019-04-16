@@ -119,7 +119,7 @@ public class Parser
             else
             {
                 //anything else is a syntax error
-                throw new ParserException(scan.currentToken.iSourceLineNr
+                throw new ParserException(scan.currentToken.iSourceLineNr + 1
                         ,"***Error: Expected end of statement or assignment***"
                         , Meatbol.filename);
             }
@@ -129,27 +129,27 @@ public class Parser
             switch(scan.currentToken.tokenStr)
             {
             case "enddef":
-                throw new ParserException(scan.currentToken.iSourceLineNr
+                throw new ParserException(scan.currentToken.iSourceLineNr + 1
                         ,"***Error: enddef without def***"
                         , Meatbol.filename);
             case "endif":
-                throw new ParserException(scan.currentToken.iSourceLineNr
+                throw new ParserException(scan.currentToken.iSourceLineNr + 1
                         ,"***Error: endif without if***"
                         , Meatbol.filename);
             case "else":
-                throw new ParserException(scan.currentToken.iSourceLineNr
+                throw new ParserException(scan.currentToken.iSourceLineNr + 1
                         ,"***Error: else without if***"
                         , Meatbol.filename);
             case "endfor":
-                throw new ParserException(scan.currentToken.iSourceLineNr
+                throw new ParserException(scan.currentToken.iSourceLineNr + 1
                         ,"***Error: endfor without for***"
                         , Meatbol.filename);
             case "endwhile":
-                throw new ParserException(scan.currentToken.iSourceLineNr
+                throw new ParserException(scan.currentToken.iSourceLineNr + 1
                         ,"***Error: endwhile without while***"
                         , Meatbol.filename);
             default:
-                throw new ParserException(scan.currentToken.iSourceLineNr
+                throw new ParserException(scan.currentToken.iSourceLineNr + 1
                         ,"***Error: unknown state***"
                         , Meatbol.filename);
             }
@@ -208,7 +208,12 @@ public class Parser
                         ,"***Error: expected ':' after 'if'***"
                         , Meatbol.filename);
             }
-
+            else if (scan.currentToken.tokenStr.equals(";"))
+            {
+                throw new ParserException(scan.currentToken.iSourceLineNr
+                        ,"***Error: expected ':' after 'if'***"
+                        , Meatbol.filename);
+            }
             // Condition is true, execute true part
             if (resCond.value.equals("T"))
             {
@@ -392,6 +397,7 @@ public class Parser
         if (bExec) {
             // we are executing, not ignoring
             resCond = expression(scan, symbolTable);
+            //System.out.println("Evaluated while condition");
             // Did the condition return True?
             if (resCond.value.equals("T"))
             {
@@ -571,7 +577,7 @@ public class Parser
             ResultValue Op2;
 
             scan.getNext();
-
+            scan.currentToken.printToken();
             switch(scan.currentToken.tokenStr)
             {
             case "=":
@@ -580,7 +586,7 @@ public class Parser
             case "-=":
                 if(!StorageManager.values.containsKey(variable.tokenStr))
                 {
-                    throw new ParserException(variable.iSourceLineNr
+                    throw new ParserException(variable.iSourceLineNr + 1
                             ,"***Error: Illegal assignment: " + variable + " not initialized***"
                             , Meatbol.filename);
                 }
@@ -593,7 +599,7 @@ public class Parser
             case "+=":
                 if(!StorageManager.values.containsKey(variable))
                 {
-                    throw new ParserException(scan.currentToken.iSourceLineNr
+                    throw new ParserException(scan.currentToken.iSourceLineNr + 1
                             ,"***Error: Illegal assignment: " + variable + " not initialized***"
                             , Meatbol.filename);
                 }
@@ -605,7 +611,7 @@ public class Parser
                 res = Utility.doAddition(Op1, Op2, variable.iSourceLineNr);
                 break;
             default:
-                throw new ParserException(scan.currentToken.iSourceLineNr
+                throw new ParserException(scan.currentToken.iSourceLineNr + 1
                         ,"***Error: Expected valid assignment operator***"
                         , Meatbol.filename);
             }
@@ -726,7 +732,9 @@ public class Parser
                 //skip comma
                 if (token.tokenStr.equals(","))
                 {
-                    //just need to ignore
+                    infix.add(token);
+                    token = new Token();
+                    token.copyToken(scan.currentToken);
                 }
                 //only parenthesis allowed in infix expression
                 else if (token.tokenStr.equals("(") || token.tokenStr.equals(")"))
@@ -771,13 +779,13 @@ public class Parser
             token = new Token();
             token.copyToken(scan.currentToken);
         }
-
-       // for (Token test: infix)
-       // {
-        //    System.out.print(test.tokenStr + ",");
-        //}
-        //System.out.println();
-
+/*
+        for (Token test: infix)
+        {
+            System.out.print("\"" + test.tokenStr + "\" ");
+        }
+        System.out.println();
+*/
         ResultValue resultValue = infixToPostfix(infix);
 
         // Debugging for Expr
@@ -860,10 +868,18 @@ public class Parser
                 break;
 
             case SEPARATOR:
+
                 //left parens, always push
                 if(token.tokenStr.equals("("))
                 {
                     stack.push(token);
+                }
+                else if (token.tokenStr.equals(","))
+                {
+                    while(! stack.empty() && stack.peek().primClassif != Classif.FUNCTION)
+                    {
+                        postfix.add(stack.pop());
+                    }
                 }
                 //right paren
                 else if(token.tokenStr.equals(")"))
@@ -913,13 +929,14 @@ public class Parser
             }
             postfix.add(stack.pop());
         }
-        System.out.print("postfix: ");
+        /*System.out.print("postfix: ");
         for (Token test: postfix)
         {
-            System.out.print(test.tokenStr + ",");
+            System.out.print("\"" + test.tokenStr + "\" ");
+            //System.out.print(test.primClassif + ",");
         }
         System.out.println();
-
+*/
         return evalPostfix(postfix);
     }
 
@@ -955,6 +972,8 @@ public class Parser
                     ,"***Error: Invalid expression - postfix empty***"
                     , Meatbol.filename);
         }
+
+
         //iterate through postfix expression
         for(Token token : postfix)
         {

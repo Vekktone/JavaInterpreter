@@ -112,6 +112,22 @@ public class Utility {
                 int flippedInt = -1 * originalInt;
                 opLeft.value = Numeric.intToString(flippedInt);
                 break;
+            //boolean flips
+            case BOOLEAN:
+                if(opLeft.value.equals("T"))
+                   {
+                    opLeft.value = "F";
+                   }
+                else if(opLeft.value.equals("F"))
+                {
+                    opLeft.value = "T";
+                }
+                else
+                {
+                    throw new ParserException(iSourceLineNr
+                            ,"***Error: Invalid boolean value - " + opLeft.value + "***"
+                            , Meatbol.filename);
+                }
             // Non-numbers cannot be used for this operator
             default:
                 throw new ParserException(iSourceLineNr
@@ -179,6 +195,8 @@ public class Utility {
      */
     public static ResultValue doMultiply(ResultValue opLeft, ResultValue opRight, int iSourceLineNr) throws ParserException
     {
+        //System.out.println("opLeft: " + opLeft.value + " opRight: " + opRight.value);
+        //System.out.println("opLeft: " + opLeft.type + " opRight: " + opRight.type);
         // switch on left operand type
         switch (opLeft.type)
         {
@@ -202,6 +220,7 @@ public class Utility {
                         ,"***Error: Illegal operation with type***"
                         , Meatbol.filename);
         }
+        //System.out.println("returning: " + opLeft.value);
         return opLeft;
     }
 
@@ -951,7 +970,6 @@ public class Utility {
     }
 
     public static void print(ArrayList<ResultValue> parmList) {
-        System.out.println("doing print");
         Stack<ResultValue> stack = new Stack<ResultValue>();
         //need to reverse the list
         for(ResultValue parameter : parmList)
