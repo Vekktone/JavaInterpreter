@@ -182,9 +182,9 @@ public class Parser
                     if (scan.nextToken.tokenStr.equals(";"))
                     {
                         System.out.println("case 2: if it is an array declaration with a valid size and no valueList");
+                        System.out.println(scan.currentToken.tokenStr);
                         // assignment with no valueList
                         assignArray(scan, symbolTable, bExec, arrayIdentifier, resultValue, 2);
-                        scan.getNext();
                     } else if (scan.nextToken.tokenStr.equals("="))
                     {
                         // case 3: if it is an array declaration with a valid size and a valueList
@@ -264,15 +264,15 @@ public class Parser
 
         if (bExec)
         {
-            // set position to first value in value list
-            scan.getNext();
-            scan.getNext();
 
             ArrayList<ResultValue> arrayValues;
 
             // use storage manager to put array values in
             switch (declarationType) {
                 case 1:
+                    // set position to first value in value list
+                    scan.getNext();
+                    scan.getNext();
                     // case 1: if it is an array declaration with empty set of brackets
                     arrayValues = new ArrayList<>();
                     while (!scan.currentToken.tokenStr.equals(";")) {
@@ -295,11 +295,32 @@ public class Parser
                     StorageManager.values.put(arrayIdentifier, sb.toString());
                     break;
                 case 2:
+                    // set position to first value in value list
+                    scan.getNext();
                     // case 2: if it is an array declaration with a valid size and no valueList
                     arrayValues = new ArrayList<>(Integer.parseInt(arraySize.value));
+                    i = 0;
+                    while(i != Integer.parseInt(arraySize.value)) {
+                        ResultValue arrayElement = new ResultValue(SubClassif.INTEGER, null, 0, null);
+                        arrayValues.add(arrayElement);
+                        i++;
+                    }
+
+                    sb = new StringBuilder();
+                    for (i = 0; i < arrayValues.size(); i++) {
+                        sb.append(arrayValues.get(i).value);
+                        if (i != arrayValues.size() - 1) {
+                            sb.append(", ");
+                        }
+                        System.out.println("Array[" + i + "]: " + arrayValues.get(i).value);
+                    }
+
                     StorageManager.values.put(arrayIdentifier, arrayValues.toString());
                     break;
                 case 3:
+                    // set position to first value in value list
+                    scan.getNext();
+                    scan.getNext();
                     // case 3: if it is an array declaration with a valid size and a valueList
                     arrayValues = new ArrayList<>(Integer.parseInt(arraySize.value));
                     i = 0;
