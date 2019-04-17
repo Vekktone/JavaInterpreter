@@ -749,7 +749,9 @@ public class Parser
             String arrayIdentifier = null;
             String arrayAsString;
             String str[];
+            String result = null;
             List<String> array = null;
+            STIdentifier temp = null;
 
             if (scan.nextToken.tokenStr.equals("[")) {
                 arrayAssignment = true;
@@ -762,10 +764,16 @@ public class Parser
                 scan.getNext();
 
                 arrayIndex = expression(scan, symbolTable);
-                arrayIdentifier = variable.tokenStr;
-                arrayAsString = StorageManager.values.get(arrayIdentifier);
-                str = arrayAsString.split("\\s*,\\s*");
-                array = Arrays.asList(str);
+                temp = (STIdentifier) symbolTable.getSymbol(variable.tokenStr);
+                if (temp.declareType == SubClassif.STRING)
+                {
+                    result = Utility.charInString(StorageManager.values.get(variable.tokenStr), Integer.parseInt(arrayIndex.value));
+                } else {
+                    arrayIdentifier = variable.tokenStr;
+                    arrayAsString = StorageManager.values.get(arrayIdentifier);
+                    str = arrayAsString.split("\\s*,\\s*");
+                    array = Arrays.asList(str);
+                }
             }
 
             scan.getNext();
@@ -808,15 +816,21 @@ public class Parser
                         , Meatbol.filename);
             }
             if (arrayAssignment){
-                array.set(Integer.parseInt(arrayIndex.value), res.value);
-                StringBuilder sb = new StringBuilder();
-                for (int i = 0; i < array.size(); i++) {
-                    sb.append(array.get(i));
-                    if (i != array.size() - 1) {
-                        sb.append(", ");
+                if (temp.declareType == SubClassif.STRING)
+                {
+                    String finalResult = Utility.changeSubstringInString(StorageManager.values.get(variable.tokenStr), Integer.parseInt(arrayIndex.value), res.value);
+                    StorageManager.values.put(variable.tokenStr, finalResult);
+                } else {
+                    array.set(Integer.parseInt(arrayIndex.value), res.value);
+                    StringBuilder sb = new StringBuilder();
+                    for (int i = 0; i < array.size(); i++) {
+                        sb.append(array.get(i));
+                        if (i != array.size() - 1) {
+                            sb.append(", ");
+                        }
                     }
+                    StorageManager.values.put(arrayIdentifier, sb.toString());
                 }
-                StorageManager.values.put(arrayIdentifier, sb.toString());
             } else {
                 StorageManager.values.put(variable.tokenStr, res.value);
             }
@@ -1249,7 +1263,7 @@ public class Parser
                 while(! stack.empty())
                 {
                     //check precedence with stack
-                    if(token.prec() < stack.peek().stackPrec())
+                    if(token.prec() <= stack.peek().stackPrec())
                     {
                         //pop and out higher precedence operators
                         postfix.add(stack.pop());
@@ -1267,7 +1281,7 @@ public class Parser
                 while(! stack.empty())
                 {
                     //check precedence with stack
-                    if(token.prec() < stack.peek().stackPrec())
+                    if(token.prec() <= stack.peek().stackPrec())
                     {
                         //pop and out higher precedence operators
                         postfix.add(stack.pop());
@@ -1344,14 +1358,14 @@ public class Parser
             }
             postfix.add(stack.pop());
         }
-        System.out.print("postfix: ");
+ /*       System.out.print("postfix: ");
         for (Token test: postfix)
         {
             System.out.print("\"" + test.tokenStr + "\" ");
             //System.out.print(test.primClassif + ",");
         }
         System.out.println();
-
+*/
         return evalPostfix(postfix);
     }
 
