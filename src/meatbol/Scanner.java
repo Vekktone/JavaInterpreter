@@ -102,8 +102,15 @@ public class Scanner {
      */
     public String getNext() throws Exception
     {
+        if (nextToken != null && nextToken.primClassif == Classif.EOF)
+        {
+//            System.out.println("EOF!!!!!");
+            currentToken = nextToken;
+            return currentToken.tokenStr;
+        }
+
         //shift next to current
-        if(!newLineDetected) {
+        if(!newLineDetected || nextToken.tokenStr.equals(";")) {
             currentToken = nextToken;
         }
 
@@ -111,7 +118,8 @@ public class Scanner {
         if (this.lineIndex >= lineList.size())
         {
             // create an EOF token and return empty
-            currentToken = setToken("", Classif.EOF, SubClassif.EMPTY, lineIndex, columnIndex);
+//            System.out.println(currentToken.tokenStr);
+            nextToken = setToken("", Classif.EOF, SubClassif.EMPTY, lineIndex, columnIndex);
             return this.currentToken.tokenStr;
         }
 
@@ -119,13 +127,6 @@ public class Scanner {
         char[] lineData = this.lineList.get(lineIndex).toCharArray();
         this.nextToken = new Token();
         boolean validToken = false;
-
-        /* LEGACY, has been moved to work more accurately with Debugger
-        // if this is first Token in line
-        if (columnIndex == 0 && debugOptionsMap.get(DebuggerTypes.STATEMENT))
-              System.out.printf("%3d %s\n", (this.lineIndex + 1)
-                    , this.lineList.get(this.lineIndex));
-        */
 
         // iterate through line from last position
         for (; columnIndex < lineData.length; columnIndex++)
@@ -160,7 +161,7 @@ public class Scanner {
                 //create operator for valid operator not inside quotes
                 case '+': case '-': case '*': case '<': case '>': case '!': case '=': case '#': case '^':
                     //if we have a minus and it doesn't follow an operand, it must be a unary
-                    if(lineData[columnIndex] == '-' && currentToken.primClassif != Classif.OPERAND)
+                    if(lineData[columnIndex] == '-' && !(currentToken.primClassif == Classif.OPERAND || currentToken.tokenStr.equals(")")))
                     {
                         this.nextToken = setToken("u-"
                                 , Classif.OPERATOR
@@ -366,9 +367,9 @@ public class Scanner {
                     // if the symbol is not within the table, then it is either a variable
                     // or a user function and needs to be declared. If the previous token
                     // was not a control declare (and it is not in a for statement), then this is an error.
-                    if (currentToken.subClassif != SubClassif.DECLARE && !currentToken.tokenStr.equals("for"))
+                    if (currentToken.subClassif != SubClassif.DECLARE && currentToken.subClassif != SubClassif.FLOW)
                     {
-                        throw new ScannerException(lineNum
+                        throw new ScannerException(lineNum + 1
                                 , index
                                 , "Syntax error: Undeclared identifier " + substring
                                 , Meatbol.filename);
@@ -401,11 +402,16 @@ public class Scanner {
                         {
 
                             // If the previous token was not a declare, then this variable needs to be declared.
-                            if (currentToken.subClassif != SubClassif.DECLARE)
+                            if (currentToken.subClassif != SubClassif.DECLARE && currentToken.subClassif != SubClassif.FLOW)
                                 throw new ScannerException(currentToken.iSourceLineNr
                                         , currentToken.iColPos
                                         , "Syntax error: Variable not declared " + currentToken.tokenStr
                                         , Meatbol.filename);
+
+                            else if (currentToken.tokenStr.equals("for"))
+                            {
+                                declareEntry = symbolTable.getSymbol("Int");
+                            }
                         }
                         // The previous token does not have a symbol within the symbol table and thus cannot be
                         // a declaration type

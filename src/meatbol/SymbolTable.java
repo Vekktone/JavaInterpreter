@@ -81,6 +81,8 @@ public class SymbolTable
         table.put("endfor", new STControl("endfor", Classif.CONTROL, SubClassif.END, SubClassif.EMPTY));
         table.put("while", new STControl("while", Classif.CONTROL, SubClassif.FLOW, SubClassif.EMPTY));
         table.put("endwhile", new STControl("endwhile", Classif.CONTROL, SubClassif.END, SubClassif.EMPTY));
+        table.put("to", new STControl("to", Classif.CONTROL, SubClassif.FLOW, SubClassif.EMPTY));
+        table.put("by", new STControl("by", Classif.CONTROL, SubClassif.FLOW, SubClassif.EMPTY));
 
         // Function void
         table.put("print", new STFunction("print", Classif.FUNCTION, SubClassif.VOID, STFunction.VAR_ARGS));
@@ -106,7 +108,6 @@ public class SymbolTable
         table.put("not", new STEntry("not", Classif.OPERATOR));
         table.put("in", new STEntry("in", Classif.OPERATOR));
         table.put("notin", new STEntry("notin", Classif.OPERATOR));
-        table.put("from", new STEntry("from", Classif.OPERATOR));
 
         // Debug
         table.put("debug", new STEntry("debug", Classif.DEBUG));
