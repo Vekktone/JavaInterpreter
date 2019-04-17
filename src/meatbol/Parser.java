@@ -1040,10 +1040,6 @@ public class Parser
             , Token arrayToken) throws Exception
     {
         String arrayValue = StorageManager.values.get(arrayToken.tokenStr);
-        if (!arrayValue.startsWith("[") || !arrayValue.endsWith("]"))
-        {
-            // TODO: ERROR
-        }
 
         // create entry for control variable so it can be accessed
         STIdentifier arrayIdentifier = (STIdentifier) symbolTable.getSymbol(arrayToken.tokenStr);
@@ -1051,8 +1047,6 @@ public class Parser
                 , arrayIdentifier.declareType, null, null, 1);
         symbolTable.putSymbol(controlVariableIdentifier);
 
-        // remove [ and ]
-        arrayValue = arrayValue.substring(1, arrayValue.length());
         String[] stringArray = arrayValue.split(",");
 
         // save state of the scanner so we can loop back
@@ -1441,7 +1435,7 @@ public class Parser
                 try
                 {
                     opRight = stack.pop();
-                    if(token.tokenStr != "u-" && token.tokenStr != "not")
+                    if(!token.tokenStr.equals("u-") && !token.tokenStr.equals("not"))
                     {
                         opLeft = stack.pop();
                     }
