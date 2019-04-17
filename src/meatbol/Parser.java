@@ -286,7 +286,7 @@ public class Parser
                     arrayValues = new ArrayList<>(Integer.parseInt(arraySize.value));
                     i = 0;
                     while(i != Integer.parseInt(arraySize.value)) {
-                        ResultValue arrayElement = new ResultValue(arrayType, null, 0, null);
+                        ResultValue arrayElement = new ResultValue(arrayType, "null", 0, null);
                         arrayValues.add(arrayElement);
                         i++;
                     }
@@ -294,7 +294,7 @@ public class Parser
                     sb = new StringBuilder();
                     Utility.buildStringFromArray(sb, arrayValues);
 
-                    StorageManager.values.put(arrayIdentifier.tokenStr, arrayValues.toString());
+                    StorageManager.values.put(arrayIdentifier.tokenStr, sb.toString());
                     break;
                 case 3:
                     // set position to first value in value list
