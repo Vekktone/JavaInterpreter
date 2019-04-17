@@ -1024,4 +1024,11 @@ public class Utility {
     {
         return "" + string.toCharArray()[index];
     }
+
+    public static String changeSubstringInString(String string, int index, String value)
+    {
+        String left = string.substring(0, index);
+        String right = string.substring(index+1, string.length());
+        return left + value + right;
+    }
 }
