@@ -1,6 +1,8 @@
 package meatbol;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Stack;
 
 /** Utility holds all the functions used to alter operands with an operator.
@@ -996,28 +998,55 @@ public class Utility {
     }
 
     public static ResultValue maxElement(ArrayList<ResultValue> parmList) {
-        System.out.println("doing MAXELEM");
-        return new ResultValue(SubClassif.INTEGER,"5",0,null);
+        int i = 0;
+        String s = parmList.get(0).value;
+        System.out.println(s);
+        String str[] = s.split("\\s*,\\s*");
+        List<String> array = Arrays.asList(str);
+        for (String value: array){
+            i++;
+        }
+        return new ResultValue(SubClassif.INTEGER,Integer.toString(i),0,null);
     }
 
     public static ResultValue length(ArrayList<ResultValue> parmList) {
-        System.out.println("doing LENGTH");
-        for(ResultValue parm : parmList)
-        {
-            System.out.print(parm.value + ", ");
-        }
-        System.out.println();
-        return new ResultValue(SubClassif.INTEGER,"5",0,null);
+        return new ResultValue(SubClassif.INTEGER, Integer.toString(parmList.get(0).value.length()),0,null);
     }
 
     public static ResultValue spaces(ArrayList<ResultValue> parmList) {
-        System.out.println("doing SPACES");
-        return new ResultValue(SubClassif.BOOLEAN,"T",0,null);
+        if (parmList.get(0).value.equals(""))
+        {
+            return new ResultValue(SubClassif.BOOLEAN, "T", 0, null);
+        }
+
+        Boolean foundOnlySpaces = true;
+        String s = parmList.get(0).value;
+        for (int i=0; i < s.length(); i++)
+        {
+            if (s.charAt(i) != ' ')
+            {
+                foundOnlySpaces = false;
+            }
+        }
+
+        if (foundOnlySpaces)
+        {
+            return new ResultValue(SubClassif.BOOLEAN,"T",0,null);
+        } else
+        {
+            return new ResultValue(SubClassif.BOOLEAN,"F",0,null);
+        }
     }
 
     public static ResultValue element(ArrayList<ResultValue> parmList) {
-        System.out.println("doing ELEM");
-        return new ResultValue(SubClassif.INTEGER,"5",0,null);
+        for(ResultValue parm : parmList)
+        {
+            if(parm == null)
+            {
+                return new ResultValue(SubClassif.INTEGER,Integer.toString(parmList.indexOf(parm)-1),0,null);
+            }
+        }
+        return new ResultValue(SubClassif.INTEGER,Integer.toString(parmList.size()),0,null);
     }
 
     public static String charInString(String string, int index)

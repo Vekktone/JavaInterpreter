@@ -1170,19 +1170,26 @@ public class Parser
                     // we have an array reference
                     if (scan.nextToken.tokenStr.equals("[")) {
                         scan.getNext();
-                        ResultValue arrayIndex = expression(scan, symbolTable);
-                        String arrayIdentifier = token.tokenStr;
-                        String arrayAsString = StorageManager.values.get(arrayIdentifier);
-                        String str[] = arrayAsString.split("\\s*,\\s*");
-                        List<String> array = Arrays.asList(str);
-                        token.tokenStr = array.get(Integer.parseInt(arrayIndex.value));
                         if (token.tokenStr == null) {
                             throw new ParserException(token.iSourceLineNr + 1
                                     , "***Error: Uninitialized array element - '" + scan.currentToken.tokenStr + "' ***"
                                     , Meatbol.filename);
                         }
+
+                        ResultValue arrayIndex = expression(scan, symbolTable);
+                        String arrayIdentifier = token.tokenStr;
                         STIdentifier variable = (STIdentifier) symbolTable.getSymbol(arrayIdentifier);
-                        token.subClassif = variable.declareType;
+                        String result;
+                        if (variable.declareType == SubClassif.STRING)
+                        {
+                            result = Utility.charInString(StorageManager.values.get(arrayIdentifier), Integer.parseInt(arrayIndex.value));
+                            token.tokenStr = result;
+                        } else {
+                            String arrayAsString = StorageManager.values.get(arrayIdentifier);
+                            String str[] = arrayAsString.split("\\s*,\\s*");
+                            List<String> array = Arrays.asList(str);
+                            token.tokenStr = array.get(Integer.parseInt(arrayIndex.value));
+                        }
                     } else {
                         token.tokenStr = StorageManager.values.get(scan.currentToken.tokenStr);
                         if (token.tokenStr == null) {
@@ -1195,16 +1202,6 @@ public class Parser
                     }
                 }
                 infix.add(token);
-//                try
-//                {
-//                    scan.getNext();
-//                    token = new Token();
-//                    token.copyToken(scan.currentToken);
-//                }
-//                catch (Exception e)
-//                {
-//                    throw e;
-//                }
                 break;
             case OPERATOR:
 
@@ -1220,13 +1217,13 @@ public class Parser
             token = new Token();
             token.copyToken(scan.currentToken);
         }
-
-//        for (Token test: infix)
-//        {
-//            System.out.print("\"" + test.tokenStr + "\" ");
-//        }
-//        System.out.println();
-
+/*
+        for (Token test: infix)
+        {
+            System.out.print("\"" + test.tokenStr + "\" ");
+        }
+        System.out.println();
+*/
         ResultValue resultValue = infixToPostfix(infix);
 
         // Debugging for Expr
@@ -1566,8 +1563,8 @@ public class Parser
         //if stack is not empty now, something went wrong
         if(!stack.empty())
         {
-//            System.out.println(stack.pop().value);
-            throw new ParserException(postfix.get(0).iSourceLineNr
+            // System.out.println(stack.pop().value);
+            throw new ParserException(postfix.get(0).iSourceLineNr + 1
                     ,"***Error: Invalid expression - Unhandled operand in expression***"
                     , Meatbol.filename);
         }
