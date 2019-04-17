@@ -227,6 +227,10 @@ public class Parser
     }
 
     private void assignArray(Scanner scan, SymbolTable symbolTable, Boolean bExec, Token arrayIdentifier, ResultValue arraySize, int declarationType, String dataType) throws Exception {
+        STIdentifier arraySTEntry = (STIdentifier) symbolTable.getSymbol(arrayIdentifier.tokenStr);
+        arraySTEntry.structure = SubClassif.ARRAY;
+        symbolTable.table.put(arrayIdentifier.tokenStr, arraySTEntry);
+
         int i;
         StringBuilder sb;
         SubClassif arrayType;
@@ -973,18 +977,21 @@ public class Parser
 
         Token structureToken = new Token();
         structureToken.copyToken(scan.currentToken);
+        STIdentifier structureSTEnty = (STIdentifier) symbolTable.getSymbol(structureToken.tokenStr);
 
         scan.getNext();
 //        scan.getNext();
 //        // current = start of execute statements
 
-        switch (structureToken.subClassif)
+        switch (structureSTEnty.structure)
         {
-            case IDENTIFIER:
+            // for variable in array:
+            case ARRAY:
                 handleForItemInArrayStatement(scan, symbolTable, controlVariableToken, structureToken);
                 break;
 
-            case STRING:
+            // for char in string:
+            case PRIMITIVE:
                 handleForCharInStringStatement(scan, symbolTable, controlVariableToken, structureToken);
                 break;
 
@@ -1266,7 +1273,7 @@ public class Parser
                 while(! stack.empty())
                 {
                     //check precedence with stack
-                    if(token.prec() < stack.peek().stackPrec())
+                    if(token.prec() <= stack.peek().stackPrec())
                     {
                         //pop and out higher precedence operators
                         postfix.add(stack.pop());
@@ -1284,7 +1291,7 @@ public class Parser
                 while(! stack.empty())
                 {
                     //check precedence with stack
-                    if(token.prec() < stack.peek().stackPrec())
+                    if(token.prec() <= stack.peek().stackPrec())
                     {
                         //pop and out higher precedence operators
                         postfix.add(stack.pop());

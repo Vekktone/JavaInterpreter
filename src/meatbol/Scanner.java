@@ -424,7 +424,7 @@ public class Scanner {
                         }
                         // TODO: structure and param type logic
                         entry = new STIdentifier(substring, Classif.OPERAND
-                                , ((STControl) declareEntry).type, null, null, 0);
+                                , ((STControl) declareEntry).type, SubClassif.PRIMITIVE, null, 0);
                         symbolTable.putSymbol(entry);
                         nextToken = setToken(substring, Classif.OPERAND, SubClassif.IDENTIFIER, lineNum, index);
                     }

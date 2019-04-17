@@ -10,7 +10,7 @@ import java.util.HashMap;
 public class SymbolTable
 {
     /** The hashmap used internally by the SymbolTable. */
-    private HashMap<String, STEntry> table;
+    public HashMap<String, STEntry> table;
 
     /** The constructor for the SymbolTable. It creates the hashmap and
      * inserts the global symbols into the SymbolTable.
