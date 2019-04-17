@@ -1164,48 +1164,47 @@ public class Parser
                             , Meatbol.filename);
                 }
                 break;
-            case OPERAND:
-                //if this is an identifier, we need to retrieve its value and type
-                if(token.subClassif == SubClassif.IDENTIFIER){
-                    // we have an array reference
-                    if (scan.nextToken.tokenStr.equals("[")) {
-                        scan.getNext();
-                        ResultValue arrayIndex = expression(scan, symbolTable);
-                        String arrayIdentifier = token.tokenStr;
-                        String arrayAsString = StorageManager.values.get(arrayIdentifier);
-                        String str[] = arrayAsString.split("\\s*,\\s*");
-                        List<String> array = Arrays.asList(str);
-                        token.tokenStr = array.get(Integer.parseInt(arrayIndex.value));
-                        if (token.tokenStr == null) {
-                            throw new ParserException(token.iSourceLineNr + 1
-                                    , "***Error: Uninitialized array element - '" + scan.currentToken.tokenStr + "' ***"
-                                    , Meatbol.filename);
+                case OPERAND:
+                    //if this is an identifier, we need to retrieve its value and type
+                    if(token.subClassif == SubClassif.IDENTIFIER){
+                        // we have an array reference
+                        if (scan.nextToken.tokenStr.equals("[")) {
+                            scan.getNext();
+                            if (token.tokenStr == null) {
+                                throw new ParserException(token.iSourceLineNr + 1
+                                        , "***Error: Uninitialized array element - '" + scan.currentToken.tokenStr + "' ***"
+                                        , Meatbol.filename);
+                            }
+
+                            ResultValue arrayIndex = expression(scan, symbolTable);
+                            String arrayIdentifier = token.tokenStr;
+                            STIdentifier variable = (STIdentifier) symbolTable.getSymbol(arrayIdentifier);
+                            String result;
+                            if (variable.declareType == SubClassif.STRING)
+                            {
+                                result = Utility.charInString(StorageManager.values.get(arrayIdentifier), Integer.parseInt(arrayIndex.value));
+                                token.tokenStr = result;
+                            } else {
+                                String arrayAsString = StorageManager.values.get(arrayIdentifier);
+                                String str[] = arrayAsString.split("\\s*,\\s*");
+                                List<String> array = Arrays.asList(str);
+                                token.tokenStr = array.get(Integer.parseInt(arrayIndex.value));
+                                token.subClassif = variable.declareType;
+                            }
+                        } else {
+                            token.tokenStr = StorageManager.values.get(scan.currentToken.tokenStr);
+                            if (token.tokenStr == null) {
+                                throw new ParserException(token.iSourceLineNr + 1
+                                        , "***Error: Uninitialized variable - '" + scan.currentToken.tokenStr + "' ***"
+                                        , Meatbol.filename);
+                            }
+                            STIdentifier variable = (STIdentifier) symbolTable.getSymbol(scan.currentToken.tokenStr);
+                            token.subClassif = variable.declareType;
                         }
-                        STIdentifier variable = (STIdentifier) symbolTable.getSymbol(arrayIdentifier);
-                        token.subClassif = variable.declareType;
-                    } else {
-                        token.tokenStr = StorageManager.values.get(scan.currentToken.tokenStr);
-                        if (token.tokenStr == null) {
-                            throw new ParserException(token.iSourceLineNr + 1
-                                    , "***Error: Uninitialized variable - '" + scan.currentToken.tokenStr + "' ***"
-                                    , Meatbol.filename);
-                        }
-                        STIdentifier variable = (STIdentifier) symbolTable.getSymbol(scan.currentToken.tokenStr);
-                        token.subClassif = variable.declareType;
                     }
-                }
-                infix.add(token);
-//                try
-//                {
-//                    scan.getNext();
-//                    token = new Token();
-//                    token.copyToken(scan.currentToken);
-//                }
-//                catch (Exception e)
-//                {
-//                    throw e;
-//                }
-                break;
+                    infix.add(token);
+                    break;
+
             case OPERATOR:
 
                 if (!token.tokenStr.equals("u-"))
