@@ -1005,9 +1005,6 @@ public class Utility {
         String str[] = s.split("\\s*,\\s*");
         List<String> array = Arrays.asList(str);
         for (String value: array){
-            if (value.equals("null")) {
-                break;
-            }
             i++;
         }
         return new ResultValue(SubClassif.INTEGER,Integer.toString(i),0,null);
@@ -1044,8 +1041,14 @@ public class Utility {
     }
 
     public static ResultValue element(ArrayList<ResultValue> parmList) {
-        System.out.println("doing ELEM");
-        return new ResultValue(SubClassif.INTEGER,"5",0,null);
+        for(ResultValue parm : parmList)
+        {
+            if(parm == null)
+            {
+                return new ResultValue(SubClassif.INTEGER,Integer.toString(parmList.indexOf(parm)-1),0,null);
+            }
+        }
+        return new ResultValue(SubClassif.INTEGER,Integer.toString(parmList.size()),0,null);
     }
 
     public static String charInString(String string, int index)
