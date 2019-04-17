@@ -1181,16 +1181,6 @@ public class Parser
                     }
                 }
                 infix.add(token);
-//                try
-//                {
-//                    scan.getNext();
-//                    token = new Token();
-//                    token.copyToken(scan.currentToken);
-//                }
-//                catch (Exception e)
-//                {
-//                    throw e;
-//                }
                 break;
             case OPERATOR:
 
@@ -1206,13 +1196,13 @@ public class Parser
             token = new Token();
             token.copyToken(scan.currentToken);
         }
-
-//        for (Token test: infix)
-//        {
-//            System.out.print("\"" + test.tokenStr + "\" ");
-//        }
-//        System.out.println();
-
+/*
+        for (Token test: infix)
+        {
+            System.out.print("\"" + test.tokenStr + "\" ");
+        }
+        System.out.println();
+*/
         ResultValue resultValue = infixToPostfix(infix);
 
         // Debugging for Expr
@@ -1354,13 +1344,13 @@ public class Parser
             }
             postfix.add(stack.pop());
         }
-//        System.out.print("postfix: ");
-//        for (Token test: postfix)
-//        {
-//            System.out.print("\"" + test.tokenStr + "\" ");
-//            //System.out.print(test.primClassif + ",");
-//        }
-//        System.out.println();
+        System.out.print("postfix: ");
+        for (Token test: postfix)
+        {
+            System.out.print("\"" + test.tokenStr + "\" ");
+            //System.out.print(test.primClassif + ",");
+        }
+        System.out.println();
 
         return evalPostfix(postfix);
     }
@@ -1553,7 +1543,7 @@ public class Parser
         if(!stack.empty())
         {
             System.out.println(stack.pop().value);
-            throw new ParserException(postfix.get(0).iSourceLineNr
+            throw new ParserException(postfix.get(0).iSourceLineNr + 1
                     ,"***Error: Invalid expression - Unhandled operand in expression***"
                     , Meatbol.filename);
         }

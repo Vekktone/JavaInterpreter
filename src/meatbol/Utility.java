@@ -997,6 +997,11 @@ public class Utility {
 
     public static ResultValue maxElement(ArrayList<ResultValue> parmList) {
         System.out.println("doing MAXELEM");
+        for(ResultValue parm : parmList)
+        {
+            System.out.print(parm.value + ", ");
+        }
+        System.out.println();
         return new ResultValue(SubClassif.INTEGER,"5",0,null);
     }
 
@@ -1012,11 +1017,21 @@ public class Utility {
 
     public static ResultValue spaces(ArrayList<ResultValue> parmList) {
         System.out.println("doing SPACES");
+        for(ResultValue parm : parmList)
+        {
+            System.out.print(parm.value + ", ");
+        }
+        System.out.println();
         return new ResultValue(SubClassif.BOOLEAN,"T",0,null);
     }
 
     public static ResultValue element(ArrayList<ResultValue> parmList) {
         System.out.println("doing ELEM");
+        for(ResultValue parm : parmList)
+        {
+            System.out.print(parm.value + ", ");
+        }
+        System.out.println();
         return new ResultValue(SubClassif.INTEGER,"5",0,null);
     }
 
