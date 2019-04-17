@@ -1263,7 +1263,7 @@ public class Parser
                 while(! stack.empty())
                 {
                     //check precedence with stack
-                    if(token.prec() < stack.peek().stackPrec())
+                    if(token.prec() <= stack.peek().stackPrec())
                     {
                         //pop and out higher precedence operators
                         postfix.add(stack.pop());
@@ -1281,7 +1281,7 @@ public class Parser
                 while(! stack.empty())
                 {
                     //check precedence with stack
-                    if(token.prec() < stack.peek().stackPrec())
+                    if(token.prec() <= stack.peek().stackPrec())
                     {
                         //pop and out higher precedence operators
                         postfix.add(stack.pop());
@@ -1556,8 +1556,8 @@ public class Parser
         //if stack is not empty now, something went wrong
         if(!stack.empty())
         {
-//            System.out.println(stack.pop().value);
-            throw new ParserException(postfix.get(0).iSourceLineNr
+            // System.out.println(stack.pop().value);
+            throw new ParserException(postfix.get(0).iSourceLineNr + 1
                     ,"***Error: Invalid expression - Unhandled operand in expression***"
                     , Meatbol.filename);
         }
