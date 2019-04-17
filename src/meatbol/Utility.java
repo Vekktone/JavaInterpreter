@@ -1019,4 +1019,9 @@ public class Utility {
         System.out.println("doing ELEM");
         return new ResultValue(SubClassif.INTEGER,"5",0,null);
     }
+
+    public static String charInString(String string, int index)
+    {
+        return "" + string.toCharArray()[index];
+    }
 }

@@ -680,6 +680,8 @@ public class Parser
                 // TODO: ERROR
                 break;
         }
+
+        scan.getNext();
     }
 
     /**
