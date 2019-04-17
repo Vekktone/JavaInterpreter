@@ -1195,16 +1195,6 @@ public class Parser
                     }
                 }
                 infix.add(token);
-//                try
-//                {
-//                    scan.getNext();
-//                    token = new Token();
-//                    token.copyToken(scan.currentToken);
-//                }
-//                catch (Exception e)
-//                {
-//                    throw e;
-//                }
                 break;
             case OPERATOR:
 
@@ -1220,13 +1210,13 @@ public class Parser
             token = new Token();
             token.copyToken(scan.currentToken);
         }
-
-//        for (Token test: infix)
-//        {
-//            System.out.print("\"" + test.tokenStr + "\" ");
-//        }
-//        System.out.println();
-
+/*
+        for (Token test: infix)
+        {
+            System.out.print("\"" + test.tokenStr + "\" ");
+        }
+        System.out.println();
+*/
         ResultValue resultValue = infixToPostfix(infix);
 
         // Debugging for Expr
