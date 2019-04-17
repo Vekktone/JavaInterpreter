@@ -910,7 +910,6 @@ public class Parser
         {
             // The increment value is specified
             case "by":
-                scan.getNext();
                 // TODO: VERIFY EXPRESSION ENDS AT ":"
                 incrementValue = expression(scan, symbolTable);
                 break;
