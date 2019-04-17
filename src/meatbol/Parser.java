@@ -34,6 +34,7 @@ public class Parser
             printStatement(scan, scan.currentToken.iSourceLineNr);
         }
 
+        String dataType = scan.currentToken.tokenStr;
         //Determine type of token
         switch(scan.currentToken.primClassif)
         {
@@ -47,7 +48,7 @@ public class Parser
                 break;
             // control statement
             case CONTROL:
-                conStmt(scan, symbolTable, bExec);
+                conStmt(scan, symbolTable, bExec, dataType);
                 break;
             // function statement
             case FUNCTION:
@@ -89,7 +90,7 @@ public class Parser
      *
      * @author Gregory Pugh
      */
-    public void conStmt(Scanner scan, SymbolTable symbolTable, Boolean bExec) throws Exception
+    public void conStmt(Scanner scan, SymbolTable symbolTable, Boolean bExec, String dataType) throws Exception
     {
         //check what type of control statement we have
         switch(scan.currentToken.subClassif)
@@ -120,17 +121,17 @@ public class Parser
             {
                 // this is an array declaration
 //                System.out.println("ARRAY DETECTED BEEP BOOP");
-                String arrayIdentifier = scan.currentToken.tokenStr;
+                Token arrayIdentifier = scan.currentToken;
                 scan.getNext();
                 // case 1: if it is an array declaration with empty set of brackets
                 if (scan.nextToken.tokenStr.equals("]"))
                 {
-                    System.out.println("case 1: if it is an array declaration with empty set of brackets");
+//                    System.out.println("case 1: if it is an array declaration with empty set of brackets");
                     scan.getNext();
                     // there must be an equals after the brackets or we have an error
                     if (scan.nextToken.tokenStr.equals("="))
                     {
-                        assignArray(scan, symbolTable, bExec, arrayIdentifier, null, 1);
+                        assignArray(scan, symbolTable, bExec, arrayIdentifier, null, 1, dataType);
                     }
                     else
                     {
@@ -145,21 +146,18 @@ public class Parser
                 {
                     // evaluate condition inside array brackets
                     ResultValue resultValue = expression(scan, symbolTable);
-//                    System.out.println("The value of array size is " + resCond.value);
-//                    System.out.println("The scanner is now on " + scan.currentToken.tokenStr);
-//                    System.out.println("The scanner next is now on " + scan.nextToken.tokenStr);
+
                     // case 2: if it is an array declaration with a valid size and no valueList
                     if (scan.nextToken.tokenStr.equals(";"))
                     {
-                        System.out.println("case 2: if it is an array declaration with a valid size and no valueList");
-                        System.out.println(scan.currentToken.tokenStr);
+//                        System.out.println("case 2: if it is an array declaration with a valid size and no valueList");
                         // assignment with no valueList
-                        assignArray(scan, symbolTable, bExec, arrayIdentifier, resultValue, 2);
+                        assignArray(scan, symbolTable, bExec, arrayIdentifier, resultValue, 2, dataType);
                     } else if (scan.nextToken.tokenStr.equals("="))
                     {
                         // case 3: if it is an array declaration with a valid size and a valueList
-                        System.out.println("case 3: if it is an array declaration with a valid size and a valueList");
-                        assignArray(scan, symbolTable, bExec, arrayIdentifier, resultValue, 3);
+//                        System.out.println("case 3: if it is an array declaration with a valid size and a valueList");
+                        assignArray(scan, symbolTable, bExec, arrayIdentifier, resultValue, 3, dataType);
                     }
                 }
             }
@@ -228,14 +226,33 @@ public class Parser
         }
     }
 
-    private void assignArray(Scanner scan, SymbolTable symbolTable, Boolean bExec, String arrayIdentifier, ResultValue arraySize, int declarationType) throws Exception {
+    private void assignArray(Scanner scan, SymbolTable symbolTable, Boolean bExec, Token arrayIdentifier, ResultValue arraySize, int declarationType, String dataType) throws Exception {
         int i;
         StringBuilder sb;
+        SubClassif arrayType;
 
         if (bExec)
         {
 
             ArrayList<ResultValue> arrayValues;
+
+            // check data type for array
+            if (dataType.equals("Int"))
+            {
+                arrayType = SubClassif.INTEGER;
+            } else if (dataType.equals("Float"))
+            {
+                arrayType = SubClassif.FLOAT;
+            } else if (dataType.equals("Boolean"))
+            {
+                arrayType = SubClassif.BOOLEAN;
+            } else if (dataType.equals("String"))
+            {
+                arrayType = SubClassif.STRING;
+            } else
+            {
+                arrayType = SubClassif.EMPTY;
+            }
 
             // use storage manager to put array values in
             switch (declarationType) {
@@ -249,14 +266,14 @@ public class Parser
                         if (scan.currentToken.tokenStr.equals(",")) {
                             scan.getNext();
                         } else {
-                            ResultValue arrayElement = new ResultValue(SubClassif.INTEGER, scan.currentToken.tokenStr, 0, null);
+                            ResultValue arrayElement = new ResultValue(arrayType, scan.currentToken.tokenStr, 0, null);
                             arrayValues.add(arrayElement);
                             scan.getNext();
                         }
                     }
                     sb = new StringBuilder();
                     Utility.buildStringFromArray(sb, arrayValues);
-                    StorageManager.values.put(arrayIdentifier, sb.toString());
+                    StorageManager.values.put(arrayIdentifier.tokenStr, sb.toString());
                     break;
                 case 2:
                     // set position to first value in value list
@@ -265,7 +282,7 @@ public class Parser
                     arrayValues = new ArrayList<>(Integer.parseInt(arraySize.value));
                     i = 0;
                     while(i != Integer.parseInt(arraySize.value)) {
-                        ResultValue arrayElement = new ResultValue(SubClassif.INTEGER, null, 0, null);
+                        ResultValue arrayElement = new ResultValue(arrayType, null, 0, null);
                         arrayValues.add(arrayElement);
                         i++;
                     }
@@ -273,7 +290,7 @@ public class Parser
                     sb = new StringBuilder();
                     Utility.buildStringFromArray(sb, arrayValues);
 
-                    StorageManager.values.put(arrayIdentifier, arrayValues.toString());
+                    StorageManager.values.put(arrayIdentifier.tokenStr, arrayValues.toString());
                     break;
                 case 3:
                     // set position to first value in value list
@@ -286,7 +303,7 @@ public class Parser
                         if (scan.currentToken.tokenStr.equals(",")) {
                             scan.getNext();
                         } else {
-                            ResultValue arrayElement = new ResultValue(SubClassif.INTEGER, scan.currentToken.tokenStr, 0, null);
+                            ResultValue arrayElement = new ResultValue(arrayType, scan.currentToken.tokenStr, 0, null);
                             arrayValues.add(arrayElement);
                             i++;
                             scan.getNext();
@@ -294,14 +311,14 @@ public class Parser
 
                     }
                     while(i != Integer.parseInt(arraySize.value)) {
-                        ResultValue arrayElement = new ResultValue(SubClassif.INTEGER, null, 0, null);
+                        ResultValue arrayElement = new ResultValue(arrayType, null, 0, null);
                         arrayValues.add(arrayElement);
                         i++;
                     }
 
                     sb = new StringBuilder();
                     Utility.buildStringFromArray(sb, arrayValues);
-                    StorageManager.values.put(arrayIdentifier, sb.toString());
+                    StorageManager.values.put(arrayIdentifier.tokenStr, sb.toString());
                     break;
                 default:
                     break;
@@ -778,7 +795,6 @@ public class Parser
                     if (i != array.size() - 1) {
                         sb.append(", ");
                     }
-                    System.out.println("Array[" + i + "]: " + array.get(i));
                 }
                 StorageManager.values.put(arrayIdentifier, sb.toString());
             } else {

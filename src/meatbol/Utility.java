@@ -977,7 +977,6 @@ public class Utility {
             if (i != arrayValues.size() - 1) {
                 sb.append(", ");
             }
-            System.out.println("Array[" + i + "]: " + arrayValues.get(i).value);
         }
     }
 
