@@ -227,6 +227,10 @@ public class Parser
     }
 
     private void assignArray(Scanner scan, SymbolTable symbolTable, Boolean bExec, Token arrayIdentifier, ResultValue arraySize, int declarationType, String dataType) throws Exception {
+        STIdentifier arraySTEntry = (STIdentifier) symbolTable.getSymbol(arrayIdentifier.tokenStr);
+        arraySTEntry.structure = SubClassif.ARRAY;
+        symbolTable.table.put(arrayIdentifier.tokenStr, arraySTEntry);
+
         int i;
         StringBuilder sb;
         SubClassif arrayType;
@@ -910,7 +914,6 @@ public class Parser
         {
             // The increment value is specified
             case "by":
-                scan.getNext();
                 // TODO: VERIFY EXPRESSION ENDS AT ":"
                 incrementValue = expression(scan, symbolTable);
                 break;
@@ -974,18 +977,21 @@ public class Parser
 
         Token structureToken = new Token();
         structureToken.copyToken(scan.currentToken);
+        STIdentifier structureSTEnty = (STIdentifier) symbolTable.getSymbol(structureToken.tokenStr);
 
         scan.getNext();
 //        scan.getNext();
 //        // current = start of execute statements
 
-        switch (structureToken.subClassif)
+        switch (structureSTEnty.structure)
         {
-            case IDENTIFIER:
+            // for variable in array:
+            case ARRAY:
                 handleForItemInArrayStatement(scan, symbolTable, controlVariableToken, structureToken);
                 break;
 
-            case STRING:
+            // for char in string:
+            case PRIMITIVE:
                 handleForCharInStringStatement(scan, symbolTable, controlVariableToken, structureToken);
                 break;
 
@@ -1041,10 +1047,6 @@ public class Parser
             , Token arrayToken) throws Exception
     {
         String arrayValue = StorageManager.values.get(arrayToken.tokenStr);
-        if (!arrayValue.startsWith("[") || !arrayValue.endsWith("]"))
-        {
-            // TODO: ERROR
-        }
 
         // create entry for control variable so it can be accessed
         STIdentifier arrayIdentifier = (STIdentifier) symbolTable.getSymbol(arrayToken.tokenStr);
@@ -1052,8 +1054,6 @@ public class Parser
                 , arrayIdentifier.declareType, null, null, 1);
         symbolTable.putSymbol(controlVariableIdentifier);
 
-        // remove [ and ]
-        arrayValue = arrayValue.substring(1, arrayValue.length());
         String[] stringArray = arrayValue.split(",");
 
         // save state of the scanner so we can loop back
@@ -1439,7 +1439,7 @@ public class Parser
                 try
                 {
                     opRight = stack.pop();
-                    if(token.tokenStr != "u-" && token.tokenStr != "not")
+                    if(!token.tokenStr.equals("u-") && !token.tokenStr.equals("not"))
                     {
                         opLeft = stack.pop();
                     }
