@@ -998,7 +998,6 @@ public class Utility {
     }
 
     public static ResultValue maxElement(ArrayList<ResultValue> parmList) {
-        System.out.println("doing MAXELEM");
         int i = 0;
         String s = parmList.get(0).value;
         System.out.println(s);
@@ -1011,7 +1010,6 @@ public class Utility {
     }
 
     public static ResultValue length(ArrayList<ResultValue> parmList) {
-//        System.out.println("doing LENGTH");
         return new ResultValue(SubClassif.INTEGER, Integer.toString(parmList.get(0).value.length()),0,null);
     }
 
