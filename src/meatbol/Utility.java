@@ -1,9 +1,6 @@
 package meatbol;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Stack;
+import java.util.*;
 
 /** Utility holds all the functions used to alter operands with an operator.
  * <p>
@@ -998,18 +995,12 @@ public class Utility {
     }
 
     public static ResultValue maxElement(ArrayList<ResultValue> parmList) {
-        int i = 0;
-        String s = parmList.get(0).value;
-        System.out.println(s);
-        String str[] = s.split("\\s*,\\s*");
-        List<String> array = Arrays.asList(str);
-        for (String value: array){
-            i++;
-        }
-        return new ResultValue(SubClassif.INTEGER,Integer.toString(i),0,null);
+        StringTokenizer st = new StringTokenizer(parmList.get(0).value, ",");
+        return new ResultValue(SubClassif.INTEGER,Integer.toString(st.countTokens()),0,null);
     }
 
     public static ResultValue length(ArrayList<ResultValue> parmList) {
+//        System.out.println("doing LENGTH");
         return new ResultValue(SubClassif.INTEGER, Integer.toString(parmList.get(0).value.length()),0,null);
     }
 
@@ -1039,14 +1030,19 @@ public class Utility {
     }
 
     public static ResultValue element(ArrayList<ResultValue> parmList) {
-        for(ResultValue parm : parmList)
+        StringTokenizer st = new StringTokenizer(parmList.get(0).value, ",");
+        int i = 0;
+        while(st.hasMoreTokens())
         {
-            if(parm == null)
+            String temp = st.nextToken();
+            temp = temp.trim();
+            if (temp.equals("null"))
             {
-                return new ResultValue(SubClassif.INTEGER,Integer.toString(parmList.indexOf(parm)-1),0,null);
+                break;
             }
+            i++;
         }
-        return new ResultValue(SubClassif.INTEGER,Integer.toString(parmList.size()),0,null);
+        return new ResultValue(SubClassif.INTEGER,Integer.toString(i),0,null);
     }
 
     public static String charInString(String string, int index)
