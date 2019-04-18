@@ -293,7 +293,8 @@ public class Parser
 
                     sb = new StringBuilder();
                     Utility.buildStringFromArray(sb, arrayValues);
-
+                    arraySTEntry.size = Integer.parseInt(arraySize.value);
+                    symbolTable.table.put(arrayIdentifier.tokenStr, arraySTEntry);
                     StorageManager.values.put(arrayIdentifier.tokenStr, sb.toString());
                     break;
                 case 3:
@@ -778,6 +779,37 @@ public class Parser
                     str = arrayAsString.split("\\s*,\\s*");
                     array = Arrays.asList(str);
                 }
+            } else if (((STIdentifier) symbolTable.getSymbol(scan.currentToken.tokenStr)).structure == SubClassif.ARRAY
+                        && !scan.nextToken.tokenStr.equals("["))
+            {
+                Token left = scan.currentToken;
+                // referencing entire array
+                scan.getNext();
+                scan.getNext();
+                String rightOp = StorageManager.values.get(scan.currentToken.tokenStr);
+                String leftOp = StorageManager.values.get(left.tokenStr);
+                String rightValues[] = null;
+                if (rightOp != null) {
+                    rightValues = rightOp.split(", ");
+                } else {
+                    rightValues = scan.currentToken.tokenStr.split("(?!^)");
+                }
+                String[] leftValues = leftOp.split(", ");
+                for (int i = 0; i < rightValues.length; i++)
+                {
+                    if (i == leftValues.length) break;
+                    leftValues[i] = rightValues[i];
+                }
+                StringBuilder sb = new StringBuilder();
+                for (int i = 0; i < leftValues.length; i++) {
+                    sb.append(leftValues[i]);
+                    if (i != leftValues.length - 1) {
+                        sb.append(", ");
+                    }
+                }
+                StorageManager.values.put(left.tokenStr, sb.toString());
+                scan.getNext();
+                return;
             }
 
             scan.getNext();
@@ -1014,7 +1046,7 @@ public class Parser
     {
         // create entry for control variable so it can be accessed
         STIdentifier controlVariableIdentifier = new STIdentifier(controlVariableToken.tokenStr, Classif.OPERAND
-                , SubClassif.STRING, null, null, 1);
+                , SubClassif.STRING, null, null, 1, 0);
         symbolTable.putSymbol(controlVariableIdentifier);
 
         String stringValue = StorageManager.values.get(stringToken.tokenStr);
@@ -1052,7 +1084,7 @@ public class Parser
         // create entry for control variable so it can be accessed
         STIdentifier arrayIdentifier = (STIdentifier) symbolTable.getSymbol(arrayToken.tokenStr);
         STIdentifier controlVariableIdentifier = new STIdentifier(controlVariableToken.tokenStr, Classif.OPERAND
-                , arrayIdentifier.declareType, null, null, 1);
+                , arrayIdentifier.declareType, null, null, 1, 0);
         symbolTable.putSymbol(controlVariableIdentifier);
 
         String[] stringArray = arrayValue.split(", ");

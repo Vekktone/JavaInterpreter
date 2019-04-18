@@ -26,6 +26,7 @@ public class STIdentifier extends STEntry
      * address.
      */
     int nonlocal;
+    int size;
 
     /** Constructor
      * * <p>
@@ -36,21 +37,19 @@ public class STIdentifier extends STEntry
      * @author Mason Pohler
      */
     public STIdentifier(String symbol, Classif primClassif, SubClassif type
-            , SubClassif struct, SubClassif param, int address)
+            , SubClassif struct, SubClassif param, int address, int size)
     {
         super(symbol, primClassif);
         this.declareType = type;
         this.structure = struct;
         this.paramType = param;
         this.nonlocal = address;
+        this.size = size;
     }
 
     /** Creates a deep copy of a STIdentifier entry
      * <p>
      * Used to avoid unintentional changes when passing by reference.
-     *
-     * @param other
-     * 			The entry from which to make a copy
      *
      * @return copy of the original STFunction
      *
@@ -59,7 +58,7 @@ public class STIdentifier extends STEntry
     public STIdentifier copy()
     {
         return new STIdentifier(this.symbol, this.primClassif, this.declareType
-                , this.structure, this.paramType, this.nonlocal);
+                , this.structure, this.paramType, this.nonlocal,this.size);
     }
 
     /** Prints formated data of entry.
