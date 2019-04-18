@@ -1054,7 +1054,7 @@ public class Parser
                 , arrayIdentifier.declareType, null, null, 1);
         symbolTable.putSymbol(controlVariableIdentifier);
 
-        String[] stringArray = arrayValue.split(",");
+        String[] stringArray = arrayValue.split(", ");
 
         // save state of the scanner so we can loop back
         int columnIndex = scan.columnIndex;
@@ -1067,14 +1067,16 @@ public class Parser
         // The core of the for each loop
         for (String string : stringArray)
         {
-            StorageManager.values.put(controlVariableToken.tokenStr, string);
-            executeStatements(scan, symbolTable, true);
+            if (!string.equals("null")) {
+                StorageManager.values.put(controlVariableToken.tokenStr, string);
+                executeStatements(scan, symbolTable, true);
 
-            // return to top of statements
-            scan.columnIndex = columnIndex;
-            scan.lineIndex = lineIndex;
-            scan.currentToken.copyToken(currentToken);
-            scan.nextToken.copyToken(nextToken);
+                // return to top of statements
+                scan.columnIndex = columnIndex;
+                scan.lineIndex = lineIndex;
+                scan.currentToken.copyToken(currentToken);
+                scan.nextToken.copyToken(nextToken);
+            }
         }
 
         // Get scanner aligned to the end of the For statement without executing it
