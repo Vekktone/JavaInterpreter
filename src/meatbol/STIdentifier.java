@@ -19,6 +19,9 @@ public class STIdentifier extends STEntry
     SubClassif structure;
     /** How the identifier is passed as a parameter */
     SubClassif paramType;
+
+    int size;
+
     /** Indicates the location of the base address of the identifier
      * <p>
      * Use 0 for local and 99 for global. In all other cases, this indicates how
