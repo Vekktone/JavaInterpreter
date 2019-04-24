@@ -286,15 +286,16 @@ public class Parser
                     arrayValues = new ArrayList<>(Integer.parseInt(arraySize.value));
                     i = 0;
                     while(i != Integer.parseInt(arraySize.value)) {
-                        ResultValue arrayElement = new ResultValue(arrayType, null, 0, null);
+                        ResultValue arrayElement = new ResultValue(arrayType, "null", 0, null);
                         arrayValues.add(arrayElement);
                         i++;
                     }
 
                     sb = new StringBuilder();
                     Utility.buildStringFromArray(sb, arrayValues);
-
-                    StorageManager.values.put(arrayIdentifier.tokenStr, arrayValues.toString());
+                    arraySTEntry.size = Integer.parseInt(arraySize.value);
+                    symbolTable.table.put(arrayIdentifier.tokenStr, arraySTEntry);
+                    StorageManager.values.put(arrayIdentifier.tokenStr, sb.toString());
                     break;
                 case 3:
                     // set position to first value in value list
@@ -778,6 +779,37 @@ public class Parser
                     str = arrayAsString.split("\\s*,\\s*");
                     array = Arrays.asList(str);
                 }
+            } else if (((STIdentifier) symbolTable.getSymbol(scan.currentToken.tokenStr)).structure == SubClassif.ARRAY
+                        && !scan.nextToken.tokenStr.equals("["))
+            {
+                Token left = scan.currentToken;
+                // referencing entire array
+                scan.getNext();
+                scan.getNext();
+                String rightOp = StorageManager.values.get(scan.currentToken.tokenStr);
+                String leftOp = StorageManager.values.get(left.tokenStr);
+                String rightValues[] = null;
+                if (rightOp != null) {
+                    rightValues = rightOp.split(", ");
+                } else {
+                    rightValues = scan.currentToken.tokenStr.split("(?!^)");
+                }
+                String[] leftValues = leftOp.split(", ");
+                for (int i = 0; i < rightValues.length; i++)
+                {
+                    if (i == leftValues.length) break;
+                    leftValues[i] = rightValues[i];
+                }
+                StringBuilder sb = new StringBuilder();
+                for (int i = 0; i < leftValues.length; i++) {
+                    sb.append(leftValues[i]);
+                    if (i != leftValues.length - 1) {
+                        sb.append(", ");
+                    }
+                }
+                StorageManager.values.put(left.tokenStr, sb.toString());
+                scan.getNext();
+                return;
             }
 
             scan.getNext();
@@ -904,7 +936,8 @@ public class Parser
 
         // current should be to, next should be ELEM(iCM)
         // TODO: VERIFY EXPRESSION ENDS AT "by"
-        ResultValue terminationValue = expression(scan, symbolTable);
+        ResultValue terminationResultValue = expression(scan, symbolTable);
+        int terminationValue = Integer.parseInt(terminationResultValue.value);
 
         // current is either by or :
         ResultValue incrementValue = new ResultValue();
@@ -940,10 +973,10 @@ public class Parser
         Token nextToken = new Token();
         nextToken.copyToken(scan.nextToken);
 
-        String controlVariableValue = StorageManager.values.get(controlVariableToken.tokenStr);
+        int controlVariableValue = Integer.parseInt(StorageManager.values.get(controlVariableToken.tokenStr));
 
         // loop while increment value is less than termination value
-        while (controlVariableValue.compareTo(terminationValue.makeSimlifiedValue()) < 0)
+        while (controlVariableValue < terminationValue)
         {
             executeStatements(scan, symbolTable, true);
 
@@ -954,12 +987,12 @@ public class Parser
             scan.nextToken.copyToken(nextToken);
 
             // increase the current value of the control variable by the increment value and store it
-            controlVariableValue = StorageManager.values.get(controlVariableToken.tokenStr);
-            ResultValue controlResultValue = new ResultValue(SubClassif.INTEGER, controlVariableValue, 0
+            controlVariableValue = Integer.parseInt(StorageManager.values.get(controlVariableToken.tokenStr));
+            ResultValue controlResultValue = new ResultValue(SubClassif.INTEGER, "" + controlVariableValue, 0
                     , null);
             controlResultValue = Utility.doAddition(controlResultValue, incrementValue, scan.lineIndex);
-            controlVariableValue = controlResultValue.value;
-            StorageManager.values.put(controlVariableToken.tokenStr, controlVariableValue);
+            controlVariableValue = Integer.parseInt(controlResultValue.value);
+            StorageManager.values.put(controlVariableToken.tokenStr, "" + controlVariableValue);
         }
 
         // Get scanner aligned to the end of the For statement without executing it
@@ -1013,7 +1046,7 @@ public class Parser
     {
         // create entry for control variable so it can be accessed
         STIdentifier controlVariableIdentifier = new STIdentifier(controlVariableToken.tokenStr, Classif.OPERAND
-                , SubClassif.STRING, null, null, 1);
+                , SubClassif.STRING, null, null, 1, 0);
         symbolTable.putSymbol(controlVariableIdentifier);
 
         String stringValue = StorageManager.values.get(stringToken.tokenStr);
@@ -1051,10 +1084,10 @@ public class Parser
         // create entry for control variable so it can be accessed
         STIdentifier arrayIdentifier = (STIdentifier) symbolTable.getSymbol(arrayToken.tokenStr);
         STIdentifier controlVariableIdentifier = new STIdentifier(controlVariableToken.tokenStr, Classif.OPERAND
-                , arrayIdentifier.declareType, null, null, 1);
+                , arrayIdentifier.declareType, null, null, 1, 0);
         symbolTable.putSymbol(controlVariableIdentifier);
 
-        String[] stringArray = arrayValue.split(",");
+        String[] stringArray = arrayValue.split(", ");
 
         // save state of the scanner so we can loop back
         int columnIndex = scan.columnIndex;
@@ -1067,14 +1100,16 @@ public class Parser
         // The core of the for each loop
         for (String string : stringArray)
         {
-            StorageManager.values.put(controlVariableToken.tokenStr, string);
-            executeStatements(scan, symbolTable, true);
+            if (!string.equals("null")) {
+                StorageManager.values.put(controlVariableToken.tokenStr, string);
+                executeStatements(scan, symbolTable, true);
 
-            // return to top of statements
-            scan.columnIndex = columnIndex;
-            scan.lineIndex = lineIndex;
-            scan.currentToken.copyToken(currentToken);
-            scan.nextToken.copyToken(nextToken);
+                // return to top of statements
+                scan.columnIndex = columnIndex;
+                scan.lineIndex = lineIndex;
+                scan.currentToken.copyToken(currentToken);
+                scan.nextToken.copyToken(nextToken);
+            }
         }
 
         // Get scanner aligned to the end of the For statement without executing it
@@ -1164,45 +1199,47 @@ public class Parser
                             , Meatbol.filename);
                 }
                 break;
-            case OPERAND:
-                //if this is an identifier, we need to retrieve its value and type
-                if(token.subClassif == SubClassif.IDENTIFIER){
-                    // we have an array reference
-                    if (scan.nextToken.tokenStr.equals("[")) {
-                        scan.getNext();
-                        if (token.tokenStr == null) {
-                            throw new ParserException(token.iSourceLineNr + 1
-                                    , "***Error: Uninitialized array element - '" + scan.currentToken.tokenStr + "' ***"
-                                    , Meatbol.filename);
-                        }
+                case OPERAND:
+                    //if this is an identifier, we need to retrieve its value and type
+                    if(token.subClassif == SubClassif.IDENTIFIER){
+                        // we have an array reference
+                        if (scan.nextToken.tokenStr.equals("[")) {
+                            scan.getNext();
+                            if (token.tokenStr == null) {
+                                throw new ParserException(token.iSourceLineNr + 1
+                                        , "***Error: Uninitialized array element - '" + scan.currentToken.tokenStr + "' ***"
+                                        , Meatbol.filename);
+                            }
 
-                        ResultValue arrayIndex = expression(scan, symbolTable);
-                        String arrayIdentifier = token.tokenStr;
-                        STIdentifier variable = (STIdentifier) symbolTable.getSymbol(arrayIdentifier);
-                        String result;
-                        if (variable.declareType == SubClassif.STRING)
-                        {
-                            result = Utility.charInString(StorageManager.values.get(arrayIdentifier), Integer.parseInt(arrayIndex.value));
-                            token.tokenStr = result;
+                            ResultValue arrayIndex = expression(scan, symbolTable);
+                            String arrayIdentifier = token.tokenStr;
+                            STIdentifier variable = (STIdentifier) symbolTable.getSymbol(arrayIdentifier);
+                            String result;
+                            if (variable.declareType == SubClassif.STRING)
+                            {
+                                result = Utility.charInString(StorageManager.values.get(arrayIdentifier), Integer.parseInt(arrayIndex.value));
+                                token.tokenStr = result;
+                            } else {
+                                String arrayAsString = StorageManager.values.get(arrayIdentifier);
+                                String str[] = arrayAsString.split("\\s*,\\s*");
+                                List<String> array = Arrays.asList(str);
+                                token.tokenStr = array.get(Integer.parseInt(arrayIndex.value));
+                                token.subClassif = variable.declareType;
+                            }
                         } else {
-                            String arrayAsString = StorageManager.values.get(arrayIdentifier);
-                            String str[] = arrayAsString.split("\\s*,\\s*");
-                            List<String> array = Arrays.asList(str);
-                            token.tokenStr = array.get(Integer.parseInt(arrayIndex.value));
+                            token.tokenStr = StorageManager.values.get(scan.currentToken.tokenStr);
+                            if (token.tokenStr == null) {
+                                throw new ParserException(token.iSourceLineNr + 1
+                                        , "***Error: Uninitialized variable - '" + scan.currentToken.tokenStr + "' ***"
+                                        , Meatbol.filename);
+                            }
+                            STIdentifier variable = (STIdentifier) symbolTable.getSymbol(scan.currentToken.tokenStr);
+                            token.subClassif = variable.declareType;
                         }
-                    } else {
-                        token.tokenStr = StorageManager.values.get(scan.currentToken.tokenStr);
-                        if (token.tokenStr == null) {
-                            throw new ParserException(token.iSourceLineNr + 1
-                                    , "***Error: Uninitialized variable - '" + scan.currentToken.tokenStr + "' ***"
-                                    , Meatbol.filename);
-                        }
-                        STIdentifier variable = (STIdentifier) symbolTable.getSymbol(scan.currentToken.tokenStr);
-                        token.subClassif = variable.declareType;
                     }
-                }
-                infix.add(token);
-                break;
+                    infix.add(token);
+                    break;
+
             case OPERATOR:
 
                 if (!token.tokenStr.equals("u-"))
@@ -1217,13 +1254,13 @@ public class Parser
             token = new Token();
             token.copyToken(scan.currentToken);
         }
-/*
-        for (Token test: infix)
-        {
-            System.out.print("\"" + test.tokenStr + "\" ");
-        }
-        System.out.println();
-*/
+
+//        for (Token test: infix)
+//        {
+//            System.out.print("\"" + test.tokenStr + "\" ");
+//        }
+//        System.out.println();
+
         ResultValue resultValue = infixToPostfix(infix);
 
         // Debugging for Expr
@@ -1563,8 +1600,8 @@ public class Parser
         //if stack is not empty now, something went wrong
         if(!stack.empty())
         {
-            // System.out.println(stack.pop().value);
-            throw new ParserException(postfix.get(0).iSourceLineNr + 1
+//            System.out.println(stack.pop().value);
+            throw new ParserException(postfix.get(0).iSourceLineNr
                     ,"***Error: Invalid expression - Unhandled operand in expression***"
                     , Meatbol.filename);
         }
