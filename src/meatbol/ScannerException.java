@@ -32,7 +32,7 @@ public class ScannerException extends Exception
          StringBuffer sb = new StringBuffer();
          sb.append("Line ");
          sb.append(Integer.toString(lineNum));
-         sb.append(" ");
+         sb.append(" Column ");
          sb.append(Integer.toString(colNum));
          sb.append(" ");
          sb.append(diagnostic);

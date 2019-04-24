@@ -1,0 +1,10 @@
+// debug Token on;
+
+for i = 0 to 3:
+    print("\t", i);
+endfor;
+
+Int six = 6;
+for j = 4 to 6 by 2:
+    print("ONLY ONE OF THESE SHOULD PRINT");
+endfor;

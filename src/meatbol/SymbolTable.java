@@ -10,7 +10,7 @@ import java.util.HashMap;
 public class SymbolTable
 {
     /** The hashmap used internally by the SymbolTable. */
-    private HashMap<String, STEntry> table;
+    public HashMap<String, STEntry> table;
 
     /** The constructor for the SymbolTable. It creates the hashmap and
      * inserts the global symbols into the SymbolTable.
@@ -81,6 +81,8 @@ public class SymbolTable
         table.put("endfor", new STControl("endfor", Classif.CONTROL, SubClassif.END, SubClassif.EMPTY));
         table.put("while", new STControl("while", Classif.CONTROL, SubClassif.FLOW, SubClassif.EMPTY));
         table.put("endwhile", new STControl("endwhile", Classif.CONTROL, SubClassif.END, SubClassif.EMPTY));
+        table.put("to", new STControl("to", Classif.CONTROL, SubClassif.FLOW, SubClassif.EMPTY));
+        table.put("by", new STControl("by", Classif.CONTROL, SubClassif.FLOW, SubClassif.EMPTY));
 
         // Function void
         table.put("print", new STFunction("print", Classif.FUNCTION, SubClassif.VOID, STFunction.VAR_ARGS));

@@ -54,4 +54,27 @@ public class ResultValue {
         System.out.println("Result value: " + type.toString() + " " + value
                 + " " + structure + " " + terminatingStr);
     }
+
+    public String makeSimlifiedValue()
+    {
+        String thisSimplifiedValue = this.value;
+
+        switch (this.type)
+        {
+            // These cases are already as
+            case BOOLEAN: case INTEGER: case STRING:
+            break;
+
+            // trim trailing zeros, or even get rid of decimal if it is a whole number
+            case FLOAT:
+                // TODO
+                break;
+
+            // not sure what can be done yet
+            case DATE:
+                break;
+        }
+
+        return thisSimplifiedValue;
+    }
 }
