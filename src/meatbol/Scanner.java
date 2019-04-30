@@ -2,6 +2,7 @@ package meatbol;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.StringTokenizer;
 
 
 /** Scanner is responsible for accessing the input file.
@@ -327,6 +328,7 @@ public class Scanner {
             return index + i - 1;
         }
 
+
         //Otherwise
         switch(substring)
         {
@@ -435,6 +437,8 @@ public class Scanner {
         return index + i - 1;
     }
 
+
+
     /** Initializes string to boolean values for use in Debug
      *
      * @author Mason Pohler
@@ -447,6 +451,48 @@ public class Scanner {
         debugOptionsMap.put(DebuggerTypes.EXPRESSION, false);
         debugOptionsMap.put(DebuggerTypes.ASSIGNMENT, false);
         debugOptionsMap.put(DebuggerTypes.STATEMENT, false);
+    }
+
+    /** Checks if a string is a valid date.
+     * <p>
+     * Checks each char to see if it is 0-9 or a dash. verify ####-##-## format.
+     *
+     *
+     * @param dValue
+     *            String containing potential float value
+     *
+     * @return boolean true - String is a valid date false - String is not a
+     *         valid date
+     *
+     * @author Gregory Pugh
+     */
+    private boolean isValidDate(String dValue) {
+        int i = 0; // loop counter
+        StringTokenizer st = new StringTokenizer(dValue,"-",true);
+        int year, day, month;
+
+        //valid date must have 5 tokens
+        if(st.countTokens() != 5)
+        {
+            return false;
+        }
+
+        //attempt to parse, failure means this is not a valid date
+        try
+        {
+            year = Integer.parseInt(st.nextToken());
+            st.nextToken();
+            day = Integer.parseInt(st.nextToken());
+            st.nextToken();
+            month = Integer.parseInt(st.nextToken());
+        }
+        catch (Exception e)
+        {
+            return false;
+        }
+
+        return true;
+
     }
 
     /** Checks if a string is a valid float.
@@ -633,9 +679,17 @@ public class Scanner {
                     , "Syntax error - Missing closing quotation: " + substring
                     , Meatbol.filename);
         }
+        // check if it is a date
+        if (isValidDate(substring.substring(1,i)))
+        {
+            nextToken = setToken(substring.substring(1, i), Classif.OPERAND, SubClassif.DATE, lineNum, index);
+        }
         //Otherwise, create the token and return the new column position after the matching quote
-        nextToken = setToken(substring.substring(1, i-trimEscapes)
-        , Classif.OPERAND, SubClassif.STRING, lineNum, index);
+        else
+        {
+            nextToken = setToken(substring.substring(1, i-trimEscapes)
+                    , Classif.OPERAND, SubClassif.STRING, lineNum, index);
+        }
         return index + i;
     }
 

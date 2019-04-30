@@ -1056,4 +1056,21 @@ public class Utility {
         String right = string.substring(index+1, string.length());
         return left + value + right;
     }
+
+    public static ResultValue dateDiff(ArrayList<ResultValue> parmList) {
+        // TODO Auto-generated method stub
+        return new ResultValue(SubClassif.STRING,"(Some Date)",0,null);
+    }
+
+    public static ResultValue dateAdj(ArrayList<ResultValue> parmList) {
+        // TODO Auto-generated method stub
+        return new ResultValue(SubClassif.STRING,"(Some Date)",0,null);
+    }
+
+    public static ResultValue dateAge(ArrayList<ResultValue> parmList) {
+        // TODO Auto-generated method stub
+        return new ResultValue(SubClassif.STRING,"(Some Date)",0,null);
+    }
+
+
 }
