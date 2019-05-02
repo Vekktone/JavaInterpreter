@@ -136,7 +136,7 @@ public class Scanner {
             {
                 // skip white space
                 case '\t': case '\n': case ' ':
-                    break;
+                break;
                 // check for comment
                 case '/':
                     // see if this is a comment or an error
@@ -160,46 +160,46 @@ public class Scanner {
                     break;
                 //create operator for valid operator not inside quotes
                 case '+': case '-': case '*': case '<': case '>': case '!': case '=': case '#': case '^':
-                    //if we have a minus and it doesn't follow an operand, it must be a unary
-                    if(lineData[columnIndex] == '-' && !(currentToken.primClassif == Classif.OPERAND
-                    || currentToken.tokenStr.equals(")") || currentToken.tokenStr.equals("]")))
-                    {
-                        this.nextToken = setToken("u-"
-                                , Classif.OPERATOR
-                                , SubClassif.EMPTY
-                                , lineIndex
-                                , columnIndex);
-                    }
-                    //otherwise, it is an operator
-                    else
-                    {
+                //if we have a minus and it doesn't follow an operand, it must be a unary
+                if(lineData[columnIndex] == '-' && !(currentToken.primClassif == Classif.OPERAND
+                        || currentToken.tokenStr.equals(")") || currentToken.tokenStr.equals("]")))
+                {
+                    this.nextToken = setToken("u-"
+                            , Classif.OPERATOR
+                            , SubClassif.EMPTY
+                            , lineIndex
+                            , columnIndex);
+                }
+                //otherwise, it is an operator
+                else
+                {
                     //create token
                     this.nextToken = setToken(String.valueOf(lineData[columnIndex])
                             , Classif.OPERATOR
                             , SubClassif.EMPTY
                             , lineIndex
                             , columnIndex);
-                    }
-                    validToken = true;
-                    break;
+                }
+                validToken = true;
+                break;
                 // create separator for valid separator not inside quotes
                 case '(': case ')': case ':': case ';': case '[': case ']': case ',':
-                    //create token
-                    this.nextToken = setToken(String.valueOf(lineData[columnIndex])
-                            , Classif.SEPARATOR
-                            , SubClassif.EMPTY
-                            , lineIndex
-                            , columnIndex);
-                    validToken = true;
-                    break;
+                //create token
+                this.nextToken = setToken(String.valueOf(lineData[columnIndex])
+                        , Classif.SEPARATOR
+                        , SubClassif.EMPTY
+                        , lineIndex
+                        , columnIndex);
+                validToken = true;
+                break;
                 // opening quote indicates a literal string follows
                 case '"': case '\'':
-                    //create string Token
-                    columnIndex = createStringToken(lineList.get(lineIndex).substring(columnIndex)
-                            , lineIndex
-                            , columnIndex);
-                    validToken = true;
-                    break;
+                //create string Token
+                columnIndex = createStringToken(lineList.get(lineIndex).substring(columnIndex)
+                        , lineIndex
+                        , columnIndex);
+                validToken = true;
+                break;
                 // if we haven't found anything else then this must be an operand
                 default:
                     //create operand Token
@@ -229,10 +229,10 @@ public class Scanner {
                     if (nextToken.tokenStr.equals("="))
                     {
                         this.currentToken = setToken((currentToken.tokenStr + nextToken.tokenStr)
-                            , Classif.OPERATOR
-                            , SubClassif.EMPTY
-                            , lineIndex
-                            , columnIndex);
+                                , Classif.OPERATOR
+                                , SubClassif.EMPTY
+                                , lineIndex
+                                , columnIndex);
 
                         //get next token after combining 2 operator, return current Token
                         columnIndex++;
@@ -312,10 +312,10 @@ public class Scanner {
             // check if the numeric is an integer
             if (isValidInteger(substring))
                 sub = SubClassif.INTEGER;
-            // check if the numeric is a float
+                // check if the numeric is a float
             else if (isValidFloat(substring))
                 sub = SubClassif.FLOAT;
-            // if it is not an valid numeric, throw exception
+                // if it is not an valid numeric, throw exception
             else
                 throw new ScannerException(lineNum
                         , index
@@ -332,10 +332,13 @@ public class Scanner {
         {
             // boolean values
             case "T": case "F":
-                sub = SubClassif.BOOLEAN;
-                nextToken = setToken(substring, Classif.OPERAND, sub, lineNum, index);
-                break;
-
+            sub = SubClassif.BOOLEAN;
+            nextToken = setToken(substring, Classif.OPERAND, sub, lineNum, index);
+            break;
+            case "break": case "continue":
+            sub = SubClassif.FLOW;
+            nextToken = setToken(substring, Classif.CONTROL, sub, lineNum, index);
+            break;
             // either a variable, function, control, or operator. SymbolTable is needed.
             default:
                 STEntry entry = symbolTable.getSymbol(substring);
@@ -483,7 +486,7 @@ public class Scanner {
                 if (iCharacters[i] == '.' && !(hasDecimal))
                     // set decimal flag and continue searching string
                     hasDecimal = true;
-                // otherwise, this is not a valid float
+                    // otherwise, this is not a valid float
                 else
                     return false;
             }
@@ -582,31 +585,31 @@ public class Scanner {
                     case 'n':
                         //replace and increment lineData and trimEscape count
                         substring = substring.substring(0,i-trimEscapes) + newLine
-                + substring.substring((i-trimEscapes) + 2,lineData.length-trimEscapes);
+                                + substring.substring((i-trimEscapes) + 2,lineData.length-trimEscapes);
                         i++;
                         trimEscapes++;
                         break;
                     //this is an alarm bell
                     case 'a':
                         //replace and increment lineData and trimEscape count
-                         substring = substring.substring(0,i-trimEscapes) + alarmBell
-                 + substring.substring((i-trimEscapes) + 2,lineData.length-trimEscapes);
-                         i++;
-                         trimEscapes++;
-                         break;
-                    //this is an escaped quote
-                    case '\'': case '"':
-                        //replace and increment lineData and trimEscape count
-                        substring = substring.substring(0,i-trimEscapes) + lineData[(i+1)]
-                + substring.substring((i-trimEscapes)+2,lineData.length-trimEscapes);
+                        substring = substring.substring(0,i-trimEscapes) + alarmBell
+                                + substring.substring((i-trimEscapes) + 2,lineData.length-trimEscapes);
                         i++;
                         trimEscapes++;
                         break;
+                    //this is an escaped quote
+                    case '\'': case '"':
+                    //replace and increment lineData and trimEscape count
+                    substring = substring.substring(0,i-trimEscapes) + lineData[(i+1)]
+                            + substring.substring((i-trimEscapes)+2,lineData.length-trimEscapes);
+                    i++;
+                    trimEscapes++;
+                    break;
                     //this is a backslash
                     case '\\':
                         //replace and increment lineData and trimEscape count
                         substring = substring.substring(0,i-trimEscapes) + lineData[(i+1)]
-                + substring.substring((i-trimEscapes)+2,lineData.length-trimEscapes);
+                                + substring.substring((i-trimEscapes)+2,lineData.length-trimEscapes);
                         i++;
                         trimEscapes++;
                         break;
@@ -620,7 +623,7 @@ public class Scanner {
             {
                 //System.out.println("esacpes "+trimEscapes);
                 nextToken = setToken(substring.substring(1, i-trimEscapes)
-            , Classif.OPERAND, SubClassif.STRING, lineNum, index);
+                        , Classif.OPERAND, SubClassif.STRING, lineNum, index);
                 break;
             }
 
@@ -635,7 +638,7 @@ public class Scanner {
         }
         //Otherwise, create the token and return the new column position after the matching quote
         nextToken = setToken(substring.substring(1, i-trimEscapes)
-        , Classif.OPERAND, SubClassif.STRING, lineNum, index);
+                , Classif.OPERAND, SubClassif.STRING, lineNum, index);
         return index + i;
     }
 

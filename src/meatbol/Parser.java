@@ -5,6 +5,9 @@ import java.util.*;
 
 public class Parser
 {
+
+    public boolean isBreak = false;
+    public boolean isContinue = false;
     public Parser(){
 
     }
@@ -214,6 +217,22 @@ public class Parser
             case "for":
                 forStmt(scan, symbolTable);
                 break;
+//            case "break":
+//                System.out.println("It is a break");
+//                if (bExec)
+//                {
+//                    isBreak = true;
+//                }
+//                scan.getNext();
+//                break;
+//            case "continue":
+//                System.out.println("It is a continue");
+//                if (bExec)
+//                {
+//                    isContinue = true;
+//                }
+//                scan.getNext();
+//                break;
             default:
                 break;
             }
@@ -372,6 +391,10 @@ public class Parser
             if (resCond.value.equals("T"))
             {
                 ResultValue resTemp = executeStatements(scan, symbolTable, true);
+                if ((isBreak || isContinue))
+                {
+                    resTemp = executeStatements(scan, symbolTable, false);
+                }
 
                 // end expected: else
                 if (resTemp.terminatingStr.equals("else"))
@@ -423,6 +446,10 @@ public class Parser
                     }
                     //since cond was false, execute else part (optional)
                     resTemp = executeStatements(scan, symbolTable, true);
+                    if (isBreak || isContinue)
+                    {
+                        resTemp = executeStatements(scan, symbolTable, false);
+                    }
                 }
                 /*
                 if (!resTemp.terminatingStr.equals("endif"))
@@ -500,6 +527,11 @@ public class Parser
      */
     private ResultValue executeStatements(Scanner scan, SymbolTable symbolTable, boolean bExec) throws Exception
     {
+        if (scan.currentToken.tokenStr.equals("else") || scan.currentToken.tokenStr.equals("endif")
+                || scan.currentToken.tokenStr.equals("endwhile") || scan.currentToken.tokenStr.equals("endfor")){
+            ResultValue res = new ResultValue(SubClassif.END, "testVal", 0, scan.currentToken.tokenStr);
+            return res;
+        }
         // set position to first line in if
         scan.getNext();
 
@@ -508,8 +540,28 @@ public class Parser
             while (!scan.currentToken.tokenStr.equals("else") && !scan.currentToken.tokenStr.equals("endif")
                     && !scan.currentToken.tokenStr.equals("endwhile") && !scan.currentToken.tokenStr.equals("endfor"))
             {
-                stmt(scan, symbolTable, true);
-                scan.getNext();
+                if (scan.currentToken.tokenStr.equals("break"))
+                {
+                    isBreak = true;
+                    scan.getNext();
+                    scan.getNext();
+                } else if (scan.currentToken.tokenStr.equals("continue"))
+                {
+                    isContinue = true;
+                    scan.getNext();
+                    scan.getNext();
+                } else
+                {
+                    if (isBreak || isContinue)
+                    {
+                        stmt(scan, symbolTable, false);
+
+                    } else
+                    {
+                        stmt(scan, symbolTable, true);
+                    }
+                    scan.getNext();
+                }
             }
             ResultValue res = new ResultValue(SubClassif.END, "testVal", 0, scan.currentToken.tokenStr);
             return res;
@@ -519,8 +571,14 @@ public class Parser
             while (!scan.currentToken.tokenStr.equals("else") && !scan.currentToken.tokenStr.equals("endif")
                     && !scan.currentToken.tokenStr.equals("endwhile") && !scan.currentToken.tokenStr.equals("endfor"))
             {
-                stmt(scan, symbolTable, false);
-                scan.getNext();
+                if (scan.currentToken.tokenStr.equals("break") || scan.currentToken.tokenStr.equals("continue"))
+                {
+                    scan.getNext();
+                    scan.getNext();
+                } else {
+                    stmt(scan, symbolTable, false);
+                    scan.getNext();
+                }
             }
             ResultValue res = new ResultValue(SubClassif.END, "testVal", 0, scan.currentToken.tokenStr);
             return res;
@@ -542,7 +600,8 @@ public class Parser
      */
     private void whileStmt(Scanner scan, SymbolTable symbolTable, Boolean bExec) throws Exception
     {
-        ResultValue resTemp, resCond;
+        ResultValue resTemp = null;
+        ResultValue resCond = null;
 
         // save current line number
         int iColPosition = scan.columnIndex;
@@ -562,6 +621,16 @@ public class Parser
                 {
                     // Cond returned True, continue executing
                     resTemp = executeStatements(scan, symbolTable, true);
+                    if (isBreak)
+                    {
+                        resTemp = executeStatements(scan, symbolTable, false);
+                        break;
+                    }
+                    if (isContinue)
+                    {
+                        resTemp = executeStatements(scan, symbolTable, false);
+                        isContinue = false;
+                    }
                     // skip back to current line and evalCond
                     scan.columnIndex = iColPosition;
                     scan.lineIndex = iRowPos;
@@ -569,8 +638,13 @@ public class Parser
                     scan.nextToken = nextToken;
                     resCond = expression(scan, symbolTable);
                 }
-                // exec stmts as false
-                resTemp = executeStatements(scan, symbolTable, false);
+
+                if (isBreak)
+                {
+                    // exec stmts as false
+                    resTemp = executeStatements(scan, symbolTable, false);
+                    isBreak = false;
+                }
 
                 if (!resTemp.terminatingStr.equals("endwhile"))
                 {
@@ -979,6 +1053,16 @@ public class Parser
         while (controlVariableValue < terminationValue)
         {
             executeStatements(scan, symbolTable, true);
+            if (isBreak)
+            {
+                executeStatements(scan, symbolTable, false);
+                break;
+            }
+            if (isContinue)
+            {
+                executeStatements(scan, symbolTable, false);
+                isContinue = false;
+            }
 
             // return to top of statements
             scan.columnIndex = columnIndex;
@@ -996,6 +1080,9 @@ public class Parser
         }
 
         // Get scanner aligned to the end of the For statement without executing it
+        if (isBreak){
+            isBreak = false;
+        }
         executeStatements(scan, symbolTable, false);
     }
 
@@ -1063,6 +1150,16 @@ public class Parser
         {
             StorageManager.values.put(controlVariableToken.tokenStr, "" + item);
             executeStatements(scan, symbolTable, true);
+            if (isBreak)
+            {
+                executeStatements(scan, symbolTable, false);
+                break;
+            }
+            if (isContinue)
+            {
+                executeStatements(scan, symbolTable, false);
+                isContinue = false;
+            }
 
             // return to top of statements
             scan.columnIndex = columnIndex;
@@ -1071,6 +1168,10 @@ public class Parser
             scan.nextToken.copyToken(nextToken);
         }
 
+        if (isBreak)
+        {
+            isBreak = false;
+        }
         // Get scanner aligned to the end of the For statement without executing it
         executeStatements(scan, symbolTable, false);
     }
@@ -1103,6 +1204,16 @@ public class Parser
             if (!string.equals("null")) {
                 StorageManager.values.put(controlVariableToken.tokenStr, string);
                 executeStatements(scan, symbolTable, true);
+                if (isBreak)
+                {
+                    executeStatements(scan, symbolTable, false);
+                    break;
+                }
+                if (isContinue)
+                {
+                    executeStatements(scan, symbolTable, false);
+                    isContinue = false;
+                }
 
                 // return to top of statements
                 scan.columnIndex = columnIndex;
@@ -1112,6 +1223,10 @@ public class Parser
             }
         }
 
+        if (isBreak)
+        {
+            isBreak = false;
+        }
         // Get scanner aligned to the end of the For statement without executing it
         executeStatements(scan, symbolTable, false);
     }

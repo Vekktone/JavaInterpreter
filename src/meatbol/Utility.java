@@ -855,13 +855,13 @@ public class Utility {
             Boolean bOpLeft = Boolean.parseBoolean(opLeft.value);
 
             // do comparison
-            if (!bOpLeft)
+            if (opLeft.value.equals("T"))
             {
-                resCond = new ResultValue(SubClassif.BOOLEAN, "T", 0, null);
+                resCond = new ResultValue(SubClassif.BOOLEAN, "F", 0, null);
             }
             else
             {
-                resCond = new ResultValue(SubClassif.BOOLEAN, "F", 0, null);
+                resCond = new ResultValue(SubClassif.BOOLEAN, "T", 0, null);
             }
             break;
         default:
