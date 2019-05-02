@@ -947,12 +947,9 @@ public class Utility {
         switch (opLeft.type)
         {
         case BOOLEAN:
-            // use booleans
-            Boolean bOpLeft = Boolean.parseBoolean(opLeft.value);
-            Boolean bOpRight = Boolean.parseBoolean(opRight.value);
 
             // do comparison
-            if (bOpLeft || bOpRight)
+            if (opLeft.value.equals("T") || opRight.value.equals("T"))
             {
                 resCond = new ResultValue(SubClassif.BOOLEAN, "T", 0, null);
             }
