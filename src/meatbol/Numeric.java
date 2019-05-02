@@ -1,5 +1,7 @@
 package meatbol;
 
+import java.util.StringTokenizer;
+
 /** Numeric is used to standardize all of our conversions.
  * <p>
  * Numeric is a class that has a collection of static functions used to
@@ -91,5 +93,94 @@ public class Numeric {
         String floatString = Float.valueOf(floatValue).toString();
         double doubleValue = Double.valueOf(floatString);
         return doubleValue;
+    }
+
+    public static int dateToEpoch(String value, int line) throws ParserException {
+        StringTokenizer st = new StringTokenizer(value,"-");
+        int year, day, month;
+        int epoch, i = 0;
+        int[] maxDays = {0,31,59,90,120,151,181,212,243,273,304,334};
+
+        //attempt to parse, failure means this is not a valid date
+        try
+        {
+            year = Integer.parseInt(st.nextToken());
+            month = Integer.parseInt(st.nextToken());
+            day = Integer.parseInt(st.nextToken());
+        }
+        catch (Exception e)
+        {
+            throw new ParserException(line
+                    ,"***Error: Invalid date - " + value + "***"
+                    , Meatbol.filename);
+        }
+        //epoch for year
+        epoch = (year/4)*1461;
+        epoch += ((year%4) * 365);
+        //full months
+        epoch += maxDays[month - 1];
+        //leap year
+        if((year%4) == 0 && (month > 2 || (month == 2 && day == 29)))
+        {
+            epoch++;
+        }
+        epoch += day;
+        return epoch;
+    }
+
+    public static String epochToDate(int epoch){
+        int year = 0, day = 0, month = 0, i;
+        int[] maxDays = {0,31,59,90,120,151,181,212,243,273,304,334,365};
+        String string;
+        //year increments
+        year = (epoch/1461) * 4;
+        epoch -= (year/4 * 1461);
+
+        while (epoch > 366)
+        {
+                year++;
+                epoch -= 365;
+        }
+
+        //find month and day
+        for(i = 0; i<13; i++)
+        {
+            if (year % 4 == 0 && epoch > 59)
+            {
+                if(epoch <= (maxDays[i] + 1))
+                {
+                    month = i;
+                    day = epoch - maxDays[i-1] - 1;
+                    break;
+                }
+            }
+            else
+            {
+                if(epoch <= maxDays[i])
+                {
+                    month = i;
+                    day = epoch - maxDays[i-1];
+                    break;
+                }
+            }
+        }
+        string = String.format("%d-",year);
+        if(month<10)
+        {
+            string = string.concat(String.format("0%d-",month));
+        }
+        else
+        {
+            string =string.concat(String.format("%d-",month));
+        }
+        if(day<10)
+        {
+            string =string.concat(String.format("0%d",day));
+        }
+        else
+        {
+            string =string.concat(String.format("%d",day));
+        }
+        return string;
     }
 }
