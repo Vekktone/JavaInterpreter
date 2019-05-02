@@ -217,22 +217,6 @@ public class Parser
             case "for":
                 forStmt(scan, symbolTable);
                 break;
-//            case "break":
-//                System.out.println("It is a break");
-//                if (bExec)
-//                {
-//                    isBreak = true;
-//                }
-//                scan.getNext();
-//                break;
-//            case "continue":
-//                System.out.println("It is a continue");
-//                if (bExec)
-//                {
-//                    isContinue = true;
-//                }
-//                scan.getNext();
-//                break;
             default:
                 break;
             }
