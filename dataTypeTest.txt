@@ -1,3 +1,12 @@
+print("The tokens printed by the debug should reflect the data type of declaration");
+debug Token on;
+Int integer = 0;
+Float floatingPoint = 0.0;
+String stringVar = "sssss";
+Date birthday = "1996-05-26";
+Bool trueBoolean = T;
+debug Token off;
+
 Int a = 5;
 Float b = 5.6 + a;
 Float c = a + 5.6;
