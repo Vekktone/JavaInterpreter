@@ -94,13 +94,17 @@ public class SymbolTable
         table.put("Bool", new STControl("Bool", Classif.CONTROL, SubClassif.DECLARE, SubClassif.BOOLEAN));
         table.put("Date", new STControl("Date", Classif.CONTROL, SubClassif.DECLARE, SubClassif.DATE));
 
-        // Function int
-        // TODO: Put correct values for numArgs in future project
+        // Function arrays
         table.put("LENGTH", new STFunction("LENGTH", Classif.FUNCTION, SubClassif.INTEGER, 0));
         table.put("MAXLENGTH", new STFunction("MAXLENGTH", Classif.FUNCTION, SubClassif.INTEGER, 0));
         table.put("SPACES", new STFunction("SPACES", Classif.FUNCTION, SubClassif.INTEGER, 0));
         table.put("ELEM", new STFunction("ELEM", Classif.FUNCTION, SubClassif.INTEGER, 0));
         table.put("MAXELEM", new STFunction("MAXELEM", Classif.FUNCTION, SubClassif.INTEGER, 0));
+
+        // Function dates
+        table.put("dateDiff", new STFunction("dateDiff", Classif.FUNCTION, SubClassif.DATE, 0));
+        table.put("dateAdj", new STFunction("dateAdj", Classif.FUNCTION, SubClassif.DATE, 0));
+        table.put("dateAge", new STFunction("dateAge", Classif.FUNCTION, SubClassif.DATE, 0));
 
         // Operators
         table.put("and", new STEntry("and", Classif.OPERATOR));

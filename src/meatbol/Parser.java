@@ -1679,6 +1679,15 @@ public class Parser
                 case "ELEM":
                     stack.push(Utility.element(parmList));
                     break;
+                case "dateDiff":
+                    stack.push(Utility.dateDiff(parmList, token.iSourceLineNr));
+                    break;
+                case "dateAdj":
+                    stack.push(Utility.dateAdj(parmList, token.iSourceLineNr));
+                    break;
+                case "dateAge":
+                    stack.push(Utility.dateAge(parmList, token.iSourceLineNr));
+                    break;
                 default:
                     throw new ParserException(token.iSourceLineNr
                             ,"***Error: Undefined function - " + token.tokenStr + "***"

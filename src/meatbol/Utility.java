@@ -1053,4 +1053,83 @@ public class Utility {
         String right = string.substring(index+1, string.length());
         return left + value + right;
     }
+
+    public static ResultValue dateDiff(ArrayList<ResultValue> parmList, int line) throws ParserException {
+        int firstDate, lastDate;
+
+        if(parmList.size() != 2)
+            throw new ParserException(line
+                    ,"***Error: Invalid number of function parameters***"
+                    , Meatbol.filename);
+        firstDate = Numeric.dateToEpoch(parmList.get(0).value, line);
+        lastDate = Numeric.dateToEpoch(parmList.get(1).value, line);
+
+        return new ResultValue(SubClassif.INTEGER,Integer.toString(lastDate - firstDate),0,null);
+    }
+
+    public static ResultValue dateAdj(ArrayList<ResultValue> parmList, int line) throws ParserException {
+        int date;
+        String d;
+
+        if(parmList.size() != 2)
+            throw new ParserException(line
+                    ,"***Error: Invalid number of function parameters***"
+                    , Meatbol.filename);
+
+        date = Numeric.dateToEpoch(parmList.get(1).value, line) + Numeric.toInt(parmList.get(0));
+        d = Numeric.epochToDate(date);
+
+        return new ResultValue(SubClassif.DATE,d,0,null);
+    }
+
+    public static ResultValue dateAge(ArrayList<ResultValue> parmList, int line) throws ParserException {
+        StringTokenizer st1 = new StringTokenizer(parmList.get(1).value,"-");
+        StringTokenizer st2 = new StringTokenizer(parmList.get(0).value,"-");
+        int year1, month1, day1;
+        int year2, month2, day2;
+        int age = 0;
+
+        System.out.println(parmList.get(0).value + " " +parmList.get(1).value);
+        if(parmList.size() != 2)
+            throw new ParserException(line
+                    ,"***Error: Invalid number of function parameters***"
+                    , Meatbol.filename);
+        try
+        {
+            year1 = Integer.parseInt(st1.nextToken());
+            month1 = Integer.parseInt(st1.nextToken());
+            day1 = Integer.parseInt(st1.nextToken());
+        }
+        catch (Exception e)
+        {
+            throw new ParserException(line
+                    ,"***Error: Invalid date - " + parmList.get(0).value + "***"
+                    , Meatbol.filename);
+        }
+
+        try
+        {
+            year2 = Integer.parseInt(st2.nextToken());
+            month2 = Integer.parseInt(st2.nextToken());
+            day2 = Integer.parseInt(st2.nextToken());
+        }
+        catch (Exception e)
+        {
+            throw new ParserException(line
+                    ,"***Error: Invalid date - " + parmList.get(0).value + "***"
+                    , Meatbol.filename);
+        }
+        age = year1 - year2;
+        if(day1<day2)
+        {
+            if(month1<=month2)
+            {
+                age--;
+            }
+        }
+
+        return new ResultValue(SubClassif.INTEGER,Integer.toString(age),0,null);
+    }
+
+
 }

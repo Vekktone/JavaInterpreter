@@ -2,6 +2,7 @@ package meatbol;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.StringTokenizer;
 
 
 /** Scanner is responsible for accessing the input file.
@@ -136,7 +137,7 @@ public class Scanner {
             {
                 // skip white space
                 case '\t': case '\n': case ' ':
-                break;
+                    break;
                 // check for comment
                 case '/':
                     // see if this is a comment or an error
@@ -160,46 +161,46 @@ public class Scanner {
                     break;
                 //create operator for valid operator not inside quotes
                 case '+': case '-': case '*': case '<': case '>': case '!': case '=': case '#': case '^':
-                //if we have a minus and it doesn't follow an operand, it must be a unary
-                if(lineData[columnIndex] == '-' && !(currentToken.primClassif == Classif.OPERAND
-                        || currentToken.tokenStr.equals(")") || currentToken.tokenStr.equals("]")))
-                {
-                    this.nextToken = setToken("u-"
-                            , Classif.OPERATOR
-                            , SubClassif.EMPTY
-                            , lineIndex
-                            , columnIndex);
-                }
-                //otherwise, it is an operator
-                else
-                {
+                    //if we have a minus and it doesn't follow an operand, it must be a unary
+                    if(lineData[columnIndex] == '-' && !(currentToken.primClassif == Classif.OPERAND
+                    || currentToken.tokenStr.equals(")") || currentToken.tokenStr.equals("]")))
+                    {
+                        this.nextToken = setToken("u-"
+                                , Classif.OPERATOR
+                                , SubClassif.EMPTY
+                                , lineIndex
+                                , columnIndex);
+                    }
+                    //otherwise, it is an operator
+                    else
+                    {
                     //create token
                     this.nextToken = setToken(String.valueOf(lineData[columnIndex])
                             , Classif.OPERATOR
                             , SubClassif.EMPTY
                             , lineIndex
                             , columnIndex);
-                }
-                validToken = true;
-                break;
+                    }
+                    validToken = true;
+                    break;
                 // create separator for valid separator not inside quotes
                 case '(': case ')': case ':': case ';': case '[': case ']': case ',':
-                //create token
-                this.nextToken = setToken(String.valueOf(lineData[columnIndex])
-                        , Classif.SEPARATOR
-                        , SubClassif.EMPTY
-                        , lineIndex
-                        , columnIndex);
-                validToken = true;
-                break;
+                    //create token
+                    this.nextToken = setToken(String.valueOf(lineData[columnIndex])
+                            , Classif.SEPARATOR
+                            , SubClassif.EMPTY
+                            , lineIndex
+                            , columnIndex);
+                    validToken = true;
+                    break;
                 // opening quote indicates a literal string follows
                 case '"': case '\'':
-                //create string Token
-                columnIndex = createStringToken(lineList.get(lineIndex).substring(columnIndex)
-                        , lineIndex
-                        , columnIndex);
-                validToken = true;
-                break;
+                    //create string Token
+                    columnIndex = createStringToken(lineList.get(lineIndex).substring(columnIndex)
+                            , lineIndex
+                            , columnIndex);
+                    validToken = true;
+                    break;
                 // if we haven't found anything else then this must be an operand
                 default:
                     //create operand Token
@@ -229,10 +230,10 @@ public class Scanner {
                     if (nextToken.tokenStr.equals("="))
                     {
                         this.currentToken = setToken((currentToken.tokenStr + nextToken.tokenStr)
-                                , Classif.OPERATOR
-                                , SubClassif.EMPTY
-                                , lineIndex
-                                , columnIndex);
+                            , Classif.OPERATOR
+                            , SubClassif.EMPTY
+                            , lineIndex
+                            , columnIndex);
 
                         //get next token after combining 2 operator, return current Token
                         columnIndex++;
@@ -312,10 +313,10 @@ public class Scanner {
             // check if the numeric is an integer
             if (isValidInteger(substring))
                 sub = SubClassif.INTEGER;
-                // check if the numeric is a float
+            // check if the numeric is a float
             else if (isValidFloat(substring))
                 sub = SubClassif.FLOAT;
-                // if it is not an valid numeric, throw exception
+            // if it is not an valid numeric, throw exception
             else
                 throw new ScannerException(lineNum
                         , index
@@ -332,13 +333,13 @@ public class Scanner {
         {
             // boolean values
             case "T": case "F":
-            sub = SubClassif.BOOLEAN;
-            nextToken = setToken(substring, Classif.OPERAND, sub, lineNum, index);
-            break;
+                sub = SubClassif.BOOLEAN;
+                nextToken = setToken(substring, Classif.OPERAND, sub, lineNum, index);
+                break;
             case "break": case "continue":
-            sub = SubClassif.FLOW;
-            nextToken = setToken(substring, Classif.CONTROL, sub, lineNum, index);
-            break;
+                sub = SubClassif.FLOW;
+                nextToken = setToken(substring, Classif.CONTROL, sub, lineNum, index);
+                break;
             // either a variable, function, control, or operator. SymbolTable is needed.
             default:
                 STEntry entry = symbolTable.getSymbol(substring);
@@ -452,6 +453,72 @@ public class Scanner {
         debugOptionsMap.put(DebuggerTypes.STATEMENT, false);
     }
 
+    /** Checks if a string is a valid date.
+     * <p>
+     * Checks each char to see if it is 0-9 or a dash. verify ####-##-## format.
+     *
+     *
+     * @param dValue
+     *            String containing potential float value
+     *
+     * @return boolean true - String is a valid date false - String is not a
+     *         valid date
+     *
+     * @author Gregory Pugh
+     */
+    private boolean isValidDate(String dValue) {
+        int i = 0; // loop counter
+        StringTokenizer st = new StringTokenizer(dValue,"-",true);
+        int year, day, month;
+
+        //valid date must have 5 tokens
+        if(st.countTokens() != 5)
+        {
+            return false;
+        }
+
+        //attempt to parse, failure means this is not a valid date
+        try
+        {
+            year = Integer.parseInt(st.nextToken());
+            st.nextToken();
+            month = Integer.parseInt(st.nextToken());
+            st.nextToken();
+            day = Integer.parseInt(st.nextToken());
+        }
+        catch (Exception e)
+        {
+            return false;
+        }
+
+        //check valid month and day
+        switch(month)
+        {
+            //month with 31 days
+            case 1: case 3: case 5: case 7: case 8: case 10: case 12:
+                if(day<0 || day>31)
+                    return false;
+                break;
+            //month with 30 days
+            case 4: case 6: case 9: case 11:
+                if(day<0 || day>30)
+                    return false;
+                break;
+            //February
+            case 2:
+                if(day<0 || day>29)
+                    return false;
+                else if(day==29 && year%4 !=0)
+                    return false;
+                break;
+            //invalid month
+            default:
+                return false;
+        }
+        return true;
+
+    }
+
     /** Checks if a string is a valid float.
      * <p>
      * Checks each char to see if it is 0-9 or a decimal point. Also makes sure
@@ -486,7 +553,7 @@ public class Scanner {
                 if (iCharacters[i] == '.' && !(hasDecimal))
                     // set decimal flag and continue searching string
                     hasDecimal = true;
-                    // otherwise, this is not a valid float
+                // otherwise, this is not a valid float
                 else
                     return false;
             }
@@ -599,12 +666,12 @@ public class Scanner {
                         break;
                     //this is an escaped quote
                     case '\'': case '"':
-                    //replace and increment lineData and trimEscape count
-                    substring = substring.substring(0,i-trimEscapes) + lineData[(i+1)]
-                            + substring.substring((i-trimEscapes)+2,lineData.length-trimEscapes);
-                    i++;
-                    trimEscapes++;
-                    break;
+                        //replace and increment lineData and trimEscape count
+                        substring = substring.substring(0,i-trimEscapes) + lineData[(i+1)]
+                                + substring.substring((i-trimEscapes)+2,lineData.length-trimEscapes);
+                        i++;
+                        trimEscapes++;
+                        break;
                     //this is a backslash
                     case '\\':
                         //replace and increment lineData and trimEscape count
@@ -636,9 +703,17 @@ public class Scanner {
                     , "Syntax error - Missing closing quotation: " + substring
                     , Meatbol.filename);
         }
+        // check if it is a date
+        if (isValidDate(substring.substring(1,i)))
+        {
+            nextToken = setToken(substring.substring(1, i), Classif.OPERAND, SubClassif.DATE, lineNum, index);
+        }
         //Otherwise, create the token and return the new column position after the matching quote
-        nextToken = setToken(substring.substring(1, i-trimEscapes)
-                , Classif.OPERAND, SubClassif.STRING, lineNum, index);
+        else
+        {
+            nextToken = setToken(substring.substring(1, i-trimEscapes)
+                    , Classif.OPERAND, SubClassif.STRING, lineNum, index);
+        }
         return index + i;
     }
 
