@@ -4,7 +4,7 @@ import java.util.HashMap;
 
 /** Simple hashmap to hold variable values during processing
  *
- * @author Mason Pohler
+ * @author Gregory Pugh
  *
  */
 public class StorageManager {

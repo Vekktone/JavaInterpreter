@@ -80,3 +80,12 @@ while bFlag:
     i = i + 1;
 endwhile;
 print("Number found at testArray at index: ", i);
+
+String word = "word";
+for char in word:
+    print(char);
+endfor;
+String words[4] = "this", "has", "several", "words";
+for entry in words:
+    print(entry);
+endfor;

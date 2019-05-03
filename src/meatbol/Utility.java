@@ -351,6 +351,8 @@ public class Utility {
      * @param iSourceLineNr
      * @return
      * @throws ParserException
+     *
+     * @author Mason Pohler
      */
     public static ResultValue doConcatonate(ResultValue opLeft, ResultValue opRight, int iSourceLineNr) throws ParserException
     {

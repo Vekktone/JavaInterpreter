@@ -1,0 +1,16 @@
+b and c are not equal. The difference is  0.6000004 
+These should all appear as integers 
+15 
+-5 
+50 
+0 
+9765625 
+These should all appear as floats 
+15.6 
+5.6000004 
+53.0 
+2.1200001 
+133822.56 
+Should print 'five 5' 
+five 5 
+EOF         EMPTY        

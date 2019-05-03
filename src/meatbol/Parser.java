@@ -1738,7 +1738,7 @@ public class Parser
      * @param lineNumber
      * 			index of the current print location (avoids duplicate printing)
      *
-     * @author Mason Pohler
+     * @author Gregory Pugh
      */
     private void printStatement(Scanner scan, int lineNumber)
     {

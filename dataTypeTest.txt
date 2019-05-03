@@ -1,0 +1,29 @@
+Int a = 5;
+Float b = 5.6 + a;
+Float c = a + 5.6;
+
+Bool boolean = (b == c);
+if (boolean):
+    print("b and c are equal. This is incorrect.");
+else:
+    print("b and c are not equal. The difference is ", b - c);
+endif;
+
+print("These should all appear as integers");
+print(a + b);
+print(a - b);
+print(a * b);
+print(a / b);
+print(a ^ b);
+
+print("These should all appear as floats");
+print(b + a);
+print(b - a);
+print(b * a);
+print(b / a);
+print(b ^ a);
+
+String five = "five ";
+five = five # a;
+print("Should print 'five 5'");
+print(five);
