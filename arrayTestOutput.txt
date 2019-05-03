@@ -1,0 +1,43 @@
+arrayTest.txt
+Test 1: simple array creation- create array and print all elements in it
+Printing testArray
+testArray[ 0 ]= 10
+testArray[ 1 ]= 20
+testArray[ 2 ]= 30
+testArray[ 3 ]= 40
+testArray[ 4 ]= 50
+testArray[ 5 ]= 60
+testArray[ 6 ]= 70
+testArray[ 7 ]= 80
+testArray[ 8 ]= 100
+testArray[ 9 ]= 200
+testArray[ 10 ]= 300
+Test 2: change elements in array
+testArray[ 0 ]= 10
+testArray[ 1 ]= 20
+testArray[ 2 ]= 30
+testArray[ 3 ]= 40
+testArray[ 4 ]= 50
+testArray[ 5 ]= 1000
+testArray[ 6 ]= 70
+testArray[ 7 ]= 3000
+testArray[ 8 ]= 100
+testArray[ 9 ]= 200
+testArray[ 10 ]= 300
+Test 3: printing using subscripts
+Elements are: 10 30 1000 40
+Test 4: initializing array with no values
+This array is empty right now
+Number of elements in empty array 0
+After assigning to empty array: 20000
+Test 5: Make a copy of an existing array
+Printing copyArray which should only show 8 elements total
+copyArray[ 0 ]= 10
+copyArray[ 1 ]= 20
+copyArray[ 2 ]= 30
+copyArray[ 3 ]= 40
+copyArray[ 4 ]= 50
+copyArray[ 5 ]= 1000
+copyArray[ 6 ]= 70
+copyArray[ 7 ]= 3000
+EOF         EMPTY

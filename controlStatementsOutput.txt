@@ -1,0 +1,62 @@
+forBreakAndContinue.txt
+Printing testArray
+testArray[ 0 ]= 10
+testArray[ 1 ]= 20
+testArray[ 2 ]= 30
+testArray[ 3 ]= 40
+testArray[ 4 ]= 50
+testArray[ 5 ]= 60
+testArray[ 6 ]= 70
+testArray[ 7 ]= 80
+testArray[ 8 ]= 100
+testArray[ 9 ]= 200
+testArray[ 10 ]= 300
+TEST 1: Simple break with for and if- find the number of elements below 100 in a sorted array using a break statement
+The array element is:  10
+The array element is:  20
+The array element is:  30
+The array element is:  40
+The array element is:  50
+The array element is:  60
+The array element is:  70
+The array element is:  80
+The array element is:  100
+Total numbers below 100:  8
+TEST 2: Another break in for and if- Subtract 5 cents from a dollar until we get to zero using continue, we should see 20 subtractions
+Current dollar value in cents:  100
+Current dollar value in cents:  95
+Current dollar value in cents:  90
+Current dollar value in cents:  85
+Current dollar value in cents:  80
+Current dollar value in cents:  75
+Current dollar value in cents:  70
+Current dollar value in cents:  65
+Current dollar value in cents:  60
+Current dollar value in cents:  55
+Current dollar value in cents:  50
+Current dollar value in cents:  45
+Current dollar value in cents:  40
+Current dollar value in cents:  35
+Current dollar value in cents:  30
+Current dollar value in cents:  25
+Current dollar value in cents:  20
+Current dollar value in cents:  15
+Current dollar value in cents:  10
+Current dollar value in cents:  5
+Current dollar value in cents:  0
+We have reached 0. totalSubs= 20
+dollarCents= 0
+TEST 3: Continue in for- Print all values of array unless it is above 100, we should only see 10-80 here from testArray
+The array element is:  10
+The array element is:  20
+The array element is:  30
+The array element is:  40
+The array element is:  50
+The array element is:  60
+The array element is:  70
+The array element is:  80
+TEST 4: While statement with break- search array until number is found
+Number found at testArray at index:  8
+TEST 5: While statement with continue- same as test 4 but using continue
+Number found at testArray at index:  8
+EOF         EMPTY
