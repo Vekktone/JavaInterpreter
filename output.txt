@@ -1,86 +1,105 @@
-primClassif subClassif   tokenStr
-p3Input.txt 
->>> Checking datatype results based on left operand 
-problem: .
-	1. area all float 
-	radius= 8 radius2= 8 area= 3.14 
-	2. area using int radius as left operand 
-	radius= 8 irad2= 8 area= 8 
-	3. circumference using twoPi as float * int 
-	radius= 8 twoPi= 3.14 circum= 3.14 
-	4. circumference using twoPi as int * float 
-	radius= 8 twoPi= 2 circum= 2 
->> Minus test, A= 10 B= 6 D= 25 
-D-A= 25 
--A= -10 
--D= -25 
-A=-B = -6 
->>> First If 
-I'M IN THE IF YALL
-The token is if
-execing stmts...
-	loc is TX 
-execing stmts...
-	Done with first if 
->>> Second If 
-I'M IN THE IF YALL
-The token is if
-execing stmts...
-	2nd if true, i >= 5, i = 0 
-execing stmts...print
-	2nd if false, i >= 5, i = 0 
->>> First while i < 5 
-I'M IN THE WHILE YALL
-The token is while
-execing stmts...
-	top of while, i= 1 
-execing stmts...
-I'M IN THE IF YALL
-The token is if
-execing stmts...
-	while first if true i<3, i= 1 
-execing stmts...
-execing stmts...
-I'M IN THE IF YALL
-The token is if
-execing stmts...
-		while inner if true ... wrong! 
-execing stmts...
-		while inner if false, loc!='TX', loc is TX 
-execing stmts...
-	while first if false i<3, i= 1 
-execing stmts...
-I'M IN THE IF YALL
-The token is if
-execing stmts...
-		while 2nd inner if true loc=='TX', loc is TX 
-execing stmts...
-execing stmts...
-		while 2nd inner if false ... wrong 
-execing stmts...
-execing stmts...
-	while first if false after inner if 
-execing stmts...
-	bottom of while, i= 1 
-	After first while 
->>> Second while i < 5 ... with nested while 
-I'M IN THE WHILE YALL
-The token is while
-execing stmts...
-execing stmts...
-	top of while, i= 1 j= 1 
-execing stmts...
-	>>> Inner while j <= 3 
-execing stmts...
-I'M IN THE WHILE YALL
-The token is while
-execing stmts...
-		inner while, j= 1 
-execing stmts...
-expected 'endif' for an 'if'
-execing stmts...
-execing stmts...
-	bottom of while, i= 1 j= 1 
-execing stmts...
-	After outer while 
+p4Array.txt 
+iSimp= 50 
+Array C with elements printed using constant subscripts 
+iCM
+10
+	C 10 20 30 
+Array B with expressions for subscripts 
+	B 10 200 30 
+Array B with elements replaced 
+	B.2 10 100 200 
+Array F with arrays of arrays 
+F 10 20 3 40 3 50 
+iAM originally does not have any elements 
+iAM
+10
+iAm number of elements is 0 
+	A 100 
+for loop for val in iCM 
+	 10 
+	 20 
+	 30 
+	 40 
+	 50 
+	 60 
+counting for loop 
+	 10 
+	 20 
+	 30 
+	 40 
+	 50 
+	 60 
+counting for loop by 2, implicit variable k 
+	 10 
+	 30 
+	 50 
+Unsorted array 
+iDM
+20
+	 60 
+	 30 
+	 20 
+	 10 
+	 5 
+	 50 
+	 70 
+	 25 
+	 35 
+	 45 
+	 15 
+Nested for loops, sorting the array 
+	ready to leave, i= 0 
+	ready to leave, i= 1 
+	ready to leave, i= 2 
+	ready to leave, i= 3 
+	ready to leave, i= 4 
+	ready to leave, i= 5 
+	ready to leave, i= 6 
+	ready to leave, i= 7 
+	ready to leave, i= 8 
+	ready to leave, i= 9 
+sorted array 
+	 5 
+	 10 
+	 15 
+	 20 
+	 25 
+	 30 
+	 35 
+	 45 
+	 50 
+	 60 
+	 70 
+Scalar assignment to an array 
+strM
+10
+	 oh yes 
+iCopyAM
+5
+copy of the sorted array, but with just 5 elements 
+	 5 
+	 10 
+	 15 
+	 20 
+	 25 
+	 30 
+	 35 
+	 45 
+	 50 
+	 60 
+	 70 
+iCopyBM
+30
+copy of the sorted array, but with just 11 elements not 30 
+	 5 
+	 10 
+	 15 
+	 20 
+	 25 
+	 30 
+	 35 
+	 45 
+	 50 
+	 60 
+	 70 
 EOF         EMPTY        

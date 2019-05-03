@@ -150,6 +150,17 @@ public class Parser
                     // evaluate condition inside array brackets
                     ResultValue resultValue = expression(scan, symbolTable);
 
+                    try {
+                        STIdentifier arraySTEntry = (STIdentifier) symbolTable.getSymbol(arrayIdentifier.tokenStr);
+                        arraySTEntry.structure = SubClassif.ARRAY;
+                        arraySTEntry.size = Integer.parseInt(resultValue.value);
+                        symbolTable.table.put(arrayIdentifier.tokenStr, arraySTEntry);
+//                        System.out.println(arrayIdentifier.tokenStr);
+//                        System.out.println(arraySTEntry.size);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+
                     // case 2: if it is an array declaration with a valid size and no valueList
                     if (scan.nextToken.tokenStr.equals(";"))
                     {
