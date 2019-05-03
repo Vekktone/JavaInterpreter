@@ -145,7 +145,7 @@ public class Numeric {
         //find month and day
         for(i = 0; i<13; i++)
         {
-            if (year % 4 == 0 && epoch > 59)
+            if (year % 4 == 0 && epoch < 59)
             {
                 if(epoch <= (maxDays[i] + 1))
                 {
