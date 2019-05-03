@@ -29,7 +29,6 @@ public class STIdentifier extends STEntry
      * address.
      */
     int nonlocal;
-    int size;
 
     /** Constructor
      * * <p>

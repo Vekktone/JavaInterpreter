@@ -634,10 +634,10 @@ public class Parser
                     resCond = expression(scan, symbolTable);
                 }
 
+                // exec stmts as false
+                resTemp = executeStatements(scan, symbolTable, false);
                 if (isBreak)
                 {
-                    // exec stmts as false
-                    resTemp = executeStatements(scan, symbolTable, false);
                     isBreak = false;
                 }
 
