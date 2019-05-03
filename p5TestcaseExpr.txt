@@ -1,0 +1,109 @@
+print("p5Expr.txt");
+Int two = 2;
+Int three = 3;
+Int four = 4;
+Int five = 5;
+
+print("constants: 3 + 4 * 5 =", 3+4*5);
+print("variables: 3 + 4 * 5 =", three+four*five);
+print("mixed: three + 4/five - 2 =",three + 4/five - 2);
+
+print("\nparanthesis: 2 * (three + 4) =", 2 * (three + 4) );
+print("nested paranthesis: (2 * (3 + two)) =", (2 * (3 + two)) );
+
+print("\nunary minus: -2 * 3 =", -2 * 3);
+print(-2, "in function unary minus");
+print("unary minus on parenthesis: -(2 * 3) =", -(2 * 3) );
+
+print("\nconcat: ", "put" # " it", "all", "to"#("geth"#"er"));
+
+print("\nTest >");
+if three*four > four+five:
+    print("right:", three*four, ">", 4+5);
+else:
+    print("wrong:", three*four, ">", 4+5,  "should be T");
+endif;
+
+print("\nTest <");
+if "1" # "2" < 4+5:
+    print("right: string", "1" # "2", "<", 4+5);
+else:
+    print("wrong: string", "1" # "2", "<", 4+5, "should be F");
+endif;
+
+print("\nTest >=");
+if three*four >= four+five:
+    print("right:", three*four, ">", 4+5);
+else:
+    print("wrong:", three*four, ">", 4+5,  "should be T");
+endif;
+
+print("\nTest <=");
+if 12 <= 4+5:
+    print("right:", 12, "<", 4+5);
+else:
+    print("wrong:", 12, "<", 4+5, "should be F");
+endif;
+
+print("\nTest <= as equal");
+if 20 <= 4*5:
+    print("right:", 20, "<", 4*5);
+else:
+    print("wrong:", 20, "<", 4*5, "should be F");
+endif;
+
+print("\nTest ==");
+if 12/four == 3:
+    print("right:", 12/four, "=", 3);
+else:
+    print("wrong:", 12/four, "=", 3, "should be F");
+endif;
+
+print("\nTest ==");
+if 12/four == 3:
+    print("right:", 12/four, "=", 3);
+else:
+    print("wrong:", 12/four, "=", 3, "should be F");
+endif;
+
+print("\nTest !=");
+if 12-four != 3*2:
+    print("right:", 12-four, "!=", 3*2);
+else:
+    print("wrong:", 12-four, "!=", 3*2, "should be F");
+endif;
+
+print("\nTest not");
+if not(F):
+    print("right: not false");
+else:
+    print("wrong: not false", "should be T");
+endif;
+
+print("\nTest and");
+if 4 > 2 and 3 == three:
+    print("right:", T, "and", T);
+else:
+    print("wrong: T and T", "should be T");
+endif;
+
+print("\nTest and");
+if 4 > 2 and 3 != three:
+    print("wrong: T and F", "should be F");
+else:
+    print("right: T and F");
+endif;
+
+print("\nTest or");
+if 4 > 2 or 3 != three:
+    print("right:", T, "or", F);
+else:
+    print("wrong: T or F", "should be T");
+endif;
+
+print("\nTest or");
+if 4 < 2 or 3 != three:
+    print("wrong: F or F", "should be F");
+else:
+    print("right:", F, "or", F);
+endif;
