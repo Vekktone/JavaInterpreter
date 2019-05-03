@@ -1,0 +1,27 @@
+functionsTest.txt
+Printing testArray
+testArray[ 0 ]= 10
+testArray[ 1 ]= 20
+testArray[ 2 ]= 30
+testArray[ 3 ]= 40
+testArray[ 4 ]= 50
+testArray[ 5 ]= 60
+testArray[ 6 ]= 70
+testArray[ 7 ]= 80
+testArray[ 8 ]= 100
+testArray[ 9 ]= 200
+testArray[ 10 ]= 300
+print test successful
+MAXELEM test: 20
+LENGTH test 24
+SPACES test false: F
+SPACES test true: T
+ELEM test: 20
+dateDiff test
+myBirthday = 1996-08-15 Today = 2019-05-02 difference of the two= 8294
+dateAdj test
+myBirthday = 1996-08-15 subtract 500 days from it= 1995-04-04
+dateAge test
+1996-08-15 2019-05-02
+Today = 2019-05-02 myBirthday = 1996-08-15 I am 22 years old!
+EOF         EMPTY

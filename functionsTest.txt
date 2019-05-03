@@ -1,0 +1,26 @@
+print("functionsTest.txt");
+Int testArray[20] = 10,20,30,40,50,60,70,80,100,200,300;
+print("Printing testArray");
+for i=0 to ELEM(testArray):
+    print("testArray[", i, "]=", testArray[i]);
+endfor;
+
+print("print test successful");
+
+print("MAXELEM test:", MAXELEM(testArray));
+print("LENGTH test", LENGTH("HELLO THERE BUDDY OL PAL"));
+print("SPACES test false:", SPACES("HELLO THERE BUDDY OL PAL"));
+print("SPACES test true:", SPACES("   "));
+
+print("ELEM test:", MAXELEM(testArray));
+
+Date myBirthday = "1996-08-15";
+Date Today = "2019-05-02";
+print("dateDiff test");
+print ("myBirthday =", myBirthday, "Today =", Today, "difference of the two=", dateDiff(Today, myBirthday);
+
+print("dateAdj test");
+print ("myBirthday =", myBirthday, "subtract 500 days from it=", dateAdj(myBirthday, -500));
+
+print("dateAge test");
+print ("Today =", Today, "myBirthday =", myBirthday, "I am", dateAge(Today, myBirthday), "years old!");
