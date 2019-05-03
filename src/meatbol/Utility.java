@@ -899,12 +899,9 @@ public class Utility {
         {
         // only case should be boolean
         case BOOLEAN:
-            // use booleans
-            Boolean bOpLeft = Boolean.parseBoolean(opLeft.value);
-            Boolean bOpRight = Boolean.parseBoolean(opRight.value);
 
             // do comparison
-            if (bOpLeft && bOpRight)
+            if (opLeft.value.equals("T") && opRight.value.equals("T"))
             {
                 resCond = new ResultValue(SubClassif.BOOLEAN, "T", 0, null);
             }
